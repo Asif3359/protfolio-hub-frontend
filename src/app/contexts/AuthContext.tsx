@@ -10,6 +10,22 @@ interface User {
   verified?: boolean;
 }
 
+interface ProfileData {
+  _id: string;
+  userId: string;
+  headline: string;
+  bio: string;
+  location: string;
+  phone: string;
+  website: string;
+  linkedin: string;
+  facebook: string;
+  github: string;
+  portfolioLink: string;
+  profileImage: string;
+  updatedAt: string;
+}
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -20,6 +36,7 @@ interface AuthContextType {
   resendVerification: (email: string) => Promise<{ success: boolean; message?: string }>;
   forgotPassword: (email: string) => Promise<{ success: boolean; message?: string }>;
   resetPassword: (email: string, code: string, newPassword: string) => Promise<{ success: boolean; message?: string }>;
+  getProfileData: () => Promise<{ success: boolean; message?: string; data?: ProfileData }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -281,6 +298,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const getProfileData = async (): Promise<{ success: boolean; message?: string; data?: ProfileData }> => {
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token) {
+        return { success: false, message: 'No authentication token found' };
+      }
+
+      const response = await fetch(`${API_BASE_URL}/profile/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return { success: false, message: 'Profile not found' };
+        }
+        throw new Error('Failed to fetch profile data');
+      }
+
+      const data = await response.json();
+      return { success: true, data: data };
+    } catch (error) {
+      console.error('Get profile data error:', error);
+      return { success: false, message: 'Network error occurred' };
+    }
+  };
+
   const value: AuthContextType = {
     user,
     loading,
@@ -291,6 +337,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     resendVerification,
     forgotPassword,
     resetPassword,
+    getProfileData,
   };
 
   return (

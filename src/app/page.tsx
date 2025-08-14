@@ -43,9 +43,10 @@ function HomePage() {
         {/* Hero Section */}
         <Box
           sx={{
-            background:
-              "linear-gradient(90deg, rgba(46, 125, 50, 0.9) 0%, rgba(76, 175, 80, 0.9) 100%)",
-            color: "white",
+            // background:
+            //   "linear-gradient(90deg, rgba(46, 125, 50, 0.9) 0%, rgba(76, 175, 80, 0.9) 100%)",
+            background: "white",
+            color: "black",
             borderBottom: "1px solid #e0e0e0",
             py: 8,
             position: "relative",
@@ -79,10 +80,10 @@ function HomePage() {
                     variant="outlined"
                     size="large"
                     sx={{
-                      borderColor: "white",
-                      color: "white",
+                      borderColor: "black",
+                      color: "black",
                       "&:hover": {
-                        borderColor: "white",
+                        borderColor: "black",
                         bgcolor: "rgba(255,255,255,0.1)",
                       },
                     }}
@@ -93,10 +94,10 @@ function HomePage() {
                     variant="outlined"
                     size="large"
                     sx={{
-                      borderColor: "white",
-                      color: "white",
+                      borderColor: "black",
+                      color: "black",
                       "&:hover": {
-                        borderColor: "white",
+                        borderColor: "black",
                         bgcolor: "rgba(255,255,255,0.1)",
                       },
                     }}
@@ -110,7 +111,7 @@ function HomePage() {
                   sx={{
                     width: { xs: 200, sm: 300, md: 400, lg: 400 },
                     height: { xs: 200, sm: 300, md: 400, lg: 400 },
-                    bgcolor: "rgba(255, 255, 255, 0.2)",
+                    bgcolor: "rgba(0, 0, 0, 0.2)",
                     borderRadius: "50%",
                     display: "flex",
                     alignItems: "center",
