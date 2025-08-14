@@ -1,5 +1,5 @@
 import { ResetPasswordForm } from './ResetPasswordForm';
-import { AuthGuard } from '../../components/AuthGuard';
+import { AuthGuard } from '../../../components/AuthGuard';
 
 export default function ResetPasswordPage() {
   return (

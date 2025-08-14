@@ -4,6 +4,18 @@ import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import {
+  Box,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Alert,
+  Avatar,
+  Link as MuiLink,
+} from '@mui/material';
+import { LockReset } from '@mui/icons-material';
 
 export const ResetPasswordForm = () => {
   const [formData, setFormData] = useState({
@@ -66,112 +78,117 @@ export const ResetPasswordForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Reset your password
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Enter the code sent to your email and your new password.
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="code" className="sr-only">
-                Reset Code
-              </label>
-              <input
-                id="code"
-                name="code"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Reset Code"
-                value={formData.code}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="newPassword" className="sr-only">
-                New Password
-              </label>
-              <input
-                id="newPassword"
-                name="newPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="New Password"
-                value={formData.newPassword}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="confirmPassword" className="sr-only">
-                Confirm New Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm New Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+    <Box sx={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      bgcolor: 'grey.50',
+      py: { xs: 2, sm: 3, md: 4 },
+      px: { xs: 1, sm: 2, md: 3 },
+      
+    }}>
+      <Container maxWidth="sm">
+        <Paper elevation={0} sx={{ 
+          p: { xs: 2, sm: 3, md: 4 },
+          mx: { xs: 1, sm: 2 },
+          textAlign: 'center' 
+        }}>
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Avatar sx={{ bgcolor: 'primary.main', mx: 'auto', mb: 2 }}>
+              <LockReset />
+            </Avatar>
+            <Typography variant="h4" component="h1" sx={{ mb: 1, fontWeight: 600 }}>
+              Reset your password
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Enter the code sent to your email and your new password.
+            </Typography>
+          </Box>
 
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
-            </div>
-          )}
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={formData.email}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="code"
+              label="Reset Code"
+              name="code"
+              value={formData.code}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="newPassword"
+              label="New Password"
+              type="password"
+              id="newPassword"
+              autoComplete="new-password"
+              value={formData.newPassword}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm New Password"
+              type="password"
+              id="confirmPassword"
+              autoComplete="new-password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            />
 
-          {success && (
-            <div className="rounded-md bg-green-50 p-4">
-              <div className="text-sm text-green-700">{success}</div>
-            </div>
-          )}
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
 
-          <div>
-            <button
+            {success && (
+              <Alert severity="success" sx={{ mb: 2 }}>
+                {success}
+              </Alert>
+            )}
+
+            <Button
               type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              sx={{ mt: 2, mb: 2 }}
             >
               {loading ? 'Resetting...' : 'Reset Password'}
-            </button>
-          </div>
+            </Button>
 
-          <div className="text-center">
-            <Link href="/auth/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Back to Login
-            </Link>
-          </div>
-        </form>
-      </div>
-    </div>
+            <Box sx={{ textAlign: 'center' }}>
+              <MuiLink component={Link} href="/auth/login" color="primary">
+                Back to Login
+              </MuiLink>
+            </Box>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 };

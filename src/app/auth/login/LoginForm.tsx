@@ -1,59 +1,81 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  Box,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  FormControlLabel,
+  Checkbox,
+  Paper,
+  Alert,
+  Avatar,
+  Link as MuiLink,
+} from '@mui/material';
+import { LockOutlined } from '@mui/icons-material';
 
 export const LoginForm = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     rememberMe: false,
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showVerificationMessage, setShowVerificationMessage] = useState(false);
-  const [unverifiedEmail, setUnverifiedEmail] = useState('');
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
 
   const { login, resendVerification } = useAuth();
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
-          try {
-        const result = await login(formData.email, formData.password, formData.rememberMe);
-        console.log(result);
-        if (result.success) {
-          // Redirect based on user role
-          if (result.data?.role === 'admin') {
-            router.push('/Admin-Dashboard');
-          } else if (result.data?.role === 'customer') {
-            router.push('/Client-Dashboard');
-          } else {
-            router.push('/');
-          }
+    try {
+      const result = await login(
+        formData.email,
+        formData.password,
+        formData.rememberMe
+      );
+      console.log('Login result:', result);
+      if (result.success) {
+        console.log('User role:', result.data?.role);
+        // Redirect based on user role
+        if (result.data?.role === "admin") {
+          console.log('Redirecting to Admin Dashboard');
+          window.location.href = "/Admin-Dashboard";
+        } else if (result.data?.role === "customer") {
+          console.log('Redirecting to Client Dashboard');
+          window.location.href = "/Client-Dashboard";
         } else {
-        if (result.message?.includes('verify your email')) {
+          console.log('Redirecting to Home');
+          window.location.href = "/";
+        }
+      } else {
+        if (result.message?.includes("verify your email")) {
           setShowVerificationMessage(true);
           setUnverifiedEmail(formData.email);
         } else {
-          setError(result.message || 'Login failed');
+          setError(result.message || "Login failed");
         }
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError("An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -64,13 +86,13 @@ export const LoginForm = () => {
     try {
       const result = await resendVerification(unverifiedEmail);
       if (result.success) {
-        setError('Verification email sent successfully!');
+        setError("Verification email sent successfully!");
         setShowVerificationMessage(false);
       } else {
-        setError(result.message || 'Failed to send verification email');
+        setError(result.message || "Failed to send verification email");
       }
     } catch (err) {
-      setError('Failed to send verification email');
+      setError("Failed to send verification email");
     } finally {
       setLoading(false);
     }
@@ -78,130 +100,180 @@ export const LoginForm = () => {
 
   if (showVerificationMessage) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          <div>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      <Box sx={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        bgcolor: 'grey.50',
+        py: { xs: 2, sm: 3, md: 4 },
+        px: { xs: 1, sm: 2, md: 3 },
+      }}>
+        <Container maxWidth="sm">
+          <Paper elevation={0} sx={{ 
+            p: { xs: 2, sm: 3, md: 4 },
+            mx: { xs: 1, sm: 2 },
+            textAlign: 'center' 
+          }}>
+            <Avatar sx={{ bgcolor: 'primary.main', mx: 'auto', mb: 2 }}>
+              <LockOutlined />
+            </Avatar>
+            <Typography variant="h4" component="h1" sx={{ mb: 2, fontWeight: 600 }}>
               Email Verification Required
-            </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
               Please check your email and verify your account before logging in.
-            </p>
-          </div>
-          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600">
+            </Typography>
+            
+            <Box sx={{ textAlign: 'left', mb: 3 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 Didn&apos;t receive the verification email?
-              </p>
-              <button
+              </Typography>
+              <Button
                 onClick={handleResendVerification}
                 disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mb: 2 }}
               >
-                {loading ? 'Sending...' : 'Resend Verification Email'}
-              </button>
-              <button
+                {loading ? "Sending..." : "Resend Verification Email"}
+              </Button>
+              <Button
                 onClick={() => setShowVerificationMessage(false)}
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                variant="outlined"
+                color="primary"
+                fullWidth
               >
                 Back to Login
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+              </Button>
+            </Box>
+          </Paper>
+        </Container>
+      </Box>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link href="/auth/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
-              create a new account
-            </Link>
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+    <Box sx={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      bgcolor: 'grey.50',
+      py: { xs: 2, sm: 3, md: 4 },
+      px: { xs: 1, sm: 2, md: 3 },
+    }}>
+      <Container maxWidth="sm">
+        <Paper elevation={0} sx={{ 
+          p: { xs: 2, sm: 3, md: 4 },
+          mx: { xs: 1, sm: 2 },
+        }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 4 } }}>
+            <Avatar sx={{ 
+              bgcolor: 'primary.main', 
+              mx: 'auto', 
+              mb: 2,
+              width: { xs: 56, sm: 64 },
+              height: { xs: 56, sm: 64 }
+            }}>
+              <LockOutlined sx={{ fontSize: { xs: 28, sm: 32 } }} />
+            </Avatar>
+            <Typography variant="h4" component="h1" sx={{ 
+              mb: 1, 
+              fontWeight: 600,
+              fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
+            }}>
+              Sign in to your account
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{
+              fontSize: { xs: '0.875rem', sm: '1rem' }
+            }}>
+              Or{" "}
+              <MuiLink component={Link} href="/auth/signup" color="primary">
+                create a new account
+              </MuiLink>
+            </Typography>
+          </Box>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="rememberMe"
-                name="rememberMe"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                checked={formData.rememberMe}
-                onChange={handleChange}
-              />
-              <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
-            </div>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={formData.email}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={formData.password}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            />
 
-            <div className="text-sm">
-              <Link href="/auth/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', sm: 'row' },
+              justifyContent: 'space-between', 
+              alignItems: { xs: 'flex-start', sm: 'center' }, 
+              mb: 2,
+              gap: { xs: 1, sm: 0 }
+            }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={handleChange}
+                    color="primary"
+                  />
+                }
+                label="Remember me"
+                sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+              />
+              <MuiLink 
+                component={Link} 
+                href="/auth/forgot-password" 
+                variant="body2" 
+                color="primary"
+                sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+              >
                 Forgot your password?
-              </Link>
-            </div>
-          </div>
+              </MuiLink>
+            </Box>
 
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
-            </div>
-          )}
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
 
-          <div>
-            <button
+            <Button
               type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              sx={{ mt: 2, mb: 2 }}
             >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+              {loading ? "Signing in..." : "Sign in"}
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 };

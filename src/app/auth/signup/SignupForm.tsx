@@ -4,6 +4,24 @@ import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import {
+  Box,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Paper,
+  Alert,
+  Avatar,
+  Link as MuiLink,
+  FormHelperText,
+  SelectChangeEvent,
+} from '@mui/material';
+import { PersonAdd } from '@mui/icons-material';
 
 export const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -25,11 +43,18 @@ export const SignupForm = () => {
   const { signup } = useAuth();
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    setFormData(prev => ({
+      ...prev,
+      role: event.target.value,
     }));
   };
 
@@ -198,151 +223,188 @@ export const SignupForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link href="/auth/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-              sign in to your existing account
-            </Link>
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="name" className="sr-only">
-                Full Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Full Name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="role" className="sr-only">
-                Role
-              </label>
-              <select
+    <Box sx={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      bgcolor: 'grey.50',
+    }}>
+      <Container maxWidth="sm">
+        <Paper elevation={0} sx={{ 
+          p: { xs: 2, sm: 3, md: 4 },
+          mx: { xs: 1, sm: 2 },
+        }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 4 } }}>
+            <Avatar sx={{ 
+              bgcolor: 'primary.main', 
+              mx: 'auto', 
+              mb: 2,
+              width: { xs: 56, sm: 64 },
+              height: { xs: 56, sm: 64 }
+            }}>
+              <PersonAdd sx={{ fontSize: { xs: 28, sm: 32 } }} />
+            </Avatar>
+            <Typography variant="h4" component="h1" sx={{ 
+              mb: 1, 
+              fontWeight: 600,
+              fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
+            }}>
+              Create your account
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{
+              fontSize: { xs: '0.875rem', sm: '1rem' }
+            }}>
+              Or{' '}
+              <MuiLink component={Link} href="/auth/login" color="primary">
+                sign in to your existing account
+              </MuiLink>
+            </Typography>
+          </Box>
+
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="name"
+              label="Full Name"
+              name="name"
+              autoComplete="name"
+              autoFocus
+              value={formData.name}
+              onChange={handleInputChange}
+              sx={{ mb: { xs: 1.5, sm: 2 } }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              sx={{ mb: { xs: 1.5, sm: 2 } }}
+            />
+            <FormControl fullWidth sx={{ mb: { xs: 1.5, sm: 2 } }}>
+              <InputLabel id="role-label">Role</InputLabel>
+              <Select
+                labelId="role-label"
                 id="role"
                 name="role"
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 value={formData.role}
-                onChange={handleChange}
+                label="Role"
+                onChange={handleSelectChange}
               >
-                <option value="customer">Customer</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="confirmPassword" className="sr-only">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+                <MenuItem value="customer">Customer</MenuItem>
+                <MenuItem value="admin">Admin</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="new-password"
+              value={formData.password}
+              onChange={handleInputChange}
+              sx={{ mb: { xs: 1.5, sm: 2 } }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              autoComplete="new-password"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              sx={{ mb: { xs: 1.5, sm: 2 } }}
+            />
 
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
-            </div>
-          )}
+            {error && (
+              <Alert severity="error" sx={{ mb: { xs: 1.5, sm: 2 } }}>
+                {error}
+              </Alert>
+            )}
 
-          {success && (
-            <div className="rounded-md bg-green-50 p-4">
-              <div className="text-sm text-green-700">{success}</div>
-              {verifying && (
-                <div className="mt-2 text-sm text-blue-600">
-                  <div>Waiting for email verification...</div>
-                  <div className="mt-1">
-                    Time remaining: {Math.floor(verificationCountdown / 60)}:{(verificationCountdown % 60).toString().padStart(2, '0')}
-                  </div>
-                  <div className="mt-2 text-xs text-gray-500">
-                    Checking verification status every 10 seconds...
-                  </div>
-                </div>
-              )}
-              {showResendButton && (
-                <div className="mt-3">
-                  <button
-                    type="button"
-                    onClick={handleResendVerification}
-                    disabled={resendLoading}
-                    className="w-full sm:w-1/2 mx-auto flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-                  >
-                    {resendLoading ? 'Sending...' : 'Resend Verification Email'}
-                  </button>
-                  <p className="mt-2 text-xs text-gray-500 text-center">
-                    Didn&apos;t receive the email? Click the button above to resend.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+            {success && (
+              <Alert severity="success" sx={{ mb: { xs: 1.5, sm: 2 } }}>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  {success}
+                </Typography>
+                {verifying && (
+                  <Box>
+                    <Typography variant="body2" color="primary" sx={{ 
+                      mb: 1,
+                      fontSize: { xs: '0.875rem', sm: '1rem' }
+                    }}>
+                      Waiting for email verification...
+                    </Typography>
+                    <Typography variant="body2" sx={{ 
+                      mb: 1,
+                      fontSize: { xs: '0.875rem', sm: '1rem' }
+                    }}>
+                      Time remaining: {Math.floor(verificationCountdown / 60)}:{(verificationCountdown % 60).toString().padStart(2, '0')}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                    }}>
+                      Checking verification status every 10 seconds...
+                    </Typography>
+                  </Box>
+                )}
+                {showResendButton && (
+                  <Box sx={{ mt: { xs: 1.5, sm: 2 } }}>
+                    <Button
+                      onClick={handleResendVerification}
+                      disabled={resendLoading}
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      sx={{ 
+                        mb: 1,
+                        py: { xs: 1, sm: 1.5 }
+                      }}
+                    >
+                      {resendLoading ? 'Sending...' : 'Resend Verification Email'}
+                    </Button>
+                    <Typography variant="caption" color="text.secondary" sx={{ 
+                      textAlign: 'center', 
+                      display: 'block',
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                    }}>
+                      Didn&apos;t receive the email? Click the button above to resend.
+                    </Typography>
+                  </Box>
+                )}
+              </Alert>
+            )}
 
-          <div>
-            <button
+            <Button
               type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              sx={{ 
+                mt: { xs: 1.5, sm: 2 }, 
+                mb: { xs: 1.5, sm: 2 },
+                py: { xs: 1, sm: 1.5 }
+              }}
             >
               {loading ? 'Creating account...' : 'Create account'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 };

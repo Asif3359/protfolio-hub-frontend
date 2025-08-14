@@ -1,4 +1,4 @@
-import { ProtectedRoute } from '../components/ProtectedRoute';
+import { ProtectedRoute } from '../../components/ProtectedRoute';
 import { ClientDashboardLayout } from './ClientDashboardLayout';
 
 export default function ClientLayout({

@@ -1,4 +1,4 @@
-import { ProtectedRoute } from '../components/ProtectedRoute';
+import { ProtectedRoute } from '../../components/ProtectedRoute';
 import { AdminDashboardLayout } from './AdminDashboardLayout';
 
 export default function AdminLayout({
