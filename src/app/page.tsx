@@ -45,7 +45,7 @@ function HomePage() {
           sx={{
             // background:
             //   "linear-gradient(90deg, rgba(46, 125, 50, 0.9) 0%, rgba(76, 175, 80, 0.9) 100%)",
-            background: "white",
+            background: "rgba(224, 224, 224, 0.7)",
             color: "black",
             borderBottom: "1px solid #e0e0e0",
             py: 8,
@@ -67,7 +67,7 @@ function HomePage() {
                 <Typography
                   variant="h2"
                   component="h1"
-                  sx={{ fontWeight: 700, mb: 2 }}
+                  sx={{ fontWeight: 700, mb: 2 , color: "primary.main" }}
                 >
                   Showcase Your Talent
                 </Typography>
@@ -80,10 +80,9 @@ function HomePage() {
                     variant="outlined"
                     size="large"
                     sx={{
-                      borderColor: "black",
-                      color: "black",
+                      color: "primary.main",
                       "&:hover": {
-                        borderColor: "black",
+                        borderColor: "primary.main",
                         bgcolor: "rgba(255,255,255,0.1)",
                       },
                     }}
@@ -94,10 +93,9 @@ function HomePage() {
                     variant="outlined"
                     size="large"
                     sx={{
-                      borderColor: "black",
-                      color: "black",
+                        color: "primary.main",
                       "&:hover": {
-                        borderColor: "black",
+                        borderColor: "primary.main",
                         bgcolor: "rgba(255,255,255,0.1)",
                       },
                     }}
@@ -117,9 +115,24 @@ function HomePage() {
                     alignItems: "center",
                     justifyContent: "center",
                     mx: "auto",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      bgcolor: "rgba(0, 0, 0, 0.1)",
+                      "& .work-icon": {
+                        transform: "scale(1.2)",
+                      },
+                    },
                   }}
                 >
-                  <Work sx={{ fontSize: 120, opacity: 0.8 }} />
+                  <Work 
+                    className="work-icon"
+                    sx={{ 
+                      fontSize: 120, 
+                      opacity: 0.8, 
+                      color: "primary.main",
+                      transition: "transform 0.3s ease",
+                    }} 
+                  />
                 </Box>
               </Box>
             </Box>

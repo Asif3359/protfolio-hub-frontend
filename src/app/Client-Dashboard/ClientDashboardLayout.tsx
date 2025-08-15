@@ -29,6 +29,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  Badge,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -41,6 +42,7 @@ import {
   Logout,
   AccountCircle,
   School,
+  CheckCircle,
 } from "@mui/icons-material";
 import theme from "../theme";
 import Image from "next/image";
@@ -73,7 +75,10 @@ const navigationItems = [
   { title: "Education", icon: <School />, path: "/Client-Dashboard/education" },
   { title: "Projects", icon: <Work />, path: "/Client-Dashboard/projects" },
   { title: "Experience", icon: <Work />, path: "/Client-Dashboard/experience" },
-  { title: "Skills", icon: <Assessment />, path: "/Client-Dashboard/skills" },
+  { title: "Research", icon: <Work />, path: "/Client-Dashboard/research" },
+  { title: "Certification", icon: <Work />, path: "/Client-Dashboard/certification" },
+  { title: "Achievement", icon: <Work />, path: "/Client-Dashboard/achievement" },
+  { title: "Skills", icon: <CheckCircle />, path: "/Client-Dashboard/skill" },
   {
     title: "Notifications",
     icon: <Notifications />,
@@ -197,8 +202,8 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
         sx={{
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
-          backgroundColor: "background.paper",
-          color: "text.primary",
+          backgroundColor: "primary.main",
+          color: "white",
           boxShadow: "none",
           borderBottom: "1px solid",
           borderColor: "divider",
