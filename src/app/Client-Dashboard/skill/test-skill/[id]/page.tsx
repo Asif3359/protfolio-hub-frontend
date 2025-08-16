@@ -58,7 +58,7 @@ interface Skill {
   proficiency: number;
 }
 
-const API_URL = "https://protfolio-hub.vercel.app/api";
+const API_URL = "http://protfolio-hub.vercel.app/api";
 
 function TestSkill() {
   const params = useParams();

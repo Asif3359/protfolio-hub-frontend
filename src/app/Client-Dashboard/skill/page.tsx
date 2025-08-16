@@ -201,11 +201,12 @@ function SkillsPage() {
     try {
       setSaving(true);
       const token = localStorage.getItem("token");
-      const url = editingSkill
-        ? `${API_URL}/skill/${editingSkill._id}`
-        : `${API_URL}/skill`;
+      const url = editingSkill ? `${API_URL}/skill/${editingSkill._id}`: `${API_URL}/skill`;
 
-      const method = editingSkill ? "PUT" : "POST";
+      const method = editingSkill ? "PUT" : "POST"; 
+
+      console.log(url);
+      console.log(formData);
 
       const response = await fetch(url, {
         method,
@@ -218,6 +219,7 @@ function SkillsPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.log(errorData);
         throw new Error(errorData.msg || "Failed to save skill");
       }
 
