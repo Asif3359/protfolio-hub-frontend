@@ -293,7 +293,7 @@ function PortfolioPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:3000/api/portfolio/email/${id}`
+          `https://protfolio-hub.vercel.app/api/portfolio/email/${id}`
         );
         const result = await response.json();
 
@@ -382,7 +382,15 @@ function PortfolioPage() {
 
   if (error || !portfolioData) {
     return (
-      <Box sx={{ minHeight: "100vh", bgcolor: "grey.50", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          bgcolor: "grey.50",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Container maxWidth="md">
           <Box sx={{ textAlign: "center", py: 8 }}>
             {/* Error Icon */}
@@ -406,7 +414,8 @@ function PortfolioPage() {
                   left: -10,
                   right: -10,
                   bottom: -10,
-                  background: "radial-gradient(circle, rgba(255, 107, 107, 0.1) 0%, transparent 70%)",
+                  background:
+                    "radial-gradient(circle, rgba(255, 107, 107, 0.1) 0%, transparent 70%)",
                   borderRadius: "50%",
                   zIndex: -1,
                 },
@@ -441,7 +450,8 @@ function PortfolioPage() {
                 lineHeight: 1.6,
               }}
             >
-              {error || "The portfolio you're looking for doesn't exist or may have been removed."}
+              {error ||
+                "The portfolio you're looking for doesn't exist or may have been removed."}
             </Typography>
 
             {/* Additional Info */}
@@ -457,7 +467,14 @@ function PortfolioPage() {
             </Typography>
 
             {/* Action Buttons */}
-            <Box sx={{ display: "flex", gap: 2, justifyContent: "center", flexWrap: "wrap" }}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
               <Button
                 variant="contained"
                 size="large"
@@ -551,7 +568,8 @@ function PortfolioPage() {
                 mx: "auto",
               }}
             >
-              If you believe this is an error, please check the email address or contact support.
+              If you believe this is an error, please check the email address or
+              contact support.
             </Typography>
           </Box>
         </Container>
@@ -629,7 +647,7 @@ function PortfolioPage() {
         position: "relative",
         margin: 0,
         padding: 0,
-         background: "rgba(255, 255, 255, 0.95)",
+        background: "rgba(255, 255, 255, 0.95)",
       }}
     >
       {/* App Bar */}
@@ -648,81 +666,85 @@ function PortfolioPage() {
         }}
       >
         <Container maxWidth="xl">
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Avatar
-              src={profile.profileImage}
-              sx={{
-                width: 40,
-                height: 40,
-                mr: 2,
-                border: 2,
-                borderColor: "primary.main",
-              }}
-            />
-            <Typography
-              variant="h6"
-              sx={{
-                color: "text.primary",
-                fontWeight: 600,
-                display: { xs: "block", sm: "block" },
-              }}
-            >
-              {user.name}
-            </Typography>
-          </Box>
-
-          {/* Desktop Navigation */}
-          <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
-            {navigationItems.map((item) => (
-              <Button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Avatar
+                src={profile.profileImage}
                 sx={{
-                  color:
-                    activeSection === item.id
-                      ? "primary.main"
-                      : "text.secondary",
-                  fontWeight: activeSection === item.id ? 600 : 400,
-                  position: "relative",
-                  "&:hover": {
-                    backgroundColor: "rgba(46, 125, 50, 0.08)",
-                  },
+                  width: 40,
+                  height: 40,
+                  mr: 2,
+                  border: 2,
+                  borderColor: "primary.main",
+                }}
+              />
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "primary.main",
+                  fontWeight: 600,
+                  display: { xs: "block", sm: "block" },
                 }}
               >
-                {item.icon}
-                <Typography
-                  sx={{ ml: 0.5, display: { xs: "none", lg: "block" } }}
-                >
-                  {item.label}
-                </Typography>
-                {item.count && item.count > 0 && (
-                  <Chip
-                    label={item.count}
-                    size="small"
-                    sx={{
-                      ml: 0.5,
-                      height: 18,
-                      fontSize: "0.7rem",
-                      backgroundColor:
-                        activeSection === item.id ? "primary.main" : "grey.300",
-                      color:
-                        activeSection === item.id ? "white" : "text.secondary",
-                    }}
-                  />
-                )}
-              </Button>
-            ))}
-          </Box>
+                {user.name}
+              </Typography>
+            </Box>
 
-          {/* Mobile Menu Button */}
-          <IconButton
-            sx={{ display: { xs: "flex", md: "none" } }}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <Close /> : <Menu />}
-          </IconButton>
-        </Toolbar>
+            {/* Desktop Navigation */}
+            <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+              {navigationItems.map((item) => (
+                <Button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  sx={{
+                    color:
+                      activeSection === item.id
+                        ? "primary.main"
+                        : "text.secondary",
+                    fontWeight: activeSection === item.id ? 600 : 400,
+                    position: "relative",
+                    "&:hover": {
+                      backgroundColor: "rgba(46, 125, 50, 0.08)",
+                    },
+                  }}
+                >
+                  {item.icon}
+                  <Typography
+                    sx={{ ml: 0.5, display: { xs: "none", lg: "block" } }}
+                  >
+                    {item.label}
+                  </Typography>
+                  {item.count && item.count > 0 && (
+                    <Chip
+                      label={item.count}
+                      size="small"
+                      sx={{
+                        ml: 0.5,
+                        height: 18,
+                        fontSize: "0.7rem",
+                        backgroundColor:
+                          activeSection === item.id
+                            ? "primary.main"
+                            : "grey.300",
+                        color:
+                          activeSection === item.id
+                            ? "white"
+                            : "text.secondary",
+                      }}
+                    />
+                  )}
+                </Button>
+              ))}
+            </Box>
+
+            {/* Mobile Menu Button */}
+            <IconButton
+              sx={{ display: { xs: "flex", md: "none" } }}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <Close /> : <Menu />}
+            </IconButton>
+          </Toolbar>
         </Container>
 
         {/* Mobile Navigation */}
@@ -817,7 +839,8 @@ function PortfolioPage() {
             right: "-20%",
             width: "60%",
             height: "200%",
-            background: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)",
             transform: "rotate(15deg)",
           },
         }}
@@ -835,205 +858,217 @@ function PortfolioPage() {
               }}
             >
               <Box sx={{ flex: "1 1 300px", textAlign: "center", minWidth: 0 }}>
-                                  <Grow in timeout={1500}>
-                    <Box sx={{ position: "relative" }}>
-                      <Avatar
-                        src={profile.profileImage}
-                        sx={{
-                          width: 220,
-                          height: 220,
-                          mx: "auto",
-                          mb: 3,
-                          border: 6,
-                          borderColor: "rgba(255,255,255,0.3)",
-                          boxShadow: "0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.2)",
-                          position: "relative",
-                          "&::before": {
-                            content: '""',
-                            position: "absolute",
-                            top: -10,
-                            left: -10,
-                            right: -10,
-                            bottom: -10,
-                            background: "linear-gradient(45deg, rgba(255,255,255,0.1), transparent)",
-                            borderRadius: "50%",
-                            zIndex: -1,
-                          },
-                        }}
-                      />
-                      <Box
-                        sx={{
+                <Grow in timeout={1500}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      borderRadius: "50%",
+                      width: "220px",
+                      height: "220px",
+                      mx: "auto",
+                      mb: 3,
+                    }}
+                  >
+                    <Avatar
+                      src={profile.profileImage}
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        mx: "auto",
+                        mb: 3,
+                        border: 6,
+                        borderColor: "rgba(255,255,255,0.3)",
+                        boxShadow:
+                          "0 10px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.2)",
+                        position: "relative",
+                        "&::before": {
+                          content: '""',
                           position: "absolute",
-                          bottom: 0,
-                          right: 0,
-                          width: 60,
-                          height: 60,
-                          background: "linear-gradient(45deg, #4CAF50, #66BB6A)",
+                          top: -10,
+                          left: -10,
+                          right: -10,
+                          bottom: -10,
+                          background:
+                            "linear-gradient(45deg, rgba(255,255,255,0.1), transparent)",
                           borderRadius: "50%",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                          border: "3px solid white",
-                        }}
-                      >
-                        <Work sx={{ color: "white", fontSize: 28 }} />
-                      </Box>
+                          zIndex: -1,
+                        },
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0,
+                        width: 60,
+                        height: 60,
+                        background: "linear-gradient(45deg, #4CAF50, #66BB6A)",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                        border: "3px solid white",
+                      }}
+                    >
+                      <Work sx={{ color: "white", fontSize: 28 }} />
                     </Box>
-                  </Grow>
+                  </Box>
+                </Grow>
               </Box>
               <Box sx={{ flex: "2 1 400px", minWidth: 0 }}>
-                                  <Grow in timeout={2000}>
+                <Grow in timeout={2000}>
+                  <Typography
+                    variant="h2"
+                    component="h1"
+                    gutterBottom
+                    sx={{
+                      fontWeight: 800,
+                      textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {user.name}
+                  </Typography>
+                </Grow>
+                <Grow in timeout={2500}>
+                  <Box sx={{ mb: 3 }}>
                     <Typography
-                      variant="h2"
-                      component="h1"
+                      variant="h4"
+                      component="h2"
                       gutterBottom
-                      sx={{ 
-                        fontWeight: 800,
-                        textShadow: "0 2px 4px rgba(0,0,0,0.3)",
-                        letterSpacing: "-0.02em",
+                      sx={{
+                        opacity: 0.95,
+                        fontWeight: 600,
+                        textShadow: "0 1px 2px rgba(0,0,0,0.2)",
                       }}
                     >
-                      {user.name}
+                      {profile.headline}
                     </Typography>
-                  </Grow>
-                  <Grow in timeout={2500}>
-                    <Box sx={{ mb: 3 }}>
-                      <Typography
-                        variant="h4"
-                        component="h2"
-                        gutterBottom
-                        sx={{ 
-                          opacity: 0.95, 
-                          fontWeight: 600,
-                          textShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                        }}
-                      >
-                        {profile.headline}
-                      </Typography>
-                      <Box
-                        sx={{
-                          width: 60,
-                          height: 4,
-                          background: "linear-gradient(90deg, rgba(255,255,255,0.8), transparent)",
-                          borderRadius: 2,
-                          mb: 2,
-                        }}
-                      />
-                    </Box>
-                  </Grow>
-                  <Grow in timeout={3000}>
+                    <Box
+                      sx={{
+                        width: 60,
+                        height: 4,
+                        background:
+                          "linear-gradient(90deg, rgba(255,255,255,0.8), transparent)",
+                        borderRadius: 2,
+                        mb: 2,
+                      }}
+                    />
+                  </Box>
+                </Grow>
+                <Grow in timeout={3000}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      mb: 4,
+                      opacity: 0.9,
+                      lineHeight: 1.8,
+                      fontSize: "1.1rem",
+                      textShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                    }}
+                  >
+                    {profile.bio}
+                  </Typography>
+                </Grow>
+                <Grow in timeout={3500}>
+                  <Box>
                     <Typography
-                      variant="body1"
-                      sx={{ 
-                        mb: 4, 
-                        opacity: 0.9, 
-                        lineHeight: 1.8,
-                        fontSize: "1.1rem",
-                        textShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                      variant="subtitle2"
+                      sx={{
+                        opacity: 0.8,
+                        mb: 2,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        fontWeight: 500,
                       }}
                     >
-                      {profile.bio}
+                      Connect with me
                     </Typography>
-                  </Grow>
-                                  <Grow in timeout={3500}>
-                    <Box>
-                      <Typography
-                        variant="subtitle2"
-                        sx={{
-                          opacity: 0.8,
-                          mb: 2,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.1em",
-                          fontWeight: 500,
-                        }}
-                      >
-                        Connect with me
-                      </Typography>
-                      <Stack direction="row" spacing={2} flexWrap="wrap">
-                        {profile.linkedin && (
-                          <IconButton
-                            href={profile.linkedin}
-                            target="_blank"
-                            sx={{
-                              color: "white",
-                              backgroundColor: "rgba(255,255,255,0.15)",
-                              width: 56,
-                              height: 56,
-                              "&:hover": {
-                                bgcolor: "rgba(255,255,255,0.25)",
-                                transform: "translateY(-3px) scale(1.05)",
-                                boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
-                              },
-                              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                            }}
-                          >
-                            <LinkedIn sx={{ fontSize: 28 }} />
-                          </IconButton>
-                        )}
-                        {profile.github && (
-                          <IconButton
-                            href={profile.github}
-                            target="_blank"
-                            sx={{
-                              color: "white",
-                              backgroundColor: "rgba(255,255,255,0.15)",
-                              width: 56,
-                              height: 56,
-                              "&:hover": {
-                                bgcolor: "rgba(255,255,255,0.25)",
-                                transform: "translateY(-3px) scale(1.05)",
-                                boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
-                              },
-                              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                            }}
-                          >
-                            <GitHub sx={{ fontSize: 28 }} />
-                          </IconButton>
-                        )}
-                        {profile.facebook && (
-                          <IconButton
-                            href={profile.facebook}
-                            target="_blank"
-                            sx={{
-                              color: "white",
-                              backgroundColor: "rgba(255,255,255,0.15)",
-                              width: 56,
-                              height: 56,
-                              "&:hover": {
-                                bgcolor: "rgba(255,255,255,0.25)",
-                                transform: "translateY(-3px) scale(1.05)",
-                                boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
-                              },
-                              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                            }}
-                          >
-                            <Facebook sx={{ fontSize: 28 }} />
-                          </IconButton>
-                        )}
-                        {profile.website && (
-                          <IconButton
-                            href={profile.website}
-                            target="_blank"
-                            sx={{
-                              color: "white",
-                              backgroundColor: "rgba(255,255,255,0.15)",
-                              width: 56,
-                              height: 56,
-                              "&:hover": {
-                                bgcolor: "rgba(255,255,255,0.25)",
-                                transform: "translateY(-3px) scale(1.05)",
-                                boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
-                              },
-                              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                            }}
-                          >
-                            <Public sx={{ fontSize: 28 }} />
-                          </IconButton>
-                        )}
-                      </Stack>
-                    </Box>
-                  </Grow>
+                    <Stack direction="row" spacing={2} flexWrap="wrap">
+                      {profile.linkedin && (
+                        <IconButton
+                          href={profile.linkedin}
+                          target="_blank"
+                          sx={{
+                            color: "white",
+                            backgroundColor: "rgba(255,255,255,0.15)",
+                            width: 56,
+                            height: 56,
+                            "&:hover": {
+                              bgcolor: "rgba(255,255,255,0.25)",
+                              transform: "translateY(-3px) scale(1.05)",
+                              boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+                            },
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          }}
+                        >
+                          <LinkedIn sx={{ fontSize: 28 }} />
+                        </IconButton>
+                      )}
+                      {profile.github && (
+                        <IconButton
+                          href={profile.github}
+                          target="_blank"
+                          sx={{
+                            color: "white",
+                            backgroundColor: "rgba(255,255,255,0.15)",
+                            width: 56,
+                            height: 56,
+                            "&:hover": {
+                              bgcolor: "rgba(255,255,255,0.25)",
+                              transform: "translateY(-3px) scale(1.05)",
+                              boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+                            },
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          }}
+                        >
+                          <GitHub sx={{ fontSize: 28 }} />
+                        </IconButton>
+                      )}
+                      {profile.facebook && (
+                        <IconButton
+                          href={profile.facebook}
+                          target="_blank"
+                          sx={{
+                            color: "white",
+                            backgroundColor: "rgba(255,255,255,0.15)",
+                            width: 56,
+                            height: 56,
+                            "&:hover": {
+                              bgcolor: "rgba(255,255,255,0.25)",
+                              transform: "translateY(-3px) scale(1.05)",
+                              boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+                            },
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          }}
+                        >
+                          <Facebook sx={{ fontSize: 28 }} />
+                        </IconButton>
+                      )}
+                      {profile.website && (
+                        <IconButton
+                          href={profile.website}
+                          target="_blank"
+                          sx={{
+                            color: "white",
+                            backgroundColor: "rgba(255,255,255,0.15)",
+                            width: 56,
+                            height: 56,
+                            "&:hover": {
+                              bgcolor: "rgba(255,255,255,0.25)",
+                              transform: "translateY(-3px) scale(1.05)",
+                              boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+                            },
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          }}
+                        >
+                          <Public sx={{ fontSize: 28 }} />
+                        </IconButton>
+                      )}
+                    </Stack>
+                  </Box>
+                </Grow>
               </Box>
             </Box>
           </Fade>
@@ -1072,8 +1107,8 @@ function PortfolioPage() {
                     />
                     <Typography
                       variant="h6"
-                      sx={{ 
-                        fontWeight: 700, 
+                      sx={{
+                        fontWeight: 700,
                         color: "primary.main",
                         letterSpacing: "-0.01em",
                       }}
@@ -1086,7 +1121,7 @@ function PortfolioPage() {
                       <ListItemIcon>
                         <Email color="primary" />
                       </ListItemIcon>
-                      <ListItemText primary={user.email} />
+                      <ListItemText primary={user.email} sx={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}} />
                     </ListItem>
                     {profile.phone && (
                       <ListItem sx={{ px: 0 }}>
@@ -1137,8 +1172,8 @@ function PortfolioPage() {
                     />
                     <Typography
                       variant="h6"
-                      sx={{ 
-                        fontWeight: 700, 
+                      sx={{
+                        fontWeight: 700,
                         color: "primary.main",
                         letterSpacing: "-0.01em",
                       }}

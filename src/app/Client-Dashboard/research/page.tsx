@@ -122,7 +122,7 @@ const initialFormData: ResearchFormData = {
   impactStatement: "",
 };
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://protfolio-hub.vercel.app/api";
 
 const publicationTypeIcons: Record<string, React.ReactElement> = {
   "Journal Article": <ArticleIcon />,

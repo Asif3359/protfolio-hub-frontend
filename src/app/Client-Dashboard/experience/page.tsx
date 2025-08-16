@@ -128,7 +128,7 @@ const locationTypeIcons = {
   "Remote": <HomeIcon />,
 };
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://protfolio-hub.vercel.app/api";
 
 function ExperiencePage() {
   const { user } = useAuth();

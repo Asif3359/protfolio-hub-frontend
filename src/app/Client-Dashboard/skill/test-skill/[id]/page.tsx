@@ -58,7 +58,7 @@ interface Skill {
   proficiency: number;
 }
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://protfolio-hub.vercel.app/api";
 
 function TestSkill() {
   const params = useParams();
@@ -127,7 +127,7 @@ function TestSkill() {
         body: JSON.stringify({
           skill: skill?.name,
           category: skill?.category,
-          num_questions: 5,
+          num_questions: 10,
         }),
       });
 
@@ -356,6 +356,16 @@ function TestSkill() {
               >
                 {generatingQuestions ? 'Generating Questions...' : 'Start Test'}
               </Button>
+              
+              {/* Loading state when generating questions */}
+              {generatingQuestions && (
+                <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+                  <CircularProgress size={24} sx={{ mr: 1 }} />
+                  <Typography variant="body2" color="text.secondary">
+                    Generating questions for {skill?.name}...
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </CardContent>
         </Card>

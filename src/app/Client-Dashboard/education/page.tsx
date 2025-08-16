@@ -123,7 +123,7 @@ const educationTypes = [
   "Executive",
 ];
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://protfolio-hub.vercel.app/api";
 
 function EducationPage() {
   const { user } = useAuth();

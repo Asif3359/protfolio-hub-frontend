@@ -63,7 +63,7 @@ export const SignupForm = () => {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:3000/api/auth/resend-verification', {
+      const response = await fetch('https://protfolio-hub.vercel.app/api/auth/resend-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ export const SignupForm = () => {
         // Restart polling
         const pollInterval = setInterval(async () => {
           try {
-            const response = await fetch('http://localhost:3000/api/auth/check-verification', {
+            const response = await fetch('https://protfolio-hub.vercel.app/api/auth/check-verification', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ export const SignupForm = () => {
           const pollInterval = setInterval(async () => {
             try {
               // You'll need to implement this API endpoint to check verification status
-              const response = await fetch('http://localhost:3000/api/auth/check-verification', {
+              const response = await fetch('https://protfolio-hub.vercel.app/api/auth/check-verification', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
