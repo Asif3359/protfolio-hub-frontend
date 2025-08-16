@@ -489,7 +489,7 @@ function EducationPage() {
                 </Box>
 
                 {educationItem.description && (
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2, lineHeight: 1.6 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2, lineHeight: 1.6, whiteSpace: "pre-line" }}>
                     {educationItem.description}
                   </Typography>
                 )}
