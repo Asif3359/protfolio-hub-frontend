@@ -215,7 +215,7 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
       <Box sx={{ mt: "auto" }}>
         <Divider sx={{ my: 2 }} />
         <ListItem disablePadding>
-          <ListItemButton onClick={() => router.push(`/protfolio/${user?.id}`)}>
+          <ListItemButton onClick={() => router.push(`/protfolio/${user?.email}`)}>
             <ListItemIcon sx={{ color: "primary.main" }}>
               <Work />
             </ListItemIcon>
