@@ -102,7 +102,7 @@ const initialFormData: AchievementFormData = {
   impactDescription: "",
 };
 
-const API_URL = "https://protfolio-hub.vercel.app/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub.vercel.app/api';
 
 const categoryIcons: Record<string, React.ReactElement> = {
   Academic: <SchoolIcon />,

@@ -97,7 +97,7 @@ const initialFormData: CertificationFormData = {
   visible: true,
 };
 
-const API_URL = "https://protfolio-hub.vercel.app/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub.vercel.app/api';
 
 function CertificationPage() {
   const { user } = useAuth();

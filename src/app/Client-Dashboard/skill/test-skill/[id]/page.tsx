@@ -58,7 +58,7 @@ interface Skill {
   proficiency: number;
 }
 
-const API_URL = "http://protfolio-hub.vercel.app/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub.vercel.app/api';
 
 function TestSkill() {
   const params = useParams();
@@ -130,6 +130,8 @@ function TestSkill() {
           num_questions: 10,
         }),
       });
+
+      console.log(response);
 
       if (!response.ok) {
         throw new Error('Failed to generate questions');
