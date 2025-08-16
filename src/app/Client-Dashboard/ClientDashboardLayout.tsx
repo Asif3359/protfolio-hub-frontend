@@ -30,6 +30,7 @@ import {
   DialogActions,
   Button,
   Badge,
+  Link,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -76,14 +77,22 @@ const navigationItems = [
   { title: "Projects", icon: <Work />, path: "/Client-Dashboard/projects" },
   { title: "Experience", icon: <Work />, path: "/Client-Dashboard/experience" },
   { title: "Research", icon: <Work />, path: "/Client-Dashboard/research" },
-  { title: "Certification", icon: <Work />, path: "/Client-Dashboard/certification" },
-  { title: "Achievement", icon: <Work />, path: "/Client-Dashboard/achievement" },
-  { title: "Skills", icon: <CheckCircle />, path: "/Client-Dashboard/skill" },
   {
-    title: "Notifications",
-    icon: <Notifications />,
-    path: "/Client-Dashboard/notifications",
+    title: "Certification",
+    icon: <Work />,
+    path: "/Client-Dashboard/certification",
   },
+  {
+    title: "Achievement",
+    icon: <Work />,
+    path: "/Client-Dashboard/achievement",
+  },
+  { title: "Skills", icon: <CheckCircle />, path: "/Client-Dashboard/skill" },
+  // {
+  //   title: "Notifications",
+  //   icon: <Notifications />,
+  //   path: "/Client-Dashboard/notifications",
+  // },
   { title: "Settings", icon: <Settings />, path: "/Client-Dashboard/settings" },
   { title: "Home", icon: <Home />, path: "/" },
 ];
@@ -139,14 +148,38 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
   }, []);
 
   const drawer = (
-    <Box sx={{ height: "100vh", display: "flex", flexDirection: "column", borderRadius: '0px' }}>
-      <Box sx={{ p: 2, borderBottom: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", justifyContent: "center", gap: 2, backgroundColor: "primary.main", color: "white", borderRadius: '0px' }}>
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: "0px",
+      }}
+    >
+      <Box
+        sx={{
+          p: 2,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 2,
+          backgroundColor: "primary.main",
+          color: "white",
+          borderRadius: "0px",
+        }}
+      >
         <img
           src={profileData?.profileImage || "/logo.png"}
           alt="Logo"
           width={100}
           height={100}
-          style={{ borderRadius: "50%", border: "1px solid white", objectFit: "cover" }}
+          style={{
+            borderRadius: "50%",
+            border: "1px solid white",
+            objectFit: "cover",
+          }}
         />
         <Typography variant="body2" color="white" sx={{ mt: 1 }}>
           Welcome, {user?.name}
@@ -181,6 +214,14 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
 
       <Box sx={{ mt: "auto" }}>
         <Divider sx={{ my: 2 }} />
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => router.push(`/protfolio/${user?.id}`)}>
+            <ListItemIcon sx={{ color: "primary.main" }}>
+              <Work />
+            </ListItemIcon>
+            <ListItemText primary="Portfolio" />
+          </ListItemButton>
+        </ListItem>
         <List>
           <ListItem disablePadding>
             <ListItemButton onClick={handleLogoutClick}>
@@ -207,10 +248,17 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
           boxShadow: "none",
           borderBottom: "1px solid",
           borderColor: "divider",
-          borderRadius: '0px',
+          borderRadius: "0px",
         }}
       >
-        <Toolbar sx={{ borderRadius: '0px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Toolbar
+          sx={{
+            borderRadius: "0px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -220,7 +268,12 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, textAlign: 'end' }}>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, textAlign: "end" }}
+          >
             Client Dashboard
           </Typography>
           {/* <IconButton color="inherit">

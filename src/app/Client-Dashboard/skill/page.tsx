@@ -50,6 +50,7 @@ import {
   Quiz as QuizIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface Skill {
   _id: string;
@@ -116,7 +117,7 @@ function SkillsPage() {
   const [formData, setFormData] = useState<SkillFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [newResource, setNewResource] = useState("");
-
+  const router = useRouter();
   useEffect(() => {
     fetchSkills();
   }, []);
@@ -284,10 +285,7 @@ function SkillsPage() {
   };
 
   const handleTestSkill = (skill: Skill) => {
-    // TODO: Implement skill testing functionality
-    alert(
-      `Test functionality for ${skill.name} will be implemented here. This will open a proficiency test for the skill.`
-    );
+    router.push(`/Client-Dashboard/skill/test-skill/${skill._id}`);
   };
 
   const getProficiencyColor = (proficiency: number): string => {
