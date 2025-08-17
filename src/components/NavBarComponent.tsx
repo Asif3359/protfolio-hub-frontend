@@ -42,6 +42,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Logout, AccountCircle } from "@mui/icons-material";
@@ -114,12 +115,17 @@ function NavBarComponent() {
           color: "white",
         }}
       >
-        <img
+        {/* <img
           src={profileData?.data?.profileImage}
           alt="logo"
           width={100}
           height={100}
           style={{ borderRadius: "50%", border: "1px solid white" }}
+        /> */}
+        <Avatar
+          src={profileData?.data?.profileImage || "/logo.png"}
+          alt="logo"
+          sx={{ width: 100, height: 100, border: "1px solid white" }}
         />
         <Typography
           variant="h6"

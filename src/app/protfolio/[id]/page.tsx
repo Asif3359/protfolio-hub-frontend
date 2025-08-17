@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { trackView } from "@/utils/viewTracker";
+import { generateResumePDF } from "@/utils/resumeGenerator";
 import {
   Box,
   Container,
@@ -30,6 +31,7 @@ import {
   Zoom,
   Fade,
   Grow,
+  Tooltip,
 } from "@mui/material";
 import {
   Email,
@@ -60,6 +62,7 @@ import {
   ScienceOutlined,
   Menu,
   Close,
+  FileDownload,
 } from "@mui/icons-material";
 
 interface User {
@@ -293,6 +296,7 @@ function PortfolioPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [downloadingResume, setDownloadingResume] = useState(false);
 
   useEffect(() => {
     const fetchPortfolioData = async () => {
@@ -1079,6 +1083,43 @@ function PortfolioPage() {
                           <Public sx={{ fontSize: 28 }} />
                         </IconButton>
                       )}
+                      {/* Resume */}
+                      <Tooltip title={downloadingResume ? "Generating PDF..." : "Download Resume PDF"} arrow>
+                        <IconButton
+                          onClick={async () => {
+                            if (portfolioData) {
+                              setDownloadingResume(true);
+                              try {
+                                await generateResumePDF(portfolioData);
+                              } catch (error) {
+                                console.error('Error generating resume:', error);
+                                // You could add a toast notification here
+                              } finally {
+                                setDownloadingResume(false);
+                              }
+                            }
+                          }}
+                          disabled={downloadingResume}
+                          sx={{
+                            color: "white",
+                            backgroundColor: "rgba(255,255,255,0.15)",
+                            width: 56,
+                            height: 56,
+                            "&:hover": {
+                              bgcolor: "rgba(255,255,255,0.25)",
+                              transform: "translateY(-3px) scale(1.05)",
+                              boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+                            },
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          }}
+                        >
+                          {downloadingResume ? (
+                            <CircularProgress size={20} sx={{ color: "white" }} />
+                          ) : (
+                            <FileDownload sx={{ fontSize: 28 }} />
+                          )}
+                        </IconButton>
+                      </Tooltip>
                     </Stack>
                   </Box>
                 </Grow>
