@@ -395,9 +395,26 @@ function Projects() {
                     : project.description}
                 </Typography>
 
+                {/* Key Features */}
+                <Box color="text.primary" sx={{ mb: 2 }}>
+                  <Typography variant="caption" color="text.primary" sx={{ mb: 1, display: 'block', fontSize: '0.8rem' }}>
+                    Key Features:
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                    {project.keyFeatures.slice(0, 3).map((tech, index) => (
+                      <Typography variant="body2" color="text.secondary" sx={{ display: 'block', fontSize: '0.7rem' }} key={index}>{tech}</Typography>
+                    ))}
+                    {project.keyFeatures.length > 3 && (
+                      <Typography variant="body2" color="text.secondary" sx={{ display: 'block', fontSize: '0.7rem' }}>
+                        {`+${project.keyFeatures.length - 3}`}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+
                 {/* Technologies */}
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+                  <Typography variant="caption" color="text.primary" sx={{ mb: 1, display: 'block', fontSize: '0.8rem' }}>
                     Technologies:
                   </Typography>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>

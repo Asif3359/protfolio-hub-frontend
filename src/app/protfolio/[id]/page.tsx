@@ -197,7 +197,10 @@ interface Research {
   publisher: string;
   publicationType: string;
   doi: string;
-  coAuthors: string[];
+  coAuthors: {
+    name: string;
+    institution: string;
+  }[];
   institution: string;
   fundingAgency: string;
   grantNumber: string;
@@ -692,49 +695,52 @@ function PortfolioPage() {
 
             {/* Desktop Navigation */}
             <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
-              {navigationItems.map((item) => (
-                <Button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  sx={{
-                    color:
-                      activeSection === item.id
-                        ? "primary.main"
-                        : "text.secondary",
-                    fontWeight: activeSection === item.id ? 600 : 400,
-                    position: "relative",
-                    "&:hover": {
-                      backgroundColor: "rgba(46, 125, 50, 0.08)",
-                    },
-                  }}
-                >
-                  {item.icon}
-                  <Typography
-                    sx={{ ml: 0.5, display: { xs: "none", lg: "block" } }}
-                  >
-                    {item.label}
-                  </Typography>
-                  {item.count && item.count > 0 && (
-                    <Chip
-                      label={item.count}
-                      size="small"
+              {navigationItems.map(
+                (item) =>
+                  (item.id === "home" || item.id === "about" || (item.count && item.count > 0)) && (
+                    <Button
+                      key={item.id}
+                      onClick={() => scrollToSection(item.id)}
                       sx={{
-                        ml: 0.5,
-                        height: 18,
-                        fontSize: "0.7rem",
-                        backgroundColor:
-                          activeSection === item.id
-                            ? "primary.main"
-                            : "grey.300",
                         color:
                           activeSection === item.id
-                            ? "white"
+                            ? "primary.main"
                             : "text.secondary",
+                        fontWeight: activeSection === item.id ? 600 : 400,
+                        position: "relative",
+                        "&:hover": {
+                          backgroundColor: "rgba(46, 125, 50, 0.08)",
+                        },
                       }}
-                    />
-                  )}
-                </Button>
-              ))}
+                    >
+                      {item.icon}
+                      <Typography
+                        sx={{ ml: 0.5, display: { xs: "none", lg: "block" } }}
+                      >
+                        {item.label}
+                      </Typography>
+                      {item.count && item.count > 0 && (
+                        <Chip
+                          label={item.count}
+                          size="small"
+                          sx={{
+                            ml: 0.5,
+                            height: 18,
+                            fontSize: "0.7rem",
+                            backgroundColor:
+                              activeSection === item.id
+                                ? "primary.main"
+                                : "grey.300",
+                            color:
+                              activeSection === item.id
+                                ? "white"
+                                : "text.secondary",
+                          }}
+                        />
+                      )}
+                    </Button>
+                  )
+              )}
             </Box>
 
             {/* Mobile Menu Button */}
@@ -1121,7 +1127,14 @@ function PortfolioPage() {
                       <ListItemIcon>
                         <Email color="primary" />
                       </ListItemIcon>
-                      <ListItemText primary={user.email} sx={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}} />
+                      <ListItemText
+                        primary={user.email}
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      />
                     </ListItem>
                     {profile.phone && (
                       <ListItem sx={{ px: 0 }}>
@@ -1258,7 +1271,9 @@ function PortfolioPage() {
                     >
                       Projects
                     </Typography>
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+                    <Box
+                      sx={{ display: "flex", gap: 3, flexDirection: "column" }}
+                    >
                       {projects.map((project, index) => (
                         <Grow in timeout={500 + index * 100} key={project._id}>
                           <Box sx={{ flex: "1 1 300px", minWidth: 0 }}>
@@ -1306,23 +1321,97 @@ function PortfolioPage() {
                               >
                                 {project.description}
                               </Typography>
-                              <Stack
-                                direction="row"
-                                spacing={1}
-                                sx={{ mb: 2 }}
-                                flexWrap="wrap"
-                              >
-                                {project.technologies.map((tech) => (
-                                  <Chip
-                                    key={tech}
-                                    label={tech}
-                                    size="small"
-                                    variant="outlined"
-                                    color="primary"
-                                    sx={{ borderRadius: 2 }}
-                                  />
-                                ))}
-                              </Stack>
+
+                              <Box color="text.primary" sx={{ mb: 2 }}>
+                                <Typography
+                                  variant="caption"
+                                  color="text.primary"
+                                  sx={{
+                                    mb: 1,
+                                    display: "block",
+                                    fontSize: "0.8rem",
+                                  }}
+                                >
+                                  Key Features:
+                                </Typography>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: 0.5,
+                                  }}
+                                >
+                                  {project.keyFeatures
+                                    .slice(0, 3)
+                                    .map((tech, index) => (
+                                      <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        sx={{
+                                          display: "block",
+                                          fontSize: "0.7rem",
+                                        }}
+                                        key={index}
+                                      >
+                                        {tech}
+                                      </Typography>
+                                    ))}
+                                  {project.keyFeatures.length > 3 && (
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                      sx={{
+                                        display: "block",
+                                        fontSize: "0.7rem",
+                                      }}
+                                    >
+                                      {`+${project.keyFeatures.length - 3}`}
+                                    </Typography>
+                                  )}
+                                </Box>
+                              </Box>
+                              <Box sx={{ mb: 2 }}>
+                                <Typography
+                                  variant="caption"
+                                  color="text.primary"
+                                  sx={{
+                                    mb: 1,
+                                    display: "block",
+                                    fontSize: "0.8rem",
+                                  }}
+                                >
+                                  Technologies:
+                                </Typography>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 0.5,
+                                  }}
+                                >
+                                  {project.technologies
+                                    .slice(0, 3)
+                                    .map((tech, index) => (
+                                      <Chip
+                                        key={index}
+                                        label={tech}
+                                        size="small"
+                                        variant="outlined"
+                                        color="secondary"
+                                        sx={{ fontSize: "0.7rem", borderRadius: 2 }}
+                                      />
+                                    ))}
+                                  {project.technologies.length > 3 && (
+                                    <Chip
+                                      label={`+${project.technologies.length - 3}`}
+                                      size="small"
+                                      variant="outlined"
+                                      color="secondary"
+                                      sx={{ fontSize: "0.7rem", borderRadius: 2 }}
+                                    />
+                                  )}
+                                </Box>
+                              </Box>
                               <Stack direction="row" spacing={1}>
                                 {project.repositoryUrl && (
                                   <Button
@@ -1467,7 +1556,7 @@ function PortfolioPage() {
                                     size="small"
                                     variant="outlined"
                                     color="secondary"
-                                    sx={{ borderRadius: 2 }}
+                                    sx={{ borderRadius: 2, fontSize: "0.7rem"  }}
                                   />
                                 ))}
                               </Stack>
@@ -1662,6 +1751,18 @@ function PortfolioPage() {
                               >
                                 {cert.description}
                               </Typography>
+                              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 , mt: 2}}>
+                                {cert.skills.map((skill) => (
+                                  <Chip
+                                    key={skill}
+                                    label={skill}
+                                    size="small"
+                                    variant="outlined"
+                                    color="secondary"
+                                    sx={{ borderRadius: 2, fontSize: "0.7rem"  }}
+                                  />
+                                ))}
+                              </Box>
                               {cert.credentialLink && (
                                 <Button
                                   size="small"
@@ -1843,6 +1944,37 @@ function PortfolioPage() {
                               >
                                 {research.description}
                               </Typography>
+
+
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mb: 2, whiteSpace: "pre-line", fontSize: "0.7rem" }}
+                              >
+                                <span style={{ fontWeight: "bold" }}>Impact Statement:</span> {research.impactStatement}
+                              </Typography>
+
+                              <Box sx={{ display: "flex", flexDirection: "column", gap: 1, my: 2}}>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  sx={{ whiteSpace: "pre-line", fontSize: "0.7rem" }}
+                                >
+                                  <span style={{ fontWeight: "bold" }}>Co-Authors:</span>
+                                </Typography>
+                                {research.coAuthors.map((coAuthor, index) => (
+                                  <Typography
+                                    key={index}
+                                  variant="body2"
+                                  color="text.secondary"
+                                  sx={{ whiteSpace: "pre-line", fontSize: "0.7rem" }}
+                                >
+                                  {coAuthor.name} - {coAuthor.institution}
+                                </Typography>
+                                ))}
+                              </Box>
+
+
                               {research.links.pdf && (
                                 <Button
                                   size="small"
