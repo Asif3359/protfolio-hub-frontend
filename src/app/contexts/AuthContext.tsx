@@ -23,6 +23,7 @@ interface ProfileData {
   github: string;
   portfolioLink: string;
   profileImage: string;
+  views?: number;
   updatedAt: string;
 }
 
@@ -37,6 +38,7 @@ interface AuthContextType {
   forgotPassword: (email: string) => Promise<{ success: boolean; message?: string }>;
   resetPassword: (email: string, code: string, newPassword: string) => Promise<{ success: boolean; message?: string }>;
   getProfileData: () => Promise<{ success: boolean; message?: string; data?: ProfileData }>;
+  profileData: ProfileData | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -56,7 +58,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub.vercel.app/api';
 
   // Function to verify token with backend
@@ -320,6 +322,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const data = await response.json();
+      setProfileData(data);
       return { success: true, data: data };
     } catch (error) {
       console.error('Get profile data error:', error);
@@ -338,6 +341,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     forgotPassword,
     resetPassword,
     getProfileData,
+    profileData,
   };
 
   return (

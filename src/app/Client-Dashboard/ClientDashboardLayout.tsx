@@ -29,8 +29,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  Badge,
-  Link,
+  Avatar,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -39,14 +38,14 @@ import {
   Work,
   Assessment,
   Settings,
-  Notifications,
   Logout,
   AccountCircle,
   School,
-  CheckCircle,
+  EmojiEvents,
+  Psychology,
+  Star,
+  WorkspacePremium,
 } from "@mui/icons-material";
-import theme from "../theme";
-import Image from "next/image";
 
 interface ProfileData {
   _id: string;
@@ -75,24 +74,19 @@ const navigationItems = [
   { title: "Profile", icon: <Person />, path: "/Client-Dashboard/profile" },
   { title: "Education", icon: <School />, path: "/Client-Dashboard/education" },
   { title: "Projects", icon: <Work />, path: "/Client-Dashboard/projects" },
-  { title: "Experience", icon: <Work />, path: "/Client-Dashboard/experience" },
-  { title: "Research", icon: <Work />, path: "/Client-Dashboard/research" },
+  { title: "Experience", icon: <Assessment />, path: "/Client-Dashboard/experience" },
+  { title: "Research", icon: <Psychology />, path: "/Client-Dashboard/research" },
   {
     title: "Certification",
-    icon: <Work />,
+    icon: <WorkspacePremium />,
     path: "/Client-Dashboard/certification",
   },
   {
     title: "Achievement",
-    icon: <Work />,
+    icon: <EmojiEvents />,
     path: "/Client-Dashboard/achievement",
   },
-  { title: "Skills", icon: <CheckCircle />, path: "/Client-Dashboard/skill" },
-  // {
-  //   title: "Notifications",
-  //   icon: <Notifications />,
-  //   path: "/Client-Dashboard/notifications",
-  // },
+  { title: "Skills", icon: <Star />, path: "/Client-Dashboard/skill" },
   { title: "Settings", icon: <Settings />, path: "/Client-Dashboard/settings" },
   { title: "Home", icon: <Home />, path: "/" },
 ];
@@ -170,7 +164,7 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
           borderRadius: "0px",
         }}
       >
-        <img
+        {/* <img
           src={profileData?.profileImage || "/logo.png"}
           alt="Logo"
           width={100}
@@ -180,6 +174,12 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
             border: "1px solid white",
             objectFit: "cover",
           }}
+        /> */}
+
+        <Avatar
+          src={profileData?.profileImage || "/logo.png"}
+          alt="Logo"
+          sx={{ width: 100, height: 100, border: "1px solid white" }}
         />
         <Typography variant="body2" color="white" sx={{ mt: 1 }}>
           Welcome, {user?.name}

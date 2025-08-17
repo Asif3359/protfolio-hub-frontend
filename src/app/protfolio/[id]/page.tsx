@@ -1,6 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { trackView } from "@/utils/viewTracker";
 import {
   Box,
   Container,
@@ -280,6 +281,8 @@ function HideOnScroll(props: { children: React.ReactElement }) {
   );
 }
 
+
+
 function PortfolioPage() {
   const params = useParams();
   const id = params.id as string;
@@ -302,6 +305,10 @@ function PortfolioPage() {
 
         if (result.success) {
           setPortfolioData(result.data);
+          // Track view after successfully loading portfolio data
+          if (result.data?.user?.id) {
+            trackView(result.data.user.id);
+          }
         } else {
           setError("Failed to fetch portfolio data");
         }
