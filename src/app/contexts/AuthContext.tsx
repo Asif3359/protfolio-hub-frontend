@@ -30,9 +30,9 @@ interface ProfileData {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string, rememberMe?: boolean) => Promise<{ success: boolean; message?: string; data?: User }>;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<{ success: boolean; message?: string; data?: User; token?: string }>;
   logout: () => Promise<void>;
-  signup: (name: string, email: string, password: string, role?: string) => Promise<{ success: boolean; message?: string; data?: User }>;
+  signup: (name: string, email: string, password: string, role?: string) => Promise<{ success: boolean; message?: string; data?: User; token?: string }>;
   verifyEmail: (token: string) => Promise<{ success: boolean; message?: string }>;
   resendVerification: (email: string) => Promise<{ success: boolean; message?: string }>;
   forgotPassword: (email: string) => Promise<{ success: boolean; message?: string }>;
@@ -176,7 +176,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signup = async (name: string, email: string, password: string, role = 'customer'): Promise<{ success: boolean; message?: string; data?: User }> => {
+  const signup = async (name: string, email: string, password: string, role = 'customer'): Promise<{ success: boolean; message?: string; data?: User; token?: string }> => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
@@ -189,11 +189,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const data = await response.json();
 
       if (data.success) {
-        const storage = sessionStorage;
-        storage.setItem('token', data.token);
-        storage.setItem('user', JSON.stringify(data.data));
-        setUser(data.data);
-        return { success: true, data: data.data };
+        // Only set user and token if the user is verified
+        if (data.data?.verified) {
+          const storage = sessionStorage;
+          storage.setItem('token', data.token);
+          storage.setItem('user', JSON.stringify(data.data));
+          setUser(data.data);
+        }
+        // Return the data regardless of verification status
+        return { success: true, data: data.data, token: data.token };
       } else {
         return { success: false, message: data.message };
       }

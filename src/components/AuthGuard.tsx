@@ -14,9 +14,16 @@ export const AuthGuard = ({ children, redirectTo = '/' }: AuthGuardProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && user) {
-      // User is logged in, redirect them away from auth pages
-      router.push(redirectTo);
+    if (!loading && user && user.verified) {
+      // Only redirect if user is logged in AND verified
+      // Redirect to appropriate dashboard based on role
+      if (user.role === 'admin') {
+        router.push('/Admin-Dashboard');
+      } else if (user.role === 'customer') {
+        router.push('/Client-Dashboard');
+      } else {
+        router.push(redirectTo); // Fallback to default redirect
+      }
     }
   }, [user, loading, router, redirectTo]);
 
@@ -32,8 +39,8 @@ export const AuthGuard = ({ children, redirectTo = '/' }: AuthGuardProps) => {
     );
   }
 
-  // If user is logged in, don't render the auth pages
-  if (user) {
+  // If user is logged in and verified, don't render the auth pages
+  if (user && user.verified) {
     return null;
   }
 
