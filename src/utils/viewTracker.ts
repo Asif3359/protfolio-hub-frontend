@@ -89,7 +89,7 @@ export const trackView = async (
       }
       console.log('View tracked successfully for user:', userId);
     } else {
-      console.error('Failed to track view:', response.statusText);
+      console.error('Failed to track view:', response?.statusText);
     }
   } catch (error) {
     console.error('Error tracking view:', error);

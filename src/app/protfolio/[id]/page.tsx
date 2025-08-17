@@ -96,7 +96,7 @@ interface Project {
   title: string;
   description: string;
   keyFeatures: string[];
-  technologies: string[];
+  technologies: string[]; 
   startDate: string;
   status: string;
   images: { url: string; _id: string }[];
@@ -683,7 +683,7 @@ function PortfolioPage() {
           <Toolbar sx={{ justifyContent: "space-between" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Avatar
-                src={profile.profileImage}
+                src={profile?.profileImage || './logo.png'}
                 sx={{
                   width: 40,
                   height: 40,
@@ -887,7 +887,7 @@ function PortfolioPage() {
                     }}
                   >
                     <Avatar
-                      src={profile.profileImage}
+                      src={profile?.profileImage || './logo.png'}
                       sx={{
                         width: "100%",
                         height: "100%",
@@ -960,7 +960,7 @@ function PortfolioPage() {
                         textShadow: "0 1px 2px rgba(0,0,0,0.2)",
                       }}
                     >
-                      {profile.headline}
+                      {profile?.headline}
                     </Typography>
                     <Box
                       sx={{
@@ -985,7 +985,7 @@ function PortfolioPage() {
                       textShadow: "0 1px 2px rgba(0,0,0,0.1)",
                     }}
                   >
-                    {profile.bio}
+                    {profile?.bio}
                   </Typography>
                 </Grow>
                 <Grow in timeout={3500}>
@@ -1003,9 +1003,9 @@ function PortfolioPage() {
                       Connect with me
                     </Typography>
                     <Stack direction="row" spacing={2} flexWrap="wrap">
-                      {profile.linkedin && (
+                      {profile?.linkedin && (
                         <IconButton
-                          href={profile.linkedin}
+                          href={profile?.linkedin}
                           target="_blank"
                           sx={{
                             color: "white",
@@ -1023,9 +1023,9 @@ function PortfolioPage() {
                           <LinkedIn sx={{ fontSize: 28 }} />
                         </IconButton>
                       )}
-                      {profile.github && (
+                      {profile?.github && (
                         <IconButton
-                          href={profile.github}
+                          href={profile?.github}
                           target="_blank"
                           sx={{
                             color: "white",
@@ -1043,9 +1043,9 @@ function PortfolioPage() {
                           <GitHub sx={{ fontSize: 28 }} />
                         </IconButton>
                       )}
-                      {profile.facebook && (
+                      {profile?.facebook && (
                         <IconButton
-                          href={profile.facebook}
+                          href={profile?.facebook}
                           target="_blank"
                           sx={{
                             color: "white",
@@ -1063,9 +1063,9 @@ function PortfolioPage() {
                           <Facebook sx={{ fontSize: 28 }} />
                         </IconButton>
                       )}
-                      {profile.website && (
+                      {profile?.website && (
                         <IconButton
-                          href={profile.website}
+                          href={profile?.website}
                           target="_blank"
                           sx={{
                             color: "white",
@@ -1184,20 +1184,20 @@ function PortfolioPage() {
                         }}
                       />
                     </ListItem>
-                    {profile.phone && (
+                    {profile?.phone && (
                       <ListItem sx={{ px: 0 }}>
                         <ListItemIcon>
                           <Phone color="primary" />
                         </ListItemIcon>
-                        <ListItemText primary={profile.phone} />
+                        <ListItemText primary={profile?.phone} />
                       </ListItem>
                     )}
-                    {profile.location && (
+                    {profile?.location && (
                       <ListItem sx={{ px: 0 }}>
                         <ListItemIcon>
                           <LocationOn color="primary" />
                         </ListItemIcon>
-                        <ListItemText primary={profile.location} />
+                        <ListItemText primary={profile?.location} />
                       </ListItem>
                     )}
                   </List>
@@ -1206,7 +1206,7 @@ function PortfolioPage() {
             </Box>
 
             {/* Skills */}
-            {skills.length > 0 && (
+            {skills?.length > 0 && (
               <Card
                 sx={{
                   borderRadius: 4,
@@ -1242,7 +1242,7 @@ function PortfolioPage() {
                       Skills
                     </Typography>
                   </Box>
-                  {skillCategories.map((category) => (
+                  {skillCategories?.map((category) => (
                     <Box key={category} sx={{ mb: 3 }}>
                       <Typography
                         variant="subtitle2"
@@ -1253,7 +1253,7 @@ function PortfolioPage() {
                         {category}
                       </Typography>
                       {skills
-                        .filter((skill) => skill.category === category)
+                        ?.filter((skill) => skill.category === category)
                         .map((skill) => (
                           <Box key={skill._id} sx={{ mb: 2 }}>
                             <Box
@@ -1302,7 +1302,7 @@ function PortfolioPage() {
           {/* Main Content */}
           <Box sx={{ flex: "2 1 600px", minWidth: 0 }}>
             {/* Projects */}
-            {projects.length > 0 && (
+            {projects?.length > 0 && (
               <Box id="projects" sx={{ scrollMarginTop: "80px" }}>
                 <Card
                   sx={{
@@ -1322,7 +1322,7 @@ function PortfolioPage() {
                     <Box
                       sx={{ display: "flex", gap: 3, flexDirection: "column" }}
                     >
-                      {projects.map((project, index) => (
+                      {projects?.map((project, index) => (
                         <Grow in timeout={500 + index * 100} key={project._id}>
                           <Box sx={{ flex: "1 1 300px", minWidth: 0 }}>
                             <Paper
@@ -1344,7 +1344,7 @@ function PortfolioPage() {
                               {project.images && project.images.length > 0 && (
                                 <Box
                                   component="img"
-                                  src={project.images[0].url}
+                                  src={project.images[0]?.url}
                                   alt={project.title}
                                   sx={{
                                     width: "100%",
@@ -1389,7 +1389,7 @@ function PortfolioPage() {
                                     gap: 0.5,
                                   }}
                                 >
-                                  {project.keyFeatures
+                                  {project?.keyFeatures
                                     .slice(0, 3)
                                     .map((tech, index) => (
                                       <Typography
@@ -1404,7 +1404,7 @@ function PortfolioPage() {
                                         {tech}
                                       </Typography>
                                     ))}
-                                  {project.keyFeatures.length > 3 && (
+                                  {project?.keyFeatures?.length > 3 && (
                                     <Typography
                                       variant="body2"
                                       color="text.secondary"
@@ -1413,7 +1413,7 @@ function PortfolioPage() {
                                         fontSize: "0.7rem",
                                       }}
                                     >
-                                      {`+${project.keyFeatures.length - 3}`}
+                                      {`+${project?.keyFeatures?.length - 3}`}
                                     </Typography>
                                   )}
                                 </Box>
@@ -1437,7 +1437,7 @@ function PortfolioPage() {
                                     gap: 0.5,
                                   }}
                                 >
-                                  {project.technologies
+                                  {project?.technologies
                                     .slice(0, 3)
                                     .map((tech, index) => (
                                       <Chip
@@ -1449,9 +1449,9 @@ function PortfolioPage() {
                                         sx={{ fontSize: "0.7rem", borderRadius: 2 }}
                                       />
                                     ))}
-                                  {project.technologies.length > 3 && (
+                                  {project?.technologies?.length > 3 && (
                                     <Chip
-                                      label={`+${project.technologies.length - 3}`}
+                                      label={`+${project?.technologies?.length - 3}`}
                                       size="small"
                                       variant="outlined"
                                       color="secondary"
@@ -1461,7 +1461,7 @@ function PortfolioPage() {
                                 </Box>
                               </Box>
                               <Stack direction="row" spacing={1}>
-                                {project.repositoryUrl && (
+                                {project?.repositoryUrl && (
                                   <Button
                                     size="small"
                                     variant="outlined"
@@ -1473,7 +1473,7 @@ function PortfolioPage() {
                                     Code
                                   </Button>
                                 )}
-                                {project.liveUrl && (
+                                {project?.liveUrl && (
                                   <Button
                                     size="small"
                                     variant="contained"
@@ -1497,7 +1497,7 @@ function PortfolioPage() {
             )}
 
             {/* Experience */}
-            {experiences.length > 0 && (
+            {experiences?.length > 0 && (
               <Box id="experience" sx={{ scrollMarginTop: "80px" }}>
                 <Card
                   sx={{
@@ -1514,7 +1514,7 @@ function PortfolioPage() {
                     >
                       Experience
                     </Typography>
-                    {experiences.map((exp, index) => (
+                    {experiences?.map((exp, index) => (
                       <Grow in timeout={500 + index * 100} key={exp._id}>
                         <Box sx={{ mb: 3 }}>
                           <Paper
@@ -1590,14 +1590,14 @@ function PortfolioPage() {
                             >
                               {exp.description}
                             </Typography>
-                            {exp.skills && exp.skills.length > 0 && (
+                            {exp?.skills && exp?.skills?.length > 0 && (
                               <Stack
                                 direction="row"
                                 spacing={1}
                                 sx={{ mt: 2 }}
                                 flexWrap="wrap"
                               >
-                                {exp.skills.map((skill) => (
+                                {exp?.skills?.map((skill) => (
                                   <Chip
                                     key={skill}
                                     label={skill}
@@ -1623,7 +1623,7 @@ function PortfolioPage() {
             )}
 
             {/* Education */}
-            {educations.length > 0 && (
+            {educations?.length > 0 && (
               <Box id="education" sx={{ scrollMarginTop: "80px" }}>
                 <Card
                   sx={{
@@ -1640,7 +1640,7 @@ function PortfolioPage() {
                     >
                       Education
                     </Typography>
-                    {educations.map((edu, index) => (
+                    {educations?.map((edu, index) => (
                       <Grow in timeout={500 + index * 100} key={edu._id}>
                         <Box sx={{ mb: 3 }}>
                           <Paper
@@ -1728,7 +1728,7 @@ function PortfolioPage() {
             )}
 
             {/* Certifications */}
-            {certifications.length > 0 && (
+            {certifications?.length > 0 && (
               <Box id="certifications" sx={{ scrollMarginTop: "80px" }}>
                 <Card
                   sx={{
@@ -1746,7 +1746,7 @@ function PortfolioPage() {
                       Certifications
                     </Typography>
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                      {certifications.map((cert, index) => (
+                      {certifications?.map((cert, index) => (
                         <Grow in timeout={500 + index * 100} key={cert._id}>
                           <Box sx={{ flex: "1 1 250px", minWidth: 0 }}>
                             <Paper
@@ -1800,7 +1800,7 @@ function PortfolioPage() {
                                 {cert.description}
                               </Typography>
                               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 , mt: 2}}>
-                                {cert.skills.map((skill) => (
+                                {cert?.skills?.map((skill) => (
                                   <Chip
                                     key={skill}
                                     label={skill}
@@ -1833,7 +1833,7 @@ function PortfolioPage() {
             )}
 
             {/* Achievements */}
-            {achievements.length > 0 && (
+            {achievements?.length > 0 && (
               <Box id="achievements" sx={{ scrollMarginTop: "80px" }}>
                 <Card
                   sx={{
@@ -1851,7 +1851,7 @@ function PortfolioPage() {
                       Achievements
                     </Typography>
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                      {achievements.map((achievement, index) => (
+                      {achievements?.map((achievement, index) => (
                         <Grow
                           in
                           timeout={500 + index * 100}
@@ -1920,7 +1920,7 @@ function PortfolioPage() {
             )}
 
             {/* Research */}
-            {researches.length > 0 && (
+            {researches?.length > 0 && (
               <Box id="research" sx={{ scrollMarginTop: "80px" }}>
                 <Card
                   sx={{
@@ -1937,7 +1937,7 @@ function PortfolioPage() {
                       Research Publications
                     </Typography>
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                      {researches.map((research, index) => (
+                      {researches?.map((research, index) => (
                         <Grow in timeout={500 + index * 100} key={research._id}>
                           <Box sx={{ flex: "1 1 300px", minWidth: 0 }}>
                             <Paper
@@ -2010,7 +2010,7 @@ function PortfolioPage() {
                                 >
                                   <span style={{ fontWeight: "bold" }}>Co-Authors:</span>
                                 </Typography>
-                                {research.coAuthors.map((coAuthor, index) => (
+                                {research?.coAuthors?.map((coAuthor, index) => (
                                   <Typography
                                     key={index}
                                   variant="body2"
@@ -2023,11 +2023,11 @@ function PortfolioPage() {
                               </Box>
 
 
-                              {research.links.pdf && (
+                              {research?.links?.pdf && (
                                 <Button
                                   size="small"
                                   variant="outlined"
-                                  href={research.links.pdf}
+                                  href={research?.links?.pdf}
                                   target="_blank"
                                   sx={{ borderRadius: 2 }}
                                 >
