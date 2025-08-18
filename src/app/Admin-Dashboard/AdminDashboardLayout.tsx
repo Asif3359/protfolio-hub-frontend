@@ -176,12 +176,14 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{textAlign: "end" }}
+          >
             Admin Dashboard
           </Typography>
-          <IconButton color="inherit">
-            <AccountCircle />
-          </IconButton>
         </Toolbar>
       </AppBar>
 
@@ -227,13 +229,13 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: 2,
           width: { md: `calc(100% - ${drawerWidth}px)` },
           backgroundColor: 'background.default',
         }}
       >
         <Toolbar />
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" sx={{p:0}}>
           {children}
         </Container>
       </Box>

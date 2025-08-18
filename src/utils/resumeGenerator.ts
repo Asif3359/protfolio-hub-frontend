@@ -208,7 +208,6 @@ export const generateResumePDF = async (portfolioData: PortfolioData) => {
 
   // Generate the resume HTML content
   resumeDiv.innerHTML = `<div style="max-width: 800px; margin: 0 auto; padding: 30px; font-family: 'Helvetica Neue', Arial, sans-serif; color: #333; line-height: 1.4; font-size: 14px;">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- Header Section -->
   <div style="text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">

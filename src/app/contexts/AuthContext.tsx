@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { initializeOnlineStatus, stopOnlineStatus, setupVisibilityListener } from '@/utils/onlineStatus';
 
 interface User {
   id: string;
@@ -99,6 +100,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // Update stored user data with fresh data from backend
             const storage = localStorage.getItem('token') ? localStorage : sessionStorage;
             storage.setItem('user', JSON.stringify(verificationResult.user));
+            
+            // Initialize online status heartbeat
+            initializeOnlineStatus(token);
+            setupVisibilityListener();
           } else {
             // Token is invalid, clear storage
             localStorage.removeItem('token');
@@ -106,6 +111,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             sessionStorage.removeItem('token');
             sessionStorage.removeItem('user');
             setUser(null);
+            stopOnlineStatus();
           }
         }
       } catch (error) {
@@ -116,6 +122,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('user');
         setUser(null);
+        stopOnlineStatus();
       } finally {
         setLoading(false);
       }
@@ -143,6 +150,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         sessionStorage.setItem('token', data.token);
         sessionStorage.setItem('user', JSON.stringify(data.data));
         setUser(data.data);
+        
+        // Initialize online status heartbeat after successful login
+        initializeOnlineStatus(data.token);
+        setupVisibilityListener();
+        
         return { success: true, data: data.data };
       } else {
         return { success: false, message: data.message };
@@ -168,6 +180,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      // Stop online status heartbeat
+      stopOnlineStatus();
+      
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       sessionStorage.removeItem('token');
@@ -225,6 +240,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         storage.setItem('token', data.token);
         storage.setItem('user', JSON.stringify(data.data));
         setUser(data.data);
+        
+        // Initialize online status heartbeat after email verification
+        initializeOnlineStatus(data.token);
+        setupVisibilityListener();
+        
         return { success: true };
       } else {
         return { success: false, message: data.message };
@@ -322,7 +342,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (response.status === 404) {
           return { success: false, message: 'Profile not found' };
         }
-        throw new Error('Failed to fetch profile data');
+        // throw new Error('Failed to fetch profile data');
       }
 
       const data = await response.json();
