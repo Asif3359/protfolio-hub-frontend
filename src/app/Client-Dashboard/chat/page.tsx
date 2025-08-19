@@ -115,7 +115,7 @@ const ChatPage: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingStopTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub.vercel.app/api';
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub-backend.onrender.com/api';
   const WS_URL = process.env.NEXT_PUBLIC_WS_URL || API_BASE_URL.replace('/api', '');
   const WS_PATH = process.env.NEXT_PUBLIC_WS_PATH || '/socket.io';
 

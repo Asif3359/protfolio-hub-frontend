@@ -204,7 +204,7 @@ export default function ClientDashboardPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://protfolio-hub.vercel.app/api/portfolio/email/${user.email}`
+          `https://protfolio-hub-backend.onrender.com/api/portfolio/email/${user.email}`
         );
         const result = await response.json();
 

@@ -303,7 +303,7 @@ function PortfolioPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://protfolio-hub.vercel.app/api/portfolio/email/${id}`
+          `https://protfolio-hub-backend.onrender.com/api/portfolio/email/${id}`
         );
         const result = await response.json();
 

@@ -44,7 +44,7 @@ interface BasicProfileInfo {
   profileImage?: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://protfolio-hub.vercel.app/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://protfolio-hub-backend.onrender.com/api";
 
 
 export default function AdminDashboardPage() {

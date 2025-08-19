@@ -71,7 +71,7 @@ export const trackView = async (
     }
     
     // Call the API to increment views
-    const endpoint = apiEndpoint || `https://protfolio-hub.vercel.app/api/profile/views/${userId}`;
+    const endpoint = apiEndpoint || `https://protfolio-hub-backend.onrender.com/api/profile/views/${userId}`;
     const response = await fetch(endpoint, {
       method: 'PUT',
       headers: {

@@ -76,7 +76,7 @@ export const SignupForm = () => {
 
     try {
       const response = await fetch(
-        "https://protfolio-hub.vercel.app/api/auth/resend-verification",
+        "https://protfolio-hub-backend.onrender.com/api/auth/resend-verification",
         {
           method: "POST",
           headers: {
@@ -104,7 +104,7 @@ export const SignupForm = () => {
         const pollInterval = setInterval(async () => {
           try {
             const response = await fetch(
-              "https://protfolio-hub.vercel.app/api/auth/check-verification",
+              "https://protfolio-hub-backend.onrender.com/api/auth/check-verification",
               {
                 method: "POST",
                 headers: {
@@ -239,7 +239,7 @@ export const SignupForm = () => {
             try {
               // You'll need to implement this API endpoint to check verification status
               const response = await fetch(
-                "https://protfolio-hub.vercel.app/api/auth/check-verification",
+                "https://protfolio-hub-backend.onrender.com/api/auth/check-verification",
                 {
                   method: "POST",
                   headers: {

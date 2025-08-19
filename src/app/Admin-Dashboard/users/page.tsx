@@ -36,7 +36,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
 import { green } from "@mui/material/colors";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://protfolio-hub.vercel.app/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://protfolio-hub-backend.onrender.com/api";
 
 interface BasicUserInfo {
   _id: string;

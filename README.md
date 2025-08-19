@@ -14,7 +14,7 @@ pnpm dev
 bun dev
 ```
 
-Open [https://protfolio-hub.vercel.app](https://protfolio-hub.vercel.app) with your browser to see the result.
+Open [https://protfolio-hub-backend.onrender.com](https://protfolio-hub-backend.onrender.com) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

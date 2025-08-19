@@ -128,7 +128,7 @@ const locationTypeIcons = {
   "Remote": <HomeIcon />,
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub.vercel.app/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub-backend.onrender.com/api';
 
 function ExperiencePage() {
   const { user } = useAuth();
