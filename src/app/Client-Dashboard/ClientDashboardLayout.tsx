@@ -214,12 +214,27 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
         })}
       </List>
 
+
       <Box sx={{ mt: "auto" }}>
         <Divider sx={{ my: 2 }} />
+      {
+        user?.role === 'admin' && (
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => router.push(`/Admin-Dashboard`)}>
+                <ListItemIcon sx={{ color: "primary.main" }}>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary="Admin Dashboard" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+        )
+      }
         <ListItem disablePadding>
           <ListItemButton onClick={() => router.push(`/protfolio/${user?.email}`)}>
             <ListItemIcon sx={{ color: "primary.main" }}>
-              <Work />
+              <Person />
             </ListItemIcon>
             <ListItemText primary="Portfolio" />
           </ListItemButton>

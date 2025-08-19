@@ -315,7 +315,7 @@ const DynamicChatPage: React.FC = () => {
   };
 
   const getChatAvatar = (chat: Chat) => {
-    if (chat.isGroupChat) return <GroupIcon />;
+    if (chat.isGroupChat) return <Avatar><GroupIcon /></Avatar>;
     const other = chat.participants.find(p => p._id !== getCurrentUserId());
     return other?.profileImage ? <Avatar src={other.profileImage} /> : <Avatar>{other?.name?.charAt(0) || 'U'}</Avatar>;
   };

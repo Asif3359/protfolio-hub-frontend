@@ -42,7 +42,6 @@ import {
   People,
   Analytics,
   Security,
-  AdminPanelSettings,
   Chat,
 } from "@mui/icons-material";
 import theme from "../theme";
@@ -51,13 +50,9 @@ const drawerWidth = 240;
 
 const navigationItems = [
   { title: 'Dashboard', icon: <DashboardIcon />, path: '/Admin-Dashboard' },
+  // { title: 'Client Dashboard', icon: <DashboardIcon />, path: '/Client-Dashboard' },
   { title: 'User Management', icon: <People />, path: '/Admin-Dashboard/users' },
-  { title: 'Portfolio Management', icon: <Work />, path: '/Admin-Dashboard/portfolios' },
-  { title: 'Analytics', icon: <Analytics />, path: '/Admin-Dashboard/analytics' },
-  { title: 'Security', icon: <Security />, path: '/Admin-Dashboard/security' },
-  { title: 'System Settings', icon: <Settings />, path: '/Admin-Dashboard/settings' },
   { title: 'Chat', icon: <Chat />, path: '/Admin-Dashboard/chat' },
-  { title: 'Notifications', icon: <Notifications />, path: '/Admin-Dashboard/notifications' },
   { title: 'Home', icon: <Home />, path: '/' },
 ];
 
@@ -140,6 +135,24 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
       
       <Box sx={{ mt: 'auto' }}>
         <Divider sx={{ my: 2 }} />
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => router.push(`/Client-Dashboard`)}>
+              <ListItemIcon sx={{ color: "primary.main" }}>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Client Dashboard" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+          <ListItem disablePadding>
+          <ListItemButton onClick={() => router.push(`/protfolio/${user?.email}`)}>
+            <ListItemIcon sx={{ color: "primary.main" }}>
+              <Person />
+            </ListItemIcon>
+            <ListItemText primary="Portfolio" />
+          </ListItemButton>
+        </ListItem>
         <List>
           <ListItem disablePadding>
             <ListItemButton onClick={handleLogoutClick}>

@@ -18,6 +18,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const { user, loading } = useAuth();
   const router = useRouter();
 
+  // TODO: if user is admin then admin can redirect any page .
+  // Admin users have universal access to all pages
+
   useEffect(() => {
     if (!loading && !user) {
       router.push('/auth/login');
@@ -26,6 +29,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   useEffect(() => {
     if (!loading && user && requiredRole && user.role !== requiredRole) {
+      // Allow admin users to access any page
+      if (user.role === 'admin') {
+        return; // Admin can access any page, no redirect needed
+      }
       router.push('/unauthorized');
     }
   }, [user, loading, requiredRole, router]);
@@ -43,6 +50,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (requiredRole && user.role !== requiredRole) {
+    // Allow admin users to access any page
+    if (user.role === 'admin') {
+      return <>{children}</>; // Admin can access any page
+    }
     return null; // Will redirect to unauthorized
   }
 

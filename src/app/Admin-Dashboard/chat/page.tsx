@@ -92,8 +92,6 @@ const ChatPage: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
 
-  // Debug: Log mobile detection
-  console.log('Is Mobile:', isMobile);
 
   // State management
   const [chats, setChats] = useState<Chat[]>([]);
@@ -124,6 +122,9 @@ const ChatPage: React.FC = () => {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub-backend.onrender.com/api';
   const WS_URL = process.env.NEXT_PUBLIC_WS_URL || API_BASE_URL.replace('/api', '');
   const WS_PATH = process.env.NEXT_PUBLIC_WS_PATH || '/socket.io';
+
+  // State to store profile images for participants
+  const [participantProfiles, setParticipantProfiles] = useState<Record<string, { profileImage?: string }>>({});
 
   const getCurrentUserId = () => user?.id || '';
 
@@ -363,10 +364,13 @@ const ChatPage: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
+      
+      
       if (data.success) {
+        const newChats = data.data as Chat[];
+        
         setChats(() => {
           const currentSelected = selectedChat;
-          const newChats = data.data as Chat[];
           if (currentSelected) {
             const updatedSelected = newChats.find(c => c._id === currentSelected._id);
             if (updatedSelected) {
@@ -414,6 +418,57 @@ const ChatPage: React.FC = () => {
       }
     } catch {
       // ignore
+    }
+  };
+
+  // Function to fetch profile data for participants
+  const fetchParticipantProfiles = async (participantIds: string[]) => {
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const uniqueIds = participantIds.filter(id => !participantProfiles[id]);
+      
+      if (uniqueIds.length === 0) return;
+
+      const profiles: Record<string, { profileImage?: string }> = {};
+      
+      // Try to fetch profiles for each participant
+      // Note: This assumes the backend has an endpoint to get profile by user ID
+      // If not available, we'll need to modify the backend to support this
+      for (const userId of uniqueIds) {
+        try {
+          // Try the user-specific profile endpoint first
+          let response = await fetch(`${API_BASE_URL}/profile/user/${userId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          
+          // If that doesn't work, try a different approach
+          if (!response.ok) {
+            // Fallback: try to get user data with profile info
+            response = await fetch(`${API_BASE_URL}/user/${userId}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+          }
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.data) {
+              // Check if the response has profileImage directly or nested
+              const profileImage = data.data.profileImage || data.data.profile?.profileImage;
+              if (profileImage) {
+                profiles[userId] = { profileImage };
+              }
+            }
+          }
+        } catch (error) {
+          console.error(`Failed to fetch profile for user ${userId}:`, error);
+        }
+      }
+      
+      if (Object.keys(profiles).length > 0) {
+        setParticipantProfiles(prev => ({ ...prev, ...profiles }));
+      }
+    } catch (error) {
+      console.error('Failed to fetch participant profiles:', error);
     }
   };
 
@@ -595,9 +650,14 @@ const ChatPage: React.FC = () => {
   };
 
   const getChatAvatar = (chat: Chat) => {
-    if (chat.isGroupChat) return <GroupIcon />;
+    if (chat.isGroupChat) return <Avatar><GroupIcon /></Avatar>;
     const other = chat.participants.find(p => p._id !== getCurrentUserId());
-    return other?.profileImage ? <Avatar src={other.profileImage} /> : <Avatar>{other?.name?.charAt(0) || 'U'}</Avatar>;
+    
+    // Get profile image directly from the participant data (now provided by backend)
+    const profileImage = other?.profileImage;
+  
+    
+    return profileImage ? <Avatar src={profileImage} /> : <Avatar>{other?.name?.charAt(0) || 'U'}</Avatar>;
   };
 
   const typingNames =
@@ -705,6 +765,15 @@ const ChatPage: React.FC = () => {
               <Chip size="small" label={isConnected ? 'Connected' : 'Disconnected'} color={isConnected ? 'success' : 'warning'} variant="outlined" />
             </Box>
 
+            {/* Debug Panel - Remove this in production */}
+            {process.env.NODE_ENV === 'development' && (
+              <Box sx={{ px: 2, py: 1, borderTop: '1px solid', borderColor: 'divider' }}>
+                <Typography variant="caption" color="text.secondary">
+                  Debug: {Object.keys(participantProfiles).length} profiles cached
+                </Typography>
+              </Box>
+            )}
+
             {/* Chat List */}
             <List sx={{ flex: 1, overflow: 'auto', p: { xs: 0.5, md: 0 } }}>
               {memoizedFilteredChats.map(chat => {
@@ -716,6 +785,7 @@ const ChatPage: React.FC = () => {
                     key={chat._id}
                     sx={{
                       backgroundColor: isSelected ? theme.palette.primary.light + '20' : 'transparent',
+                      borderBottom: `1px solid ${theme.palette.divider}`,
                       cursor: 'pointer',
                       '&:hover': { backgroundColor: theme.palette.action.hover },
                       py: { xs: 1, md: 1.25 },
@@ -726,7 +796,6 @@ const ChatPage: React.FC = () => {
                     }}
                     onClick={() => {
                       if (isMobile) {
-                        console.log('Navigating to:', `/Admin-Dashboard/chat/${chat._id}`);
                         router.push(`/Admin-Dashboard/chat/${chat._id}`);
                       } else {
                         handleChatSelect(chat);
