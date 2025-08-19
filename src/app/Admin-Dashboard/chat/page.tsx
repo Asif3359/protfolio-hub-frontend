@@ -726,8 +726,8 @@ const ChatPage: React.FC = () => {
                     }}
                     onClick={() => {
                       if (isMobile) {
-                        console.log('Navigating to:', `/Client-Dashboard/chat/${chat._id}`);
-                        router.push(`/Client-Dashboard/chat/${chat._id}`);
+                        console.log('Navigating to:', `/Admin-Dashboard/chat/${chat._id}`);
+                        router.push(`/Admin-Dashboard/chat/${chat._id}`);
                       } else {
                         handleChatSelect(chat);
                       }

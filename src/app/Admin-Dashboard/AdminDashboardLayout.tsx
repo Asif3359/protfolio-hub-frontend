@@ -43,6 +43,7 @@ import {
   Analytics,
   Security,
   AdminPanelSettings,
+  Chat,
 } from "@mui/icons-material";
 import theme from "../theme";
 
@@ -55,6 +56,7 @@ const navigationItems = [
   { title: 'Analytics', icon: <Analytics />, path: '/Admin-Dashboard/analytics' },
   { title: 'Security', icon: <Security />, path: '/Admin-Dashboard/security' },
   { title: 'System Settings', icon: <Settings />, path: '/Admin-Dashboard/settings' },
+  { title: 'Chat', icon: <Chat />, path: '/Admin-Dashboard/chat' },
   { title: 'Notifications', icon: <Notifications />, path: '/Admin-Dashboard/notifications' },
   { title: 'Home', icon: <Home />, path: '/' },
 ];
