@@ -45,6 +45,7 @@ import {
   Psychology,
   Star,
   WorkspacePremium,
+  Chat,
 } from "@mui/icons-material";
 
 interface ProfileData {
@@ -88,6 +89,7 @@ const navigationItems = [
   },
   { title: "Skills", icon: <Star />, path: "/Client-Dashboard/skill" },
   { title: "Settings", icon: <Settings />, path: "/Client-Dashboard/settings" },
+  { title: "Chat", icon: <Chat />, path: "/Client-Dashboard/chat" },
   { title: "Home", icon: <Home />, path: "/" },
 ];
 
