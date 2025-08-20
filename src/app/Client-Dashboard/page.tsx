@@ -17,6 +17,7 @@ import {
   Assessment,
   TrendingUp,
   Notifications,
+  People,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useState, useEffect } from 'react';
@@ -187,15 +188,29 @@ interface PortfolioData {
   }>;
 }
 
+// User data interface with followers count
+interface UserData {
+  _id: string;
+  name: string;
+  email: string;
+  verified: boolean;
+  role: string;
+  profilePicture?: string;
+  followersCount: number;
+  followingCount: number;
+  createdAt: string;
+}
+
 export default function ClientDashboardPage() {
   const { user, profileData } = useAuth();
   const router = useRouter();
   const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPortfolioData = async () => {
+    const fetchData = async () => {
       if (!user?.email) {
         setLoading(false);
         return;
@@ -203,25 +218,48 @@ export default function ClientDashboardPage() {
 
       try {
         setLoading(true);
-        const response = await fetch(
-          `https://protfolio-hub-backend.onrender.com/api/portfolio/email/${user.email}`
+        
+        // Fetch portfolio data
+        const portfolioResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/portfolio/email/${user.email}`
         );
-        const result = await response.json();
+        const portfolioResult = await portfolioResponse.json();
 
-        if (result.success) {
-          setPortfolioData(result.data);
+        if (portfolioResult.success) {
+          setPortfolioData(portfolioResult.data);
         } else {
           setError("Failed to fetch portfolio data");
         }
+
+        // Fetch user data with followers count
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (token) {
+          const userResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/user/me`,
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+          
+          if (userResponse.ok) {
+            const userResult = await userResponse.json();
+            if (userResult.success) {
+              setUserData(userResult.data);
+            }
+          }
+        }
       } catch (err) {
-        setError("Error fetching portfolio data");
+        setError("Error fetching data");
         console.error("Error:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPortfolioData();
+    fetchData();
   }, [user?.email]);
 
   // Calculate statistics
@@ -232,6 +270,8 @@ export default function ClientDashboardPage() {
     certifications: portfolioData?.certifications?.length || 0,
     achievements: portfolioData?.achievements?.length || 0,
     researches: portfolioData?.researches?.length || 0,
+    followers: userData?.followersCount || 0,
+    following: userData?.followingCount || 0,
   };
 
   // Calculate profile completion percentage
@@ -398,6 +438,44 @@ export default function ClientDashboardPage() {
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {stats.experiences > 0 ? `${stats.experiences} experience${stats.experiences > 1 ? 's' : ''} listed` : 'No experience yet'}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
+
+          <Box sx={{ flex: '1 1 250px', minWidth: 0 }}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <People sx={{ mr: 1, color: 'info.main' }} />
+                  <Typography variant="h6" component="div">
+                    Followers
+                  </Typography>
+                </Box>
+                <Typography variant="h4" component="div" sx={{ mb: 1 }}>
+                  {stats.followers}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Total followers
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
+
+          <Box sx={{ flex: '1 1 250px', minWidth: 0 }}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <People sx={{ mr: 1, color: 'success.main' }} />
+                  <Typography variant="h6" component="div">
+                    Following
+                  </Typography>
+                </Box>
+                <Typography variant="h4" component="div" sx={{ mb: 1 }}>
+                  {stats.following}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  People you follow
                 </Typography>
               </CardContent>
             </Card>

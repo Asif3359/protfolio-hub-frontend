@@ -63,6 +63,9 @@ import {
   Menu,
   Close,
   FileDownload,
+  People,
+  Add,
+  Check,
 } from "@mui/icons-material";
 
 interface User {
@@ -297,13 +300,23 @@ function PortfolioPage() {
   const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [downloadingResume, setDownloadingResume] = useState(false);
+  const [followStatus, setFollowStatus] = useState<{
+    isFollowing: boolean;
+    followersCount: number;
+    followingCount: number;
+  }>({
+    isFollowing: false,
+    followersCount: 0,
+    followingCount: 0,
+  });
+  const [followLoading, setFollowLoading] = useState(false);
 
   useEffect(() => {
     const fetchPortfolioData = async () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://protfolio-hub-backend.onrender.com/api/portfolio/email/${id}`
+          `${process.env.NEXT_PUBLIC_API_URL}/portfolio/email/${id}`
         );
         const result = await response.json();
 
@@ -313,6 +326,9 @@ function PortfolioPage() {
           if (result.data?.user?.id) {
             trackView(result.data.user.id);
           }
+          
+          // Fetch follow status and followers count
+          await fetchFollowStatus(result.data.user.id);
         } else {
           setError("Failed to fetch portfolio data");
         }
@@ -328,6 +344,118 @@ function PortfolioPage() {
       fetchPortfolioData();
     }
   }, [id]);
+
+  // Function to fetch follow status and followers count
+  const fetchFollowStatus = async (userId: string) => {
+    // console.log(userId);
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token) return;
+
+      // Fetch follow status
+      const statusResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/follow-status/${userId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      // console.log(statusResponse);
+
+      if (statusResponse.ok) {
+        const statusResult = await statusResponse.json();
+        if (statusResult.success) {
+          setFollowStatus(prev => ({
+            ...prev,
+            isFollowing: statusResult.data.isFollowing,
+          }));
+        }
+      }
+
+      // Fetch user data with followers count
+      const userResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/${userId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      // console.log(userResponse.data.followersCount);
+
+      if (userResponse.ok) {
+        const userResult = await userResponse.json();
+        // console.log(userResult);
+        if (userResult.success) {
+          // Handle different possible data structures
+          const followersCount = userResult.data?.user?.followersCount || 
+                                userResult.data?.followersCount || 
+                                userResult.data?.followers?.length || 0;
+          const followingCount = userResult.data?.user?.followingCount || 
+                                userResult.data?.followingCount || 
+                                userResult.data?.following?.length || 0;
+          
+          setFollowStatus(prev => ({
+            ...prev,
+            followersCount,
+            followingCount,
+          }));
+        }
+      }
+
+    } catch (error) {
+      console.error('Error fetching follow status:', error);
+    }
+  };
+
+  // Function to handle follow/unfollow
+  const handleFollowToggle = async () => {
+    if (!portfolioData?.user?.id) return;
+
+    try {
+      setFollowLoading(true);
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token) {
+        // Redirect to login or show login modal
+        window.location.href = '/auth/login';
+        return;
+      }
+
+      const method = followStatus.isFollowing ? 'DELETE' : 'POST';
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/user/${followStatus.isFollowing ? 'unfollow' : 'follow'}/${portfolioData.user.id}`,
+        {
+          method,
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      // console.log(response);
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setFollowStatus(prev => ({
+            isFollowing: !prev.isFollowing,
+            followersCount: result.data.followers,
+            followingCount: result.data.following,
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling follow status:', error);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   // Scroll spy effect
   useEffect(() => {
@@ -1002,7 +1130,59 @@ function PortfolioPage() {
                     >
                       Connect with me
                     </Typography>
-                    <Stack direction="row" spacing={2} flexWrap="wrap">
+                    <Stack direction="row" spacing={2} flexWrap="wrap" alignItems="center">
+                      {/* Follow Button */}
+                      <Button
+                        variant={followStatus.isFollowing ? "outlined" : "contained"}
+                        startIcon={followLoading ? <CircularProgress size={16} /> : (followStatus.isFollowing ? <Check /> : <Add />)}
+                        onClick={handleFollowToggle}
+                        disabled={followLoading}
+                        sx={{
+                          color: followStatus.isFollowing ? "white" : "white",
+                          backgroundColor: followStatus.isFollowing 
+                            ? "rgba(255,255,255,0.2)" 
+                            : "rgba(255,255,255,0.25)",
+                          borderColor: "rgba(255,255,255,0.3)",
+                          borderWidth: 2,
+                          // px: 3,
+                          // py: 1.5,
+                          borderRadius: 3,
+                          textTransform: "none",
+                          fontSize: "1rem",
+                          fontWeight: 600,
+                          minWidth: 120,
+                          "&:hover": {
+                            backgroundColor: followStatus.isFollowing 
+                              ? "rgba(255,255,255,0.3)" 
+                              : "rgba(255,255,255,0.35)",
+                            transform: "translateY(-2px)",
+                            boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+                          },
+                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                        }}
+                      >
+                        {followStatus.isFollowing ? "Following" : "Follow"}
+                      </Button>
+
+                      {/* Followers Count */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          backgroundColor: "rgba(255,255,255,0.15)",
+                          borderRadius: 2,
+                          px: 2,
+                          py: 1,
+                          color: "white",
+                          minWidth: "fit-content",
+                        }}
+                      >
+                        <People sx={{ fontSize: 18, mr: 1 }} />
+                        <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
+                          {followStatus.followersCount} {followStatus.followersCount === 1 ? 'follower' : 'followers'}
+                        </Typography>
+                      </Box>
+
                       {profile?.linkedin && (
                         <IconButton
                           href={profile?.linkedin}
@@ -1204,6 +1384,70 @@ function PortfolioPage() {
                 </CardContent>
               </Card>
             </Box>
+
+            {/* Followers Count */}
+            <Card
+              sx={{
+                mb: 4,
+                borderRadius: 4,
+                boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+                border: "1px solid rgba(0,0,0,0.05)",
+                overflow: "hidden",
+                "&:hover": {
+                  boxShadow: "0 12px 40px rgba(0,0,0,0.12)",
+                  transform: "translateY(-2px)",
+                },
+                transition: "all 0.3s ease",
+              }}
+            >
+              <CardContent>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                  <Box
+                    sx={{
+                      width: 4,
+                      height: 24,
+                      background: "linear-gradient(180deg, #2E7D32, #4CAF50)",
+                      borderRadius: 2,
+                      mr: 2,
+                    }}
+                  />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      color: "primary.main",
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    Social Stats
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <People sx={{ color: "primary.main", mr: 1 }} />
+                      <Typography variant="body2" color="text.secondary">
+                        Followers
+                      </Typography>
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: "primary.main" }}>
+                      {followStatus.followersCount}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <People sx={{ color: "success.main", mr: 1 }} />
+                      <Typography variant="body2" color="text.secondary">
+                        Following
+                      </Typography>
+                    </Box>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: "success.main" }}>
+                      {followStatus.followingCount}
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
 
             {/* Skills */}
             {skills?.length > 0 && (
