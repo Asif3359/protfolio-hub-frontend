@@ -92,6 +92,7 @@ function NavBarComponent() {
 
   const navigationItems = [
     { text: "Home", href: "/" },
+    { text: "Feed", href: "/Feed" },
     { text: "About", href: "/about" },
     { text: "Services", href: "/services" },
     { text: "Portfolio", href: "/portfolio" },
