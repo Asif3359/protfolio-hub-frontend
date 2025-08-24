@@ -58,7 +58,7 @@ interface Skill {
   proficiency: number;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub-backend.onrender.com/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function TestSkill() {
   const params = useParams();
