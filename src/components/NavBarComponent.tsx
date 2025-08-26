@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import Link from "next/link";
@@ -67,7 +68,7 @@ function NavBarComponent() {
       setProfileData(profileData);
     };
     fetchProfileData();
-  }, [getProfileData]);
+  }, []);
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };

@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub-backend.onrender.com/api';
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   // Function to verify token with backend
   const verifyToken = async (token: string): Promise<{ success: boolean; user?: User; message?: string }> => {

@@ -71,7 +71,7 @@ export const trackView = async (
     }
     
     // Call the API to increment views
-    const endpoint = apiEndpoint || `https://protfolio-hub-backend.onrender.com/api/profile/views/${userId}`;
+    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/profile/views/${userId}`;
     const response = await fetch(endpoint, {
       method: 'PUT',
       headers: {
@@ -89,7 +89,7 @@ export const trackView = async (
       }
       console.log('View tracked successfully for user:', userId);
     } else {
-      console.error('Failed to track view:', response?.statusText);
+      // console.error('Failed to track view:', response?.statusText);
     }
   } catch (error) {
     console.error('Error tracking view:', error);
