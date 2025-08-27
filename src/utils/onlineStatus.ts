@@ -26,7 +26,7 @@ export class OnlineStatusManager {
     // Set up periodic heartbeat every 5 minutes (300000 ms)
     this.intervalId = setInterval(() => {
       this.updateStatus();
-    }, 5 * 60 * 1000);
+    }, 10 * 60 * 1000);
   }
 
   stopHeartbeat(): void {

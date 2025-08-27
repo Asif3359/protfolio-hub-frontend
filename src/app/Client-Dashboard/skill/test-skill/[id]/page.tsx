@@ -127,6 +127,7 @@ function TestSkill() {
         body: JSON.stringify({
           skill: skill?.name,
           category: skill?.category,
+          proficiency: skill?.proficiency,
           num_questions: 10,
         }),
       });
