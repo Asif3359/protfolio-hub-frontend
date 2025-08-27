@@ -36,7 +36,9 @@ import {
   ArrowBack as ArrowBackIcon,
   EmojiEvents as TrophyIcon,
   TrendingUp as TrendingUpIcon,
+  Timer as TimerIcon,
 } from '@mui/icons-material';
+
 import { useAuth } from '../../../../contexts/AuthContext';
 
 interface Question {
@@ -59,6 +61,7 @@ interface Skill {
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const QUESTION_TIME_LIMIT = 40; // 40 seconds per question
 
 function TestSkill() {
   const params = useParams();
@@ -84,10 +87,170 @@ function TestSkill() {
   } | null>(null);
   const [showResultDialog, setShowResultDialog] = useState(false);
   const [shuffledAnswers, setShuffledAnswers] = useState<string[][]>([]);
+  
+  // Timer state
+  const [timeLeft, setTimeLeft] = useState(QUESTION_TIME_LIMIT);
+  const [timerActive, setTimerActive] = useState(false);
+  
+  // Tab/window focus state
+  const [isWindowFocused, setIsWindowFocused] = useState(true);
 
   useEffect(() => {
     fetchSkillDetails();
   }, [skillId]);
+
+  // Timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (timerActive && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            // Time's up - auto advance to next question
+            handleTimeUp();
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [timerActive, timeLeft]);
+
+  // Reset timer when question changes
+  useEffect(() => {
+    if (quizData && !showResults) {
+      setTimeLeft(QUESTION_TIME_LIMIT);
+      setTimerActive(true);
+    }
+  }, [currentQuestionIndex, quizData, showResults]);
+
+  // Tab/window focus detection
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // User switched to another tab or minimized window
+        setIsWindowFocused(false);
+        if (quizData && !showResults && timerActive) {
+          // Automatically submit test and redirect
+          handleTabSwitchViolation();
+        }
+      } else {
+        // User returned to the tab
+        setIsWindowFocused(true);
+      }
+    };
+
+    const handleBlur = () => {
+      // User switched to another window
+      setIsWindowFocused(false);
+      if (quizData && !showResults && timerActive) {
+        // Automatically submit test and redirect
+        handleTabSwitchViolation();
+      }
+    };
+
+    const handleFocus = () => {
+      // User returned to the window
+      setIsWindowFocused(true);
+    };
+
+    // Add event listeners
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [quizData, showResults, timerActive]);
+
+  const handleTimeUp = () => {
+    setTimerActive(false);
+    
+    // If no answer is selected, mark as unanswered
+    if (!selectedAnswers[currentQuestionIndex]) {
+      const newAnswers = [...selectedAnswers];
+      newAnswers[currentQuestionIndex] = ''; // Empty string indicates no answer
+      setSelectedAnswers(newAnswers);
+    }
+    
+    // Auto advance to next question or submit if last question
+    if (currentQuestionIndex < (quizData?.questions.length || 0) - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      // Last question - submit quiz
+      submitQuiz();
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const getTimeColor = (timeLeft: number) => {
+    if (timeLeft <= 10) return 'error.main';
+    if (timeLeft <= 30) return 'warning.main';
+    return 'primary.main';
+  };
+
+  const handleTabSwitchViolation = async () => {
+    setTimerActive(false);
+    
+    // Calculate results with current answers
+    const quizResults = calculateResults();
+    if (quizResults) {
+      setResults(quizResults);
+    }
+    
+    // Submit the quiz automatically and redirect
+    try {
+      setSubmitting(true);
+      
+      // Update skill proficiency
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/skill/${skillId}/proficiency`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          proficiency: quizResults?.newProficiency || skill?.proficiency || 0,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update proficiency');
+      }
+
+      // Set cheating flags for the skills page
+      localStorage.setItem('cheatingDetected', 'true');
+      localStorage.setItem('cheatingSkill', skill?.name || 'Unknown Skill');
+
+      // Redirect immediately
+      router.back();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      // Still redirect even if there's an error
+      localStorage.setItem('cheatingDetected', 'true');
+      localStorage.setItem('cheatingSkill', skill?.name || 'Unknown Skill');
+      router.back();
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const fetchSkillDetails = async () => {
     try {
@@ -152,6 +315,10 @@ function TestSkill() {
           return answers.sort(() => Math.random() - 0.5);
         });
         setShuffledAnswers(shuffled);
+        
+        // Start timer for first question
+        setTimeLeft(QUESTION_TIME_LIMIT);
+        setTimerActive(true);
       } else {
         throw new Error(data.message || 'Failed to generate questions');
       }
@@ -170,12 +337,14 @@ function TestSkill() {
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < (quizData?.questions.length || 0) - 1) {
+      setTimerActive(false); // Stop current timer
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
+      setTimerActive(false); // Stop current timer
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
@@ -212,6 +381,7 @@ function TestSkill() {
   const submitQuiz = async () => {
     try {
       setSubmitting(true);
+      setTimerActive(false); // Stop timer when submitting
       const quizResults = calculateResults();
       
       if (!quizResults) {
@@ -262,6 +432,9 @@ function TestSkill() {
     setResults(null);
     setShowResultDialog(false);
     setShuffledAnswers([]);
+    setTimeLeft(QUESTION_TIME_LIMIT);
+    setTimerActive(false);
+    setIsWindowFocused(true);
   };
 
   const getCurrentQuestion = () => {
@@ -378,15 +551,27 @@ function TestSkill() {
       {quizData && !showResults && (
         <Card>
           <CardContent>
-            {/* Progress bar */}
+            {/* Progress bar and timer */}
             <Box mb={3}>
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
                 <Typography variant="body2" color="text.secondary">
                   Question {currentQuestionIndex + 1} of {quizData.questions.length}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {Math.round(getProgressPercentage())}%
-                </Typography>
+                <Box display="flex" alignItems="center" gap={2}>
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <TimerIcon sx={{ fontSize: 16, color: getTimeColor(timeLeft) }} />
+                    <Typography 
+                      variant="body2" 
+                      color={getTimeColor(timeLeft)}
+                      fontWeight="bold"
+                    >
+                      {formatTime(timeLeft)}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    {Math.round(getProgressPercentage())}%
+                  </Typography>
+                </Box>
               </Box>
               <LinearProgress 
                 variant="determinate" 
@@ -394,6 +579,19 @@ function TestSkill() {
                 sx={{ height: 8, borderRadius: 4 }}
               />
             </Box>
+
+            {/* Time warning alert */}
+            {timeLeft <= 10 && timeLeft > 0 && (
+              <Alert 
+                severity="warning" 
+                sx={{ mb: 2 }}
+                icon={<TimerIcon />}
+              >
+                Time is running out! {timeLeft} seconds remaining.
+              </Alert>
+            )}
+
+
 
             {/* Question */}
             <Typography variant="h6" gutterBottom>
@@ -429,30 +627,42 @@ function TestSkill() {
             </FormControl>
 
             {/* Navigation buttons */}
-            <Box display="flex" justifyContent="space-between" mt={3}>
-              <Button
+            <Box display="flex" justifyContent="flex-end" mt={3}>
+              {/* <Button
                 variant="outlined"
                 onClick={handlePreviousQuestion}
                 disabled={currentQuestionIndex === 0}
               >
                 Previous
-              </Button>
+              </Button> */}
               
               {currentQuestionIndex === quizData.questions.length - 1 ? (
                 <Button
                   variant="contained"
                   onClick={submitQuiz}
-                  disabled={selectedAnswers.some(answer => answer === '') || submitting}
+                  disabled={submitting}
+                  sx={{
+                    backgroundColor: timeLeft <= 10 ? 'error.main' : 'primary.main',
+                    '&:hover': {
+                      backgroundColor: timeLeft <= 10 ? 'error.dark' : 'primary.dark',
+                    }
+                  }}
                 >
-                  {submitting ? 'Submitting...' : 'Submit Quiz'}
+                  {submitting ? 'Submitting...' : `Submit Quiz ${timeLeft <= 10 ? `(${timeLeft}s)` : ''}`}
                 </Button>
               ) : (
                 <Button
                   variant="contained"
                   onClick={handleNextQuestion}
                   disabled={!selectedAnswers[currentQuestionIndex]}
+                  sx={{
+                    backgroundColor: timeLeft <= 10 ? 'error.main' : 'primary.main',
+                    '&:hover': {
+                      backgroundColor: timeLeft <= 10 ? 'error.dark' : 'primary.dark',
+                    }
+                  }}
                 >
-                  Next
+                  Next {timeLeft <= 10 ? `(${timeLeft}s)` : ''}
                 </Button>
               )}
             </Box>

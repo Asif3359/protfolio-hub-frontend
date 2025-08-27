@@ -48,6 +48,7 @@ import {
   Translate as TranslateIcon,
   Person as PersonIcon,
   Quiz as QuizIcon,
+  Cancel as CancelIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "next/navigation";
@@ -117,9 +118,32 @@ function SkillsPage() {
   const [formData, setFormData] = useState<SkillFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [newResource, setNewResource] = useState("");
+  const [cheatingWarning, setCheatingWarning] = useState<string | null>(null);
   const router = useRouter();
   useEffect(() => {
     fetchSkills();
+    
+    // Check for cheating warning from URL parameters or localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const cheatingDetected = urlParams.get('cheating');
+    const skillName = urlParams.get('skill');
+    
+    if (cheatingDetected === 'true' && skillName) {
+      setCheatingWarning(`Cheating was detected during the ${skillName} test. Your test was automatically submitted.`);
+      // Clear the URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    // Check localStorage for cheating flag
+    const cheatingFlag = localStorage.getItem('cheatingDetected');
+    const cheatingSkill = localStorage.getItem('cheatingSkill');
+    
+    if (cheatingFlag === 'true' && cheatingSkill) {
+      setCheatingWarning(`Cheating was detected during the ${cheatingSkill} test. Your test was automatically submitted.`);
+      // Clear localStorage flags
+      localStorage.removeItem('cheatingDetected');
+      localStorage.removeItem('cheatingSkill');
+    }
   }, []);
 
   const fetchSkills = async () => {
@@ -348,6 +372,25 @@ function SkillsPage() {
       </Box>
 
       {/* Alerts */}
+      {cheatingWarning && (
+        <Alert 
+          severity="warning" 
+          sx={{ 
+            mb: 3,
+            backgroundColor: '#fff3cd',
+            border: '1px solid #ffeaa7',
+            '& .MuiAlert-icon': {
+              color: '#856404'
+            }
+          }} 
+          onClose={() => setCheatingWarning(null)}
+          icon={<CancelIcon />}
+        >
+          <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#856404' }}>
+            🚨 {cheatingWarning}
+          </Typography>
+        </Alert>
+      )}
       {error && (
         <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
           {error}
