@@ -1,39 +1,10 @@
 "use client";
 
 import React from "react";
-import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-  Avatar,
-  Chip,
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-} from "@mui/material";
-import {
-  Work,
-  TrendingUp,
-  Security,
-  Speed,
-  CheckCircle,
-  Star,
-  People,
-  Analytics,
-  Code,
-  Palette,
-  Business,
-  Launch,
-} from "@mui/icons-material";
+import { Box, Container, Typography, Button, Card, Avatar } from "@mui/material";
+import { Work, Star, People, Analytics, Code } from "@mui/icons-material";
 import NavBarComponent from "@/components/NavBarComponent";
+import FooterComponent from "@/components/FooterComponent";
 
 function HomePage() {
   return (
@@ -69,11 +40,10 @@ function HomePage() {
                   component="h1"
                   sx={{ fontWeight: 700, mb: 2 , color: "primary.main" }}
                 >
-                  Showcase Your Talent
+                  Build Your Portfolio — No Code
                 </Typography>
                 <Typography variant="h5" sx={{ mb: 3, opacity: 0.9 }}>
-                  Create stunning portfolios, connect with opportunities, and
-                  grow your professional network
+                  Fill simple forms, pick a theme, and publish instantly. Focus on your work—not code.
                 </Typography>
                 <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
                   <Button
@@ -87,7 +57,7 @@ function HomePage() {
                       },
                     }}
                   >
-                    Get Started Free
+                    Create Your Portfolio
                   </Button>
                   <Button
                     variant="outlined"
@@ -100,7 +70,7 @@ function HomePage() {
                       },
                     }}
                   >
-                    View Examples
+                    Browse Templates
                   </Button>
                 </Box>
               </Box>
@@ -174,11 +144,10 @@ function HomePage() {
                   <Code sx={{ fontSize: 40 }} />
                 </Avatar>
                 <Typography variant="h5" component="h3" sx={{ mb: 2 }}>
-                  Easy Portfolio Creation
+                  Create by Filling Forms
                 </Typography>
                 <Typography color="text.secondary">
-                  Drag-and-drop interface to create stunning portfolios in
-                  minutes. No coding required.
+                  Provide your info in simple steps—projects, experience, skills—and publish instantly. No coding needed.
                 </Typography>
               </Card>
             </Box>
@@ -389,42 +358,7 @@ function HomePage() {
         </Container>
 
         {/* CTA Section */}
-        <Box
-          sx={{
-            background: "black",
-            color: "white",
-            py: 8
-          }}
-        >
-          <Container maxWidth="md">
-            <Box sx={{ textAlign: "center" }}>
-              <Typography
-                variant="h3"
-                component="h2"
-                sx={{ fontWeight: 600, mb: 2 }}
-              >
-                Ready to Showcase Your Work?
-              </Typography>
-              <Typography variant="h6" sx={{ mb: 4, opacity: 0.9 }}>
-                Join thousands of professionals who trust Portfolio Hub to
-                showcase their talent
-              </Typography>
-              <Button
-                variant="contained"
-                size="large"
-                sx={{
-                  bgcolor: "white",
-                  color: "primary.main",
-                  px: 4,
-                  py: 1.5,
-                  "&:hover": { bgcolor: "grey.100" },
-                }}
-              >
-                Start Building Your Portfolio
-              </Button>
-            </Box>
-          </Container>
-        </Box>
+        <FooterComponent />
       </Box>
     </>
   );

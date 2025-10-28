@@ -1,30 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Avatar,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Chip,
-  IconButton,
-  Tooltip,
-  Alert,
-  CircularProgress,
-  Divider,
-  Stack,
-  Paper,
-  Grid,
-  Switch,
-  FormControlLabel,
-} from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
+import { Box, Typography, Button, Card, CardContent, Avatar, TextField, Chip, IconButton, Alert, CircularProgress, Stack } from "@mui/material";
 import {
   Edit as EditIcon,
   Save as SaveIcon,
@@ -96,6 +73,9 @@ function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<ProfileFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFilePreviewUrl, setSelectedFilePreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     fetchProfile();
@@ -163,6 +143,12 @@ function Profile() {
       });
     }
     setFormErrors({});
+    // reset selected file preview on cancel
+    if (selectedFilePreviewUrl) {
+      URL.revokeObjectURL(selectedFilePreviewUrl);
+    }
+    setSelectedFile(null);
+    setSelectedFilePreviewUrl(null);
   };
 
   const validateForm = (): boolean => {
@@ -199,7 +185,7 @@ function Profile() {
     try {
       new URL(string);
       return true;
-    } catch (_) {
+    } catch (e) {
       return false;
     }
   };
@@ -211,23 +197,42 @@ function Profile() {
       setSaving(true);
       const token = localStorage.getItem("token");
 
+      const body = new FormData();
+      body.append("headline", formData.headline);
+      body.append("bio", formData.bio);
+      body.append("location", formData.location);
+      body.append("phone", formData.phone);
+      body.append("website", formData.website);
+      body.append("linkedin", formData.linkedin);
+      body.append("facebook", formData.facebook);
+      body.append("github", formData.github);
+      body.append("portfolioLink", formData.portfolioLink);
+
+      if (selectedFile) {
+        body.append("profileImage", selectedFile);
+      } else if (formData.profileImage) {
+        // Fallback: backend accepts direct URL if provided
+        body.append("profileImage", formData.profileImage);
+      }
+
       const response = await fetch(`${API_URL}/profile`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
+        } as HeadersInit,
+        body,
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.msg || "Failed to save profile");
       }
 
       const savedProfile = await response.json();
       setProfile(savedProfile);
       setIsEditing(false);
+      setSelectedFile(null);
+      setSelectedFilePreviewUrl(null);
       setSuccess("Profile updated successfully!");
       setError(null);
     } catch (err) {
@@ -236,6 +241,25 @@ function Profile() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    // basic client-side validation for image and size <= 5MB
+    if (!file.type.startsWith("image/")) {
+      setError("Only image uploads are allowed");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image must be 5MB or less");
+      return;
+    }
+    if (selectedFilePreviewUrl) {
+      URL.revokeObjectURL(selectedFilePreviewUrl);
+    }
+    setSelectedFile(file);
+    setSelectedFilePreviewUrl(URL.createObjectURL(file));
   };
 
   const handleDelete = async () => {
@@ -348,7 +372,7 @@ function Profile() {
             <Box sx={{ textAlign: "center", mb: 3 }}>
               <Box sx={{ position: "relative", display: "inline-block" }}>
                 <Avatar
-                  src={formData.profileImage || profile?.profileImage}
+                  src={selectedFilePreviewUrl || formData.profileImage || profile?.profileImage}
                   sx={{
                     width: 120,
                     height: 120,
@@ -371,11 +395,19 @@ function Profile() {
                         backgroundColor: "primary.dark",
                       },
                     }}
+                    onClick={() => fileInputRef.current?.click()}
                   >
                     <PhotoCameraIcon />
                   </IconButton>
                 )}
               </Box>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
               <Typography variant="h5" sx={{ mt: 2, fontWeight: 600 }}>
                 {user?.name || "User Name"}
               </Typography>
@@ -460,8 +492,8 @@ function Profile() {
               />
             </Box>
 
-            {/* Profile Image URL */}
-            {isEditing && (
+            {/* Profile Image URL - optional fallback when not uploading */}
+            {isEditing && !selectedFile && (
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h6"
@@ -469,7 +501,7 @@ function Profile() {
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
                   <PhotoCameraIcon />
-                  Profile Image
+                  Profile Image (URL fallback)
                 </Typography>
                 <TextField
                   fullWidth
@@ -482,7 +514,7 @@ function Profile() {
                     }))
                   }
                   placeholder="https://example.com/profile-image.jpg"
-                  helperText="Enter a URL for your profile image"
+                  helperText="You can paste a direct image URL or click the camera icon to upload a file"
                 />
               </Box>
             )}

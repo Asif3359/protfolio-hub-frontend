@@ -5,9 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { usePathname, useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
-import { createTheme } from "@mui/material/styles";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import {
   AppBar,
@@ -33,18 +31,11 @@ import {
   Menu as MenuIcon,
   Home,
   Person,
-  Work,
-  Assessment,
-  Settings,
-  Notifications,
   Logout,
   AccountCircle,
   People,
-  Analytics,
-  Security,
   Chat,
 } from "@mui/icons-material";
-import theme from "../theme";
 
 const drawerWidth = 240;
 

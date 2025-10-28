@@ -96,7 +96,7 @@ function NavBarComponent() {
     { text: "Feed", href: "/Feed" },
     { text: "About", href: "/about" },
     { text: "Services", href: "/services" },
-    { text: "Portfolio", href: "/portfolio" },
+    { text: "Portfolio", href: `/protfolio/${user?.email}` },
     { text: "Contact", href: "/contact" },
     { text: "Blog", href: "/blog" },
   ];

@@ -7,7 +7,6 @@ import {
   Typography,
   Button,
   Box,
-  Chip,
   LinearProgress,
   Paper,
   Alert,
@@ -28,7 +27,7 @@ import {
   Wifi,
 } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
-import { fetchSystemMetrics, SystemMetrics, formatBytes, formatUptime, calculateCpuUsage, calculateMemoryUsage } from "@/utils/systemMetrics";
+import { fetchSystemMetrics, SystemMetrics, formatBytes, calculateCpuUsage, calculateMemoryUsage } from "@/utils/systemMetrics";
 import { getFrontendMetrics, PerformanceMonitor, FrontendMetrics } from "@/utils/frontendMetrics";
 
 interface BasicUserInfo {
