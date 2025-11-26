@@ -1566,7 +1566,7 @@ function PortfolioPage() {
                     <Box
                       sx={{ display: "flex", gap: 3, flexDirection: "column" }}
                     >
-                      {projects?.map((project, index) => (
+                      {projects?.slice(0, 4).map((project, index) => (
                         <Grow in timeout={500 + index * 100} key={project._id}>
                           <Box sx={{ flex: "1 1 300px", minWidth: 0 }}>
                             <Paper
