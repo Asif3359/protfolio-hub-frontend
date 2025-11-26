@@ -66,6 +66,8 @@ import {
   People,
   Add,
   Check,
+  ChevronLeft,
+  ChevronRight,
 } from "@mui/icons-material";
 
 interface User {
@@ -310,6 +312,7 @@ function PortfolioPage() {
     followingCount: 0,
   });
   const [followLoading, setFollowLoading] = useState(false);
+  const [projectImageIndices, setProjectImageIndices] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const fetchPortfolioData = async () => {
@@ -1587,17 +1590,127 @@ function PortfolioPage() {
                             >
                               {project.images && project.images.length > 0 && (
                                 <Box
-                                  component="img"
-                                  src={project.images[0]?.url}
-                                  alt={project.title}
                                   sx={{
+                                    position: "relative",
                                     width: "100%",
-                                    height: 180,
-                                    objectFit: "cover",
-                                    borderRadius: 2,
                                     mb: 2,
+                                    borderRadius: 2,
+                                    overflow: "hidden",
                                   }}
-                                />
+                                >
+                                  <Box
+                                    component="img"
+                                    src={project.images[projectImageIndices[project._id] || 0]?.url}
+                                    alt={`${project.title} - Image ${(projectImageIndices[project._id] || 0) + 1}`}
+                                    sx={{
+                                      width: "100%",
+                                      height: 180,
+                                      objectFit: "cover",
+                                      display: "block",
+                                    }}
+                                  />
+                                  {project.images.length > 1 && (
+                                    <>
+                                      {/* Navigation Arrows */}
+                                      {project.images.length > 1 && (
+                                        <>
+                                          <IconButton
+                                            onClick={() => {
+                                              const currentIndex = projectImageIndices[project._id] || 0;
+                                              const newIndex = currentIndex === 0 
+                                                ? Math.min(project.images.length - 1, 4) 
+                                                : currentIndex - 1;
+                                              setProjectImageIndices(prev => ({
+                                                ...prev,
+                                                [project._id]: newIndex,
+                                              }));
+                                            }}
+                                            sx={{
+                                              position: "absolute",
+                                              left: 8,
+                                              top: "50%",
+                                              transform: "translateY(-50%)",
+                                              backgroundColor: "rgba(25, 194, 33, 0.9)",
+                                              "&:hover": {
+                                                backgroundColor: "rgb(18, 128, 23)",
+                                              },
+                                              zIndex: 2,
+                                            }}
+                                            size="small"
+                                          >
+                                            <ChevronLeft />
+                                          </IconButton>
+                                          <IconButton
+                                            onClick={() => {
+                                              const currentIndex = projectImageIndices[project._id] || 0;
+                                              const maxIndex = Math.min(project.images.length - 1, 4);
+                                              const newIndex = currentIndex >= maxIndex 
+                                                ? 0 
+                                                : currentIndex + 1;
+                                              setProjectImageIndices(prev => ({
+                                                ...prev,
+                                                [project._id]: newIndex,
+                                              }));
+                                            }}
+                                            sx={{
+                                              position: "absolute",
+                                              right: 8,
+                                              top: "50%",
+                                              transform: "translateY(-50%)",
+                                              backgroundColor: "rgba(25, 194, 33, 0.9)",
+                                              "&:hover": {
+                                                backgroundColor: "rgb(18, 128, 23)",
+                                              },
+                                              zIndex: 2,
+                                            }}
+                                            size="small"
+                                          >
+                                            <ChevronRight />
+                                          </IconButton>
+                                        </>
+                                      )}
+                                      {/* Dots Indicator */}
+                                      <Box
+                                        sx={{
+                                          position: "absolute",
+                                          bottom: 8,
+                                          left: "50%",
+                                          transform: "translateX(-50%)",
+                                          display: "flex",
+                                          gap: 0.5,
+                                          zIndex: 2,
+                                        }}
+                                      >
+                                        {project.images.slice(0, 5).map((_, index) => (
+                                          <Box
+                                            key={index}
+                                            onClick={() => {
+                                              setProjectImageIndices(prev => ({
+                                                ...prev,
+                                                [project._id]: index,
+                                              }));
+                                            }}
+                                            sx={{
+                                              width: 8,
+                                              height: 8,
+                                              borderRadius: "50%",
+                                              backgroundColor: (projectImageIndices[project._id] || 0) === index 
+                                                ? "primary.main" 
+                                                : "rgba(255, 255, 255, 0.5)",
+                                              cursor: "pointer",
+                                              transition: "all 0.3s ease",
+                                              "&:hover": {
+                                                backgroundColor: (projectImageIndices[project._id] || 0) === index 
+                                                  ? "primary.dark" 
+                                                  : "rgba(255, 255, 255, 0.8)",
+                                              },
+                                            }}
+                                          />
+                                        ))}
+                                      </Box>
+                                    </>
+                                  )}
+                                </Box>
                               )}
                               <Typography
                                 variant="h6"
