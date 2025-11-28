@@ -2102,17 +2102,20 @@ function PortfolioPage() {
                     >
                       Certifications
                     </Typography>
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                      {certifications?.map((cert, index) => (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "stretch" }}>
+                      {certifications?.slice(0, 2).map((cert, index) => (
                         <Grow in timeout={500 + index * 100} key={cert._id}>
                           <Box sx={{ flex: "1 1 250px", minWidth: 0 }}>
                             <Paper
                               elevation={0}
                               sx={{
+                                height: "100%",
                                 p: 2,
                                 borderRadius: 3,
                                 border: "1px solid",
                                 borderColor: "grey.200",
+                                display: "flex",
+                                flexDirection: "column",
                                 transition: "all 0.3s ease",
                                 "&:hover": {
                                   transform: "translateY(-2px)",
@@ -2128,7 +2131,8 @@ function PortfolioPage() {
                                   mb: 1,
                                 }}
                               >
-                                <Star color="primary" sx={{ mr: 1 }} />
+                                {/* <Star color="primary" sx={{ mr: 1 }} /> */}
+                                <Avatar src={cert.issuerLogo} alt={cert.issuer} sx={{ width: 24, height: 24, mr: 1 }} />
                                 <Typography
                                   variant="subtitle1"
                                   sx={{ fontWeight: 600 }}
@@ -2156,29 +2160,38 @@ function PortfolioPage() {
                               >
                                 {cert.description}
                               </Typography>
-                              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 , mt: 2}}>
-                                {cert?.skills?.map((skill) => (
-                                  <Chip
-                                    key={skill}
-                                    label={skill}
+                              <Box sx={{ mt: "auto" }}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 1,
+                                    mt: 2,
+                                  }}
+                                >
+                                  {cert?.skills?.map((skill) => (
+                                    <Chip
+                                      key={skill}
+                                      label={skill}
+                                      size="small"
+                                      variant="outlined"
+                                      color="secondary"
+                                      sx={{ borderRadius: 2, fontSize: "0.7rem" }}
+                                    />
+                                  ))}
+                                </Box>
+                                {cert.credentialLink && (
+                                  <Button
                                     size="small"
                                     variant="outlined"
-                                    color="secondary"
-                                    sx={{ borderRadius: 2, fontSize: "0.7rem"  }}
-                                  />
-                                ))}
+                                    href={cert.credentialLink}
+                                    target="_blank"
+                                    sx={{ mt: 1.5, borderRadius: 2 }}
+                                  >
+                                    View Credential
+                                  </Button>
+                                )}
                               </Box>
-                              {cert.credentialLink && (
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  href={cert.credentialLink}
-                                  target="_blank"
-                                  sx={{ mt: 1, borderRadius: 2 }}
-                                >
-                                  View Credential
-                                </Button>
-                              )}
                             </Paper>
                           </Box>
                         </Grow>
