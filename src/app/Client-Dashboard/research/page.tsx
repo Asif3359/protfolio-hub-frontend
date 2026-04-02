@@ -122,7 +122,9 @@ const initialFormData: ResearchFormData = {
   impactStatement: "",
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub-backend.onrender.com/api';
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://protfolio-hub-backend.onrender.com/api";
 
 const publicationTypeIcons: Record<string, React.ReactElement> = {
   "Journal Article": <ArticleIcon />,
@@ -279,7 +281,7 @@ function ResearchPage() {
       setSuccess(
         editingResearch
           ? "Research updated successfully!"
-          : "Research added successfully!"
+          : "Research added successfully!",
       );
       setError(null);
     } catch (err) {
@@ -727,11 +729,11 @@ function ResearchPage() {
                           DOI
                         </Button>
                       )}
-                      {researchItem.links.pdf && (
+                      {researchItem.links?.pdf && (
                         <Button
                           size="small"
                           startIcon={<PdfIcon />}
-                          href={researchItem.links.pdf}
+                          href={researchItem.links?.pdf}
                           target="_blank"
                           rel="noopener noreferrer"
                           sx={{ textTransform: "none" }}
@@ -739,11 +741,11 @@ function ResearchPage() {
                           PDF
                         </Button>
                       )}
-                      {researchItem.links.projectPage && (
+                      {researchItem.links?.projectPage && (
                         <Button
                           size="small"
                           startIcon={<ProjectIcon />}
-                          href={researchItem.links.projectPage}
+                          href={researchItem.links?.projectPage}
                           target="_blank"
                           rel="noopener noreferrer"
                           sx={{ textTransform: "none" }}
@@ -751,11 +753,11 @@ function ResearchPage() {
                           Project
                         </Button>
                       )}
-                      {researchItem.links.codeRepository && (
+                      {researchItem.links?.codeRepository && (
                         <Button
                           size="small"
                           startIcon={<CodeIcon />}
-                          href={researchItem.links.codeRepository}
+                          href={researchItem.links?.codeRepository}
                           target="_blank"
                           rel="noopener noreferrer"
                           sx={{ textTransform: "none" }}
