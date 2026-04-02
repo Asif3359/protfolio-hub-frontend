@@ -32,6 +32,7 @@ import {
   Fade,
   Grow,
   Tooltip,
+  Skeleton,
 } from "@mui/material";
 import {
   Email,
@@ -291,6 +292,209 @@ function HideOnScroll(props: { children: React.ReactElement }) {
 
 
 
+function PortfolioSkeleton() {
+  return (
+    <Box sx={{ minHeight: "100vh", bgcolor: "grey.50" }}>
+      {/* AppBar Skeleton */}
+      <AppBar
+        position="sticky"
+        sx={{
+          background: "rgba(255,255,255,0.95)",
+          boxShadow: "0 0px 0px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Container maxWidth="xl">
+          <Toolbar sx={{ justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
+              <Skeleton variant="text" width={140} height={28} />
+            </Box>
+            <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} variant="rounded" width={80} height={36} />
+              ))}
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      {/* Hero Skeleton */}
+      <Box
+        sx={{
+          background:
+            "linear-gradient(135deg, #1B5E20 0%, #2E7D32 25%, #4CAF50 50%, #66BB6A 75%, #81C784 100%)",
+          pt: 20,
+          pb: 12,
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 4 }}>
+            <Box sx={{ flex: "1 1 300px", textAlign: "center" }}>
+              <Skeleton
+                variant="circular"
+                width={220}
+                height={220}
+                sx={{ mx: "auto", bgcolor: "rgba(255,255,255,0.15)" }}
+              />
+            </Box>
+            <Box sx={{ flex: "2 1 400px" }}>
+              <Skeleton
+                variant="text"
+                width="55%"
+                height={64}
+                sx={{ bgcolor: "rgba(255,255,255,0.15)", mb: 1 }}
+              />
+              <Skeleton
+                variant="text"
+                width="40%"
+                height={44}
+                sx={{ bgcolor: "rgba(255,255,255,0.15)", mb: 2 }}
+              />
+              <Skeleton variant="text" width="92%" height={22} sx={{ bgcolor: "rgba(255,255,255,0.15)" }} />
+              <Skeleton variant="text" width="80%" height={22} sx={{ bgcolor: "rgba(255,255,255,0.15)", mb: 3 }} />
+              <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                <Skeleton variant="rounded" width={120} height={44} sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: 3 }} />
+                <Skeleton variant="rounded" width={110} height={44} sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: 3 }} />
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} variant="circular" width={56} height={56} sx={{ bgcolor: "rgba(255,255,255,0.15)" }} />
+                ))}
+              </Box>
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+
+      {/* Content Skeleton */}
+      <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {/* Left sidebar */}
+          <Box sx={{ flex: "1 1 320px", minWidth: 0 }}>
+            {/* Contact card */}
+            <Card sx={{ mb: 4, borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
+              <CardContent>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                  <Skeleton variant="rectangular" width={4} height={24} sx={{ mr: 2, borderRadius: 2 }} />
+                  <Skeleton variant="text" width={160} height={28} />
+                </Box>
+                {[1, 2, 3].map((i) => (
+                  <Box key={i} sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                    <Skeleton variant="circular" width={24} height={24} sx={{ mr: 2 }} />
+                    <Skeleton variant="text" width="70%" height={20} />
+                  </Box>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Social stats card */}
+            <Card sx={{ mb: 4, borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
+              <CardContent>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                  <Skeleton variant="rectangular" width={4} height={24} sx={{ mr: 2, borderRadius: 2 }} />
+                  <Skeleton variant="text" width={120} height={28} />
+                </Box>
+                {[1, 2].map((i) => (
+                  <Box key={i} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1 }} />
+                      <Skeleton variant="text" width={80} height={20} />
+                    </Box>
+                    <Skeleton variant="text" width={40} height={28} />
+                  </Box>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Skills card */}
+            <Card sx={{ borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
+              <CardContent>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                  <Skeleton variant="rectangular" width={4} height={24} sx={{ mr: 2, borderRadius: 2 }} />
+                  <Skeleton variant="text" width={80} height={28} />
+                </Box>
+                <Skeleton variant="text" width="50%" height={20} sx={{ mb: 1 }} />
+                {[1, 2, 3, 4].map((i) => (
+                  <Box key={i} sx={{ mb: 2 }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                      <Skeleton variant="text" width="50%" height={18} />
+                      <Skeleton variant="text" width="15%" height={18} />
+                    </Box>
+                    <Skeleton variant="rectangular" width="100%" height={8} sx={{ borderRadius: 4 }} />
+                  </Box>
+                ))}
+              </CardContent>
+            </Card>
+          </Box>
+
+          {/* Main content */}
+          <Box sx={{ flex: "2 1 600px", minWidth: 0 }}>
+            {/* Projects card */}
+            <Card sx={{ mb: 4, borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+              <CardContent>
+                <Skeleton variant="text" width="25%" height={36} sx={{ mb: 3 }} />
+                {[1, 2].map((j) => (
+                  <Box key={j} sx={{ mb: 3, p: 2, border: "1px solid", borderColor: "grey.200", borderRadius: 3 }}>
+                    <Skeleton variant="rectangular" width="100%" height={160} sx={{ borderRadius: 2, mb: 2 }} />
+                    <Skeleton variant="text" width="55%" height={28} sx={{ mb: 1 }} />
+                    <Skeleton variant="text" width="90%" height={18} />
+                    <Skeleton variant="text" width="75%" height={18} sx={{ mb: 2 }} />
+                    <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
+                      {[1, 2, 3].map((k) => (
+                        <Skeleton key={k} variant="rounded" width={70} height={24} sx={{ borderRadius: 2 }} />
+                      ))}
+                    </Box>
+                    <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
+                      <Skeleton variant="rounded" width={90} height={32} sx={{ borderRadius: 2 }} />
+                      <Skeleton variant="rounded" width={100} height={32} sx={{ borderRadius: 2 }} />
+                    </Box>
+                  </Box>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Experience card */}
+            <Card sx={{ mb: 4, borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+              <CardContent>
+                <Skeleton variant="text" width="28%" height={36} sx={{ mb: 3 }} />
+                {[1, 2].map((j) => (
+                  <Box key={j} sx={{ mb: 3, p: 2, border: "1px solid", borderColor: "grey.200", borderRadius: 3 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                      <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1 }} />
+                      <Skeleton variant="text" width="50%" height={28} />
+                    </Box>
+                    <Skeleton variant="text" width="35%" height={22} sx={{ mb: 1 }} />
+                    <Skeleton variant="text" width="60%" height={18} sx={{ mb: 1 }} />
+                    <Skeleton variant="text" width="90%" height={18} />
+                    <Skeleton variant="text" width="80%" height={18} />
+                  </Box>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Education card */}
+            <Card sx={{ borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+              <CardContent>
+                <Skeleton variant="text" width="25%" height={36} sx={{ mb: 3 }} />
+                {[1].map((j) => (
+                  <Box key={j} sx={{ mb: 3, p: 2, border: "1px solid", borderColor: "grey.200", borderRadius: 3 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                      <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1 }} />
+                      <Skeleton variant="text" width="60%" height={28} />
+                    </Box>
+                    <Skeleton variant="text" width="40%" height={22} sx={{ mb: 1 }} />
+                    <Skeleton variant="text" width="45%" height={18} sx={{ mb: 1 }} />
+                    <Skeleton variant="text" width="85%" height={18} />
+                    <Skeleton variant="text" width="70%" height={18} />
+                  </Box>
+                ))}
+              </CardContent>
+            </Card>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
+  );
+}
+
 function PortfolioPage() {
   const params = useParams();
   const id = params.id as string;
@@ -325,13 +529,11 @@ function PortfolioPage() {
 
         if (result.success) {
           setPortfolioData(result.data);
-          // Track view after successfully loading portfolio data
           if (result.data?.user?.id) {
             trackView(result.data.user.id);
+            // Non-blocking: load follow status in background after page renders
+            fetchFollowStatus(result.data.user.id);
           }
-          
-          // Fetch follow status and followers count
-          await fetchFollowStatus(result.data.user.id);
         } else {
           setError("Failed to fetch portfolio data");
         }
@@ -350,67 +552,48 @@ function PortfolioPage() {
 
   // Function to fetch follow status and followers count
   const fetchFollowStatus = async (userId: string) => {
-    // console.log(userId);
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      if (!token) return;
 
-      // Fetch follow status
-      const statusResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/follow-status/${userId}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      // console.log(statusResponse);
+      // Fetch both in parallel
+      const [statusResponse, userResponse] = await Promise.all([
+        token
+          ? fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/follow-status/${userId}`, { headers })
+          : Promise.resolve(null),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/${userId}`, { headers }),
+      ]);
 
-      if (statusResponse.ok) {
+      const updates: Partial<typeof followStatus> = {};
+
+      if (statusResponse?.ok) {
         const statusResult = await statusResponse.json();
         if (statusResult.success) {
-          setFollowStatus(prev => ({
-            ...prev,
-            isFollowing: statusResult.data.isFollowing,
-          }));
+          updates.isFollowing = statusResult.data.isFollowing;
         }
       }
-
-      // Fetch user data with followers count
-      const userResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/${userId}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      // console.log(userResponse.data.followersCount);
 
       if (userResponse.ok) {
         const userResult = await userResponse.json();
-        // console.log(userResult);
         if (userResult.success) {
-          // Handle different possible data structures
-          const followersCount = userResult.data?.user?.followersCount || 
-                                userResult.data?.followersCount || 
-                                userResult.data?.followers?.length || 0;
-          const followingCount = userResult.data?.user?.followingCount || 
-                                userResult.data?.followingCount || 
-                                userResult.data?.following?.length || 0;
-          
-          setFollowStatus(prev => ({
-            ...prev,
-            followersCount,
-            followingCount,
-          }));
+          updates.followersCount =
+            userResult.data?.user?.followersCount ??
+            userResult.data?.followersCount ??
+            userResult.data?.followers?.length ??
+            0;
+          updates.followingCount =
+            userResult.data?.user?.followingCount ??
+            userResult.data?.followingCount ??
+            userResult.data?.following?.length ??
+            0;
         }
       }
 
+      if (Object.keys(updates).length > 0) {
+        setFollowStatus(prev => ({ ...prev, ...updates }));
+      }
     } catch (error) {
       console.error('Error fetching follow status:', error);
     }
@@ -511,18 +694,7 @@ function PortfolioPage() {
   };
 
   if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <CircularProgress size={60} />
-      </Box>
-    );
+    return <PortfolioSkeleton />;
   }
 
   if (error || !portfolioData) {

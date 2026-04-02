@@ -1,7 +1,20 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Box, Typography, Button, Card, CardContent, Avatar, TextField, Chip, IconButton, Alert, CircularProgress, Stack } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  Avatar,
+  TextField,
+  Chip,
+  IconButton,
+  Alert,
+  CircularProgress,
+  Stack,
+} from "@mui/material";
 import {
   Edit as EditIcon,
   Save as SaveIcon,
@@ -61,7 +74,9 @@ const initialFormData: ProfileFormData = {
   profileImage: "",
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub-backend.onrender.com/api';
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://protfolio-hub-backend.onrender.com/api";
 
 function Profile() {
   const { user } = useAuth();
@@ -74,7 +89,9 @@ function Profile() {
   const [formData, setFormData] = useState<ProfileFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedFilePreviewUrl, setSelectedFilePreviewUrl] = useState<string | null>(null);
+  const [selectedFilePreviewUrl, setSelectedFilePreviewUrl] = useState<
+    string | null
+  >(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -265,7 +282,7 @@ function Profile() {
   const handleDelete = async () => {
     if (
       !confirm(
-        "Are you sure you want to delete your profile? This action cannot be undone."
+        "Are you sure you want to delete your profile? This action cannot be undone.",
       )
     ) {
       return;
@@ -372,7 +389,11 @@ function Profile() {
             <Box sx={{ textAlign: "center", mb: 3 }}>
               <Box sx={{ position: "relative", display: "inline-block" }}>
                 <Avatar
-                  src={selectedFilePreviewUrl || formData.profileImage || profile?.profileImage}
+                  src={
+                    selectedFilePreviewUrl ||
+                    formData.profileImage ||
+                    profile?.profileImage
+                  }
                   sx={{
                     width: 120,
                     height: 120,
