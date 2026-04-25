@@ -69,7 +69,9 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  ArrowBack,
 } from "@mui/icons-material";
+import Link from "next/link";
 
 interface User {
   id: string;
@@ -102,7 +104,7 @@ interface Project {
   title: string;
   description: string;
   keyFeatures: string[];
-  technologies: string[]; 
+  technologies: string[];
   startDate: string;
   status: string;
   images: { url: string; _id: string }[];
@@ -290,8 +292,6 @@ function HideOnScroll(props: { children: React.ReactElement }) {
   );
 }
 
-
-
 function PortfolioSkeleton() {
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "grey.50" }}>
@@ -306,7 +306,12 @@ function PortfolioSkeleton() {
         <Container maxWidth="xl">
           <Toolbar sx={{ justifyContent: "space-between" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
+              <Skeleton
+                variant="circular"
+                width={40}
+                height={40}
+                sx={{ mr: 2 }}
+              />
               <Skeleton variant="text" width={140} height={28} />
             </Box>
             <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
@@ -328,7 +333,14 @@ function PortfolioSkeleton() {
         }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
             <Box sx={{ flex: "1 1 300px", textAlign: "center" }}>
               <Skeleton
                 variant="circular"
@@ -350,13 +362,39 @@ function PortfolioSkeleton() {
                 height={44}
                 sx={{ bgcolor: "rgba(255,255,255,0.15)", mb: 2 }}
               />
-              <Skeleton variant="text" width="92%" height={22} sx={{ bgcolor: "rgba(255,255,255,0.15)" }} />
-              <Skeleton variant="text" width="80%" height={22} sx={{ bgcolor: "rgba(255,255,255,0.15)", mb: 3 }} />
+              <Skeleton
+                variant="text"
+                width="92%"
+                height={22}
+                sx={{ bgcolor: "rgba(255,255,255,0.15)" }}
+              />
+              <Skeleton
+                variant="text"
+                width="80%"
+                height={22}
+                sx={{ bgcolor: "rgba(255,255,255,0.15)", mb: 3 }}
+              />
               <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-                <Skeleton variant="rounded" width={120} height={44} sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: 3 }} />
-                <Skeleton variant="rounded" width={110} height={44} sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: 3 }} />
+                <Skeleton
+                  variant="rounded"
+                  width={120}
+                  height={44}
+                  sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: 3 }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  width={110}
+                  height={44}
+                  sx={{ bgcolor: "rgba(255,255,255,0.15)", borderRadius: 3 }}
+                />
                 {[1, 2, 3].map((i) => (
-                  <Skeleton key={i} variant="circular" width={56} height={56} sx={{ bgcolor: "rgba(255,255,255,0.15)" }} />
+                  <Skeleton
+                    key={i}
+                    variant="circular"
+                    width={56}
+                    height={56}
+                    sx={{ bgcolor: "rgba(255,255,255,0.15)" }}
+                  />
                 ))}
               </Box>
             </Box>
@@ -370,15 +408,34 @@ function PortfolioSkeleton() {
           {/* Left sidebar */}
           <Box sx={{ flex: "1 1 320px", minWidth: 0 }}>
             {/* Contact card */}
-            <Card sx={{ mb: 4, borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
+            <Card
+              sx={{
+                mb: 4,
+                borderRadius: 4,
+                boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+              }}
+            >
               <CardContent>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-                  <Skeleton variant="rectangular" width={4} height={24} sx={{ mr: 2, borderRadius: 2 }} />
+                  <Skeleton
+                    variant="rectangular"
+                    width={4}
+                    height={24}
+                    sx={{ mr: 2, borderRadius: 2 }}
+                  />
                   <Skeleton variant="text" width={160} height={28} />
                 </Box>
                 {[1, 2, 3].map((i) => (
-                  <Box key={i} sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Skeleton variant="circular" width={24} height={24} sx={{ mr: 2 }} />
+                  <Box
+                    key={i}
+                    sx={{ display: "flex", alignItems: "center", mb: 2 }}
+                  >
+                    <Skeleton
+                      variant="circular"
+                      width={24}
+                      height={24}
+                      sx={{ mr: 2 }}
+                    />
                     <Skeleton variant="text" width="70%" height={20} />
                   </Box>
                 ))}
@@ -386,16 +443,40 @@ function PortfolioSkeleton() {
             </Card>
 
             {/* Social stats card */}
-            <Card sx={{ mb: 4, borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
+            <Card
+              sx={{
+                mb: 4,
+                borderRadius: 4,
+                boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+              }}
+            >
               <CardContent>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-                  <Skeleton variant="rectangular" width={4} height={24} sx={{ mr: 2, borderRadius: 2 }} />
+                  <Skeleton
+                    variant="rectangular"
+                    width={4}
+                    height={24}
+                    sx={{ mr: 2, borderRadius: 2 }}
+                  />
                   <Skeleton variant="text" width={120} height={28} />
                 </Box>
                 {[1, 2].map((i) => (
-                  <Box key={i} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                  <Box
+                    key={i}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 2,
+                    }}
+                  >
                     <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1 }} />
+                      <Skeleton
+                        variant="circular"
+                        width={24}
+                        height={24}
+                        sx={{ mr: 1 }}
+                      />
                       <Skeleton variant="text" width={80} height={20} />
                     </Box>
                     <Skeleton variant="text" width={40} height={28} />
@@ -405,20 +486,43 @@ function PortfolioSkeleton() {
             </Card>
 
             {/* Skills card */}
-            <Card sx={{ borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}>
+            <Card
+              sx={{ borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.08)" }}
+            >
               <CardContent>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-                  <Skeleton variant="rectangular" width={4} height={24} sx={{ mr: 2, borderRadius: 2 }} />
+                  <Skeleton
+                    variant="rectangular"
+                    width={4}
+                    height={24}
+                    sx={{ mr: 2, borderRadius: 2 }}
+                  />
                   <Skeleton variant="text" width={80} height={28} />
                 </Box>
-                <Skeleton variant="text" width="50%" height={20} sx={{ mb: 1 }} />
+                <Skeleton
+                  variant="text"
+                  width="50%"
+                  height={20}
+                  sx={{ mb: 1 }}
+                />
                 {[1, 2, 3, 4].map((i) => (
                   <Box key={i} sx={{ mb: 2 }}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        mb: 0.5,
+                      }}
+                    >
                       <Skeleton variant="text" width="50%" height={18} />
                       <Skeleton variant="text" width="15%" height={18} />
                     </Box>
-                    <Skeleton variant="rectangular" width="100%" height={8} sx={{ borderRadius: 4 }} />
+                    <Skeleton
+                      variant="rectangular"
+                      width="100%"
+                      height={8}
+                      sx={{ borderRadius: 4 }}
+                    />
                   </Box>
                 ))}
               </CardContent>
@@ -428,23 +532,74 @@ function PortfolioSkeleton() {
           {/* Main content */}
           <Box sx={{ flex: "2 1 600px", minWidth: 0 }}>
             {/* Projects card */}
-            <Card sx={{ mb: 4, borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+            <Card
+              sx={{
+                mb: 4,
+                borderRadius: 3,
+                boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+              }}
+            >
               <CardContent>
-                <Skeleton variant="text" width="25%" height={36} sx={{ mb: 3 }} />
+                <Skeleton
+                  variant="text"
+                  width="25%"
+                  height={36}
+                  sx={{ mb: 3 }}
+                />
                 {[1, 2].map((j) => (
-                  <Box key={j} sx={{ mb: 3, p: 2, border: "1px solid", borderColor: "grey.200", borderRadius: 3 }}>
-                    <Skeleton variant="rectangular" width="100%" height={160} sx={{ borderRadius: 2, mb: 2 }} />
-                    <Skeleton variant="text" width="55%" height={28} sx={{ mb: 1 }} />
+                  <Box
+                    key={j}
+                    sx={{
+                      mb: 3,
+                      p: 2,
+                      border: "1px solid",
+                      borderColor: "grey.200",
+                      borderRadius: 3,
+                    }}
+                  >
+                    <Skeleton
+                      variant="rectangular"
+                      width="100%"
+                      height={160}
+                      sx={{ borderRadius: 2, mb: 2 }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width="55%"
+                      height={28}
+                      sx={{ mb: 1 }}
+                    />
                     <Skeleton variant="text" width="90%" height={18} />
-                    <Skeleton variant="text" width="75%" height={18} sx={{ mb: 2 }} />
+                    <Skeleton
+                      variant="text"
+                      width="75%"
+                      height={18}
+                      sx={{ mb: 2 }}
+                    />
                     <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
                       {[1, 2, 3].map((k) => (
-                        <Skeleton key={k} variant="rounded" width={70} height={24} sx={{ borderRadius: 2 }} />
+                        <Skeleton
+                          key={k}
+                          variant="rounded"
+                          width={70}
+                          height={24}
+                          sx={{ borderRadius: 2 }}
+                        />
                       ))}
                     </Box>
                     <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
-                      <Skeleton variant="rounded" width={90} height={32} sx={{ borderRadius: 2 }} />
-                      <Skeleton variant="rounded" width={100} height={32} sx={{ borderRadius: 2 }} />
+                      <Skeleton
+                        variant="rounded"
+                        width={90}
+                        height={32}
+                        sx={{ borderRadius: 2 }}
+                      />
+                      <Skeleton
+                        variant="rounded"
+                        width={100}
+                        height={32}
+                        sx={{ borderRadius: 2 }}
+                      />
                     </Box>
                   </Box>
                 ))}
@@ -452,17 +607,52 @@ function PortfolioSkeleton() {
             </Card>
 
             {/* Experience card */}
-            <Card sx={{ mb: 4, borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+            <Card
+              sx={{
+                mb: 4,
+                borderRadius: 3,
+                boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+              }}
+            >
               <CardContent>
-                <Skeleton variant="text" width="28%" height={36} sx={{ mb: 3 }} />
+                <Skeleton
+                  variant="text"
+                  width="28%"
+                  height={36}
+                  sx={{ mb: 3 }}
+                />
                 {[1, 2].map((j) => (
-                  <Box key={j} sx={{ mb: 3, p: 2, border: "1px solid", borderColor: "grey.200", borderRadius: 3 }}>
+                  <Box
+                    key={j}
+                    sx={{
+                      mb: 3,
+                      p: 2,
+                      border: "1px solid",
+                      borderColor: "grey.200",
+                      borderRadius: 3,
+                    }}
+                  >
                     <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1 }} />
+                      <Skeleton
+                        variant="circular"
+                        width={24}
+                        height={24}
+                        sx={{ mr: 1 }}
+                      />
                       <Skeleton variant="text" width="50%" height={28} />
                     </Box>
-                    <Skeleton variant="text" width="35%" height={22} sx={{ mb: 1 }} />
-                    <Skeleton variant="text" width="60%" height={18} sx={{ mb: 1 }} />
+                    <Skeleton
+                      variant="text"
+                      width="35%"
+                      height={22}
+                      sx={{ mb: 1 }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width="60%"
+                      height={18}
+                      sx={{ mb: 1 }}
+                    />
                     <Skeleton variant="text" width="90%" height={18} />
                     <Skeleton variant="text" width="80%" height={18} />
                   </Box>
@@ -471,17 +661,48 @@ function PortfolioSkeleton() {
             </Card>
 
             {/* Education card */}
-            <Card sx={{ borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+            <Card
+              sx={{ borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}
+            >
               <CardContent>
-                <Skeleton variant="text" width="25%" height={36} sx={{ mb: 3 }} />
+                <Skeleton
+                  variant="text"
+                  width="25%"
+                  height={36}
+                  sx={{ mb: 3 }}
+                />
                 {[1].map((j) => (
-                  <Box key={j} sx={{ mb: 3, p: 2, border: "1px solid", borderColor: "grey.200", borderRadius: 3 }}>
+                  <Box
+                    key={j}
+                    sx={{
+                      mb: 3,
+                      p: 2,
+                      border: "1px solid",
+                      borderColor: "grey.200",
+                      borderRadius: 3,
+                    }}
+                  >
                     <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <Skeleton variant="circular" width={24} height={24} sx={{ mr: 1 }} />
+                      <Skeleton
+                        variant="circular"
+                        width={24}
+                        height={24}
+                        sx={{ mr: 1 }}
+                      />
                       <Skeleton variant="text" width="60%" height={28} />
                     </Box>
-                    <Skeleton variant="text" width="40%" height={22} sx={{ mb: 1 }} />
-                    <Skeleton variant="text" width="45%" height={18} sx={{ mb: 1 }} />
+                    <Skeleton
+                      variant="text"
+                      width="40%"
+                      height={22}
+                      sx={{ mb: 1 }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width="45%"
+                      height={18}
+                      sx={{ mb: 1 }}
+                    />
                     <Skeleton variant="text" width="85%" height={18} />
                     <Skeleton variant="text" width="70%" height={18} />
                   </Box>
@@ -499,7 +720,7 @@ function PortfolioPage() {
   const params = useParams();
   const id = params.id as string;
   const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -516,14 +737,16 @@ function PortfolioPage() {
     followingCount: 0,
   });
   const [followLoading, setFollowLoading] = useState(false);
-  const [projectImageIndices, setProjectImageIndices] = useState<Record<string, number>>({});
+  const [projectImageIndices, setProjectImageIndices] = useState<
+    Record<string, number>
+  >({});
 
   useEffect(() => {
     const fetchPortfolioData = async () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/portfolio/email/${id}`
+          `${process.env.NEXT_PUBLIC_API_URL}/portfolio/email/${id}`,
         );
         const result = await response.json();
 
@@ -553,15 +776,21 @@ function PortfolioPage() {
   // Function to fetch follow status and followers count
   const fetchFollowStatus = async (userId: string) => {
     try {
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
 
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
 
       // Fetch both in parallel
       const [statusResponse, userResponse] = await Promise.all([
         token
-          ? fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/follow-status/${userId}`, { headers })
+          ? fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/user/follow-status/${userId}`,
+              { headers },
+            )
           : Promise.resolve(null),
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/${userId}`, { headers }),
       ]);
@@ -592,10 +821,10 @@ function PortfolioPage() {
       }
 
       if (Object.keys(updates).length > 0) {
-        setFollowStatus(prev => ({ ...prev, ...updates }));
+        setFollowStatus((prev) => ({ ...prev, ...updates }));
       }
     } catch (error) {
-      console.error('Error fetching follow status:', error);
+      console.error("Error fetching follow status:", error);
     }
   };
 
@@ -605,23 +834,24 @@ function PortfolioPage() {
 
     try {
       setFollowLoading(true);
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       if (!token) {
         // Redirect to login or show login modal
-        window.location.href = '/auth/login';
+        window.location.href = "/auth/login";
         return;
       }
 
-      const method = followStatus.isFollowing ? 'DELETE' : 'POST';
+      const method = followStatus.isFollowing ? "DELETE" : "POST";
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/${followStatus.isFollowing ? 'unfollow' : 'follow'}/${portfolioData.user.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/user/${followStatus.isFollowing ? "unfollow" : "follow"}/${portfolioData.user.id}`,
         {
           method,
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       // console.log(response);
@@ -629,7 +859,7 @@ function PortfolioPage() {
       if (response.ok) {
         const result = await response.json();
         if (result.success) {
-          setFollowStatus(prev => ({
+          setFollowStatus((prev) => ({
             isFollowing: !prev.isFollowing,
             followersCount: result.data.followers,
             followingCount: result.data.following,
@@ -637,7 +867,7 @@ function PortfolioPage() {
         }
       }
     } catch (error) {
-      console.error('Error toggling follow status:', error);
+      console.error("Error toggling follow status:", error);
     } finally {
       setFollowLoading(false);
     }
@@ -984,13 +1214,24 @@ function PortfolioPage() {
       >
         <Container maxWidth="xl">
           <Toolbar sx={{ justifyContent: "space-between" }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Link
+                href="/"
+                style={{
+                  backgroundColor: "green",
+                  borderRadius: "100%",
+                  padding: 10,
+                  boxShadow: "0 4px 12px rgba(46, 125, 50, 0.3)",
+                  transition: "all 0.3s ease",
+                }}
+              >
+                <ArrowBack sx={{ color: "white" }} />
+              </Link>
               <Avatar
-                src={profile?.profileImage || './logo.png'}
+                src={profile?.profileImage || "./logo.png"}
                 sx={{
                   width: 40,
                   height: 40,
-                  mr: 2,
                   border: 2,
                   borderColor: "primary.main",
                 }}
@@ -1011,7 +1252,9 @@ function PortfolioPage() {
             <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
               {navigationItems.map(
                 (item) =>
-                  (item.id === "home" || item.id === "about" || (item.count && item.count > 0)) && (
+                  (item.id === "home" ||
+                    item.id === "about" ||
+                    (item.count && item.count > 0)) && (
                     <Button
                       key={item.id}
                       onClick={() => scrollToSection(item.id)}
@@ -1053,7 +1296,7 @@ function PortfolioPage() {
                         />
                       )}
                     </Button>
-                  )
+                  ),
               )}
             </Box>
 
@@ -1190,7 +1433,7 @@ function PortfolioPage() {
                     }}
                   >
                     <Avatar
-                      src={profile?.profileImage || './logo.png'}
+                      src={profile?.profileImage || "./logo.png"}
                       sx={{
                         width: "100%",
                         height: "100%",
@@ -1305,17 +1548,32 @@ function PortfolioPage() {
                     >
                       Connect with me
                     </Typography>
-                    <Stack direction="row" spacing={2} flexWrap="wrap" alignItems="center">
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      flexWrap="wrap"
+                      alignItems="center"
+                    >
                       {/* Follow Button */}
                       <Button
-                        variant={followStatus.isFollowing ? "outlined" : "contained"}
-                        startIcon={followLoading ? <CircularProgress size={16} /> : (followStatus.isFollowing ? <Check /> : <Add />)}
+                        variant={
+                          followStatus.isFollowing ? "outlined" : "contained"
+                        }
+                        startIcon={
+                          followLoading ? (
+                            <CircularProgress size={16} />
+                          ) : followStatus.isFollowing ? (
+                            <Check />
+                          ) : (
+                            <Add />
+                          )
+                        }
                         onClick={handleFollowToggle}
                         disabled={followLoading}
                         sx={{
                           color: followStatus.isFollowing ? "white" : "white",
-                          backgroundColor: followStatus.isFollowing 
-                            ? "rgba(255,255,255,0.2)" 
+                          backgroundColor: followStatus.isFollowing
+                            ? "rgba(255,255,255,0.2)"
                             : "rgba(255,255,255,0.25)",
                           borderColor: "rgba(255,255,255,0.3)",
                           borderWidth: 2,
@@ -1327,8 +1585,8 @@ function PortfolioPage() {
                           fontWeight: 600,
                           minWidth: 120,
                           "&:hover": {
-                            backgroundColor: followStatus.isFollowing 
-                              ? "rgba(255,255,255,0.3)" 
+                            backgroundColor: followStatus.isFollowing
+                              ? "rgba(255,255,255,0.3)"
                               : "rgba(255,255,255,0.35)",
                             transform: "translateY(-2px)",
                             boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
@@ -1353,8 +1611,14 @@ function PortfolioPage() {
                         }}
                       >
                         <People sx={{ fontSize: 18, mr: 1 }} />
-                        <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
-                          {followStatus.followersCount} {followStatus.followersCount === 1 ? 'follower' : 'followers'}
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: 600, fontSize: "0.9rem" }}
+                        >
+                          {followStatus.followersCount}{" "}
+                          {followStatus.followersCount === 1
+                            ? "follower"
+                            : "followers"}
                         </Typography>
                       </Box>
 
@@ -1439,7 +1703,14 @@ function PortfolioPage() {
                         </IconButton>
                       )}
                       {/* Resume */}
-                      <Tooltip title={downloadingResume ? "Generating PDF..." : "Download Resume PDF"} arrow>
+                      <Tooltip
+                        title={
+                          downloadingResume
+                            ? "Generating PDF..."
+                            : "Download Resume PDF"
+                        }
+                        arrow
+                      >
                         <IconButton
                           onClick={async () => {
                             if (portfolioData) {
@@ -1447,7 +1718,10 @@ function PortfolioPage() {
                               try {
                                 await generateResumePDF(portfolioData);
                               } catch (error) {
-                                console.error('Error generating resume:', error);
+                                console.error(
+                                  "Error generating resume:",
+                                  error,
+                                );
                                 // You could add a toast notification here
                               } finally {
                                 setDownloadingResume(false);
@@ -1469,7 +1743,10 @@ function PortfolioPage() {
                           }}
                         >
                           {downloadingResume ? (
-                            <CircularProgress size={20} sx={{ color: "white" }} />
+                            <CircularProgress
+                              size={20}
+                              sx={{ color: "white" }}
+                            />
                           ) : (
                             <FileDownload sx={{ fontSize: 28 }} />
                           )}
@@ -1598,25 +1875,43 @@ function PortfolioPage() {
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <People sx={{ color: "primary.main", mr: 1 }} />
                       <Typography variant="body2" color="text.secondary">
                         Followers
                       </Typography>
                     </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: "primary.main" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: 600, color: "primary.main" }}
+                    >
                       {followStatus.followersCount}
                     </Typography>
                   </Box>
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <People sx={{ color: "success.main", mr: 1 }} />
                       <Typography variant="body2" color="text.secondary">
                         Following
                       </Typography>
                     </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: "success.main" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: 600, color: "success.main" }}
+                    >
                       {followStatus.followingCount}
                     </Typography>
                   </Box>
@@ -1772,7 +2067,11 @@ function PortfolioPage() {
                                 >
                                   <Box
                                     component="img"
-                                    src={project.images[projectImageIndices[project._id] || 0]?.url}
+                                    src={
+                                      project.images[
+                                        projectImageIndices[project._id] || 0
+                                      ]?.url
+                                    }
                                     alt={`${project.title} - Image ${(projectImageIndices[project._id] || 0) + 1}`}
                                     sx={{
                                       width: "100%",
@@ -1788,23 +2087,34 @@ function PortfolioPage() {
                                         <>
                                           <IconButton
                                             onClick={() => {
-                                              const currentIndex = projectImageIndices[project._id] || 0;
-                                              const newIndex = currentIndex === 0 
-                                                ? Math.min(project.images.length - 1, 4) 
-                                                : currentIndex - 1;
-                                              setProjectImageIndices(prev => ({
-                                                ...prev,
-                                                [project._id]: newIndex,
-                                              }));
+                                              const currentIndex =
+                                                projectImageIndices[
+                                                  project._id
+                                                ] || 0;
+                                              const newIndex =
+                                                currentIndex === 0
+                                                  ? Math.min(
+                                                      project.images.length - 1,
+                                                      4,
+                                                    )
+                                                  : currentIndex - 1;
+                                              setProjectImageIndices(
+                                                (prev) => ({
+                                                  ...prev,
+                                                  [project._id]: newIndex,
+                                                }),
+                                              );
                                             }}
                                             sx={{
                                               position: "absolute",
                                               left: 8,
                                               top: "50%",
                                               transform: "translateY(-50%)",
-                                              backgroundColor: "rgba(25, 194, 33, 0.9)",
+                                              backgroundColor:
+                                                "rgba(25, 194, 33, 0.9)",
                                               "&:hover": {
-                                                backgroundColor: "rgb(18, 128, 23)",
+                                                backgroundColor:
+                                                  "rgb(18, 128, 23)",
                                               },
                                               zIndex: 2,
                                             }}
@@ -1814,24 +2124,35 @@ function PortfolioPage() {
                                           </IconButton>
                                           <IconButton
                                             onClick={() => {
-                                              const currentIndex = projectImageIndices[project._id] || 0;
-                                              const maxIndex = Math.min(project.images.length - 1, 4);
-                                              const newIndex = currentIndex >= maxIndex 
-                                                ? 0 
-                                                : currentIndex + 1;
-                                              setProjectImageIndices(prev => ({
-                                                ...prev,
-                                                [project._id]: newIndex,
-                                              }));
+                                              const currentIndex =
+                                                projectImageIndices[
+                                                  project._id
+                                                ] || 0;
+                                              const maxIndex = Math.min(
+                                                project.images.length - 1,
+                                                4,
+                                              );
+                                              const newIndex =
+                                                currentIndex >= maxIndex
+                                                  ? 0
+                                                  : currentIndex + 1;
+                                              setProjectImageIndices(
+                                                (prev) => ({
+                                                  ...prev,
+                                                  [project._id]: newIndex,
+                                                }),
+                                              );
                                             }}
                                             sx={{
                                               position: "absolute",
                                               right: 8,
                                               top: "50%",
                                               transform: "translateY(-50%)",
-                                              backgroundColor: "rgba(25, 194, 33, 0.9)",
+                                              backgroundColor:
+                                                "rgba(25, 194, 33, 0.9)",
                                               "&:hover": {
-                                                backgroundColor: "rgb(18, 128, 23)",
+                                                backgroundColor:
+                                                  "rgb(18, 128, 23)",
                                               },
                                               zIndex: 2,
                                             }}
@@ -1853,32 +2174,42 @@ function PortfolioPage() {
                                           zIndex: 2,
                                         }}
                                       >
-                                        {project.images.slice(0, 5).map((_, index) => (
-                                          <Box
-                                            key={index}
-                                            onClick={() => {
-                                              setProjectImageIndices(prev => ({
-                                                ...prev,
-                                                [project._id]: index,
-                                              }));
-                                            }}
-                                            sx={{
-                                              width: 8,
-                                              height: 8,
-                                              borderRadius: "50%",
-                                              backgroundColor: (projectImageIndices[project._id] || 0) === index 
-                                                ? "primary.main" 
-                                                : "rgba(255, 255, 255, 0.5)",
-                                              cursor: "pointer",
-                                              transition: "all 0.3s ease",
-                                              "&:hover": {
-                                                backgroundColor: (projectImageIndices[project._id] || 0) === index 
-                                                  ? "primary.dark" 
-                                                  : "rgba(255, 255, 255, 0.8)",
-                                              },
-                                            }}
-                                          />
-                                        ))}
+                                        {project.images
+                                          .slice(0, 5)
+                                          .map((_, index) => (
+                                            <Box
+                                              key={index}
+                                              onClick={() => {
+                                                setProjectImageIndices(
+                                                  (prev) => ({
+                                                    ...prev,
+                                                    [project._id]: index,
+                                                  }),
+                                                );
+                                              }}
+                                              sx={{
+                                                width: 8,
+                                                height: 8,
+                                                borderRadius: "50%",
+                                                backgroundColor:
+                                                  (projectImageIndices[
+                                                    project._id
+                                                  ] || 0) === index
+                                                    ? "primary.main"
+                                                    : "rgba(255, 255, 255, 0.5)",
+                                                cursor: "pointer",
+                                                transition: "all 0.3s ease",
+                                                "&:hover": {
+                                                  backgroundColor:
+                                                    (projectImageIndices[
+                                                      project._id
+                                                    ] || 0) === index
+                                                      ? "primary.dark"
+                                                      : "rgba(255, 255, 255, 0.8)",
+                                                },
+                                              }}
+                                            />
+                                          ))}
                                       </Box>
                                     </>
                                   )}
@@ -1975,7 +2306,10 @@ function PortfolioPage() {
                                         size="small"
                                         variant="outlined"
                                         color="secondary"
-                                        sx={{ fontSize: "0.7rem", borderRadius: 2 }}
+                                        sx={{
+                                          fontSize: "0.7rem",
+                                          borderRadius: 2,
+                                        }}
                                       />
                                     ))}
                                   {project?.technologies?.length > 3 && (
@@ -1984,7 +2318,10 @@ function PortfolioPage() {
                                       size="small"
                                       variant="outlined"
                                       color="secondary"
-                                      sx={{ fontSize: "0.7rem", borderRadius: 2 }}
+                                      sx={{
+                                        fontSize: "0.7rem",
+                                        borderRadius: 2,
+                                      }}
                                     />
                                   )}
                                 </Box>
@@ -2133,7 +2470,7 @@ function PortfolioPage() {
                                     size="small"
                                     variant="outlined"
                                     color="secondary"
-                                    sx={{ borderRadius: 2, fontSize: "0.7rem"  }}
+                                    sx={{ borderRadius: 2, fontSize: "0.7rem" }}
                                   />
                                 ))}
                               </Stack>
@@ -2274,7 +2611,14 @@ function PortfolioPage() {
                     >
                       Certifications
                     </Typography>
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, alignItems: "stretch" }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 2,
+                        alignItems: "stretch",
+                      }}
+                    >
                       {certifications?.slice(0, 2).map((cert, index) => (
                         <Grow in timeout={500 + index * 100} key={cert._id}>
                           <Box sx={{ flex: "1 1 250px", minWidth: 0 }}>
@@ -2304,7 +2648,11 @@ function PortfolioPage() {
                                 }}
                               >
                                 {/* <Star color="primary" sx={{ mr: 1 }} /> */}
-                                <Avatar src={cert.issuerLogo} alt={cert.issuer} sx={{ width: 24, height: 24, mr: 1 }} />
+                                <Avatar
+                                  src={cert.issuerLogo}
+                                  alt={cert.issuer}
+                                  sx={{ width: 24, height: 24, mr: 1 }}
+                                />
                                 <Typography
                                   variant="subtitle1"
                                   sx={{ fontWeight: 600 }}
@@ -2348,7 +2696,10 @@ function PortfolioPage() {
                                       size="small"
                                       variant="outlined"
                                       color="secondary"
-                                      sx={{ borderRadius: 2, fontSize: "0.7rem" }}
+                                      sx={{
+                                        borderRadius: 2,
+                                        fontSize: "0.7rem",
+                                      }}
                                     />
                                   ))}
                                 </Box>
@@ -2535,35 +2886,55 @@ function PortfolioPage() {
                                 {research.description}
                               </Typography>
 
-
                               <Typography
                                 variant="body2"
                                 color="text.secondary"
-                                sx={{ mb: 2, whiteSpace: "pre-line", fontSize: "0.7rem" }}
+                                sx={{
+                                  mb: 2,
+                                  whiteSpace: "pre-line",
+                                  fontSize: "0.7rem",
+                                }}
                               >
-                                <span style={{ fontWeight: "bold" }}>Impact Statement:</span> {research.impactStatement}
+                                <span style={{ fontWeight: "bold" }}>
+                                  Impact Statement:
+                                </span>{" "}
+                                {research.impactStatement}
                               </Typography>
 
-                              <Box sx={{ display: "flex", flexDirection: "column", gap: 1, my: 2}}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: 1,
+                                  my: 2,
+                                }}
+                              >
                                 <Typography
                                   variant="body2"
                                   color="text.secondary"
-                                  sx={{ whiteSpace: "pre-line", fontSize: "0.7rem" }}
+                                  sx={{
+                                    whiteSpace: "pre-line",
+                                    fontSize: "0.7rem",
+                                  }}
                                 >
-                                  <span style={{ fontWeight: "bold" }}>Co-Authors:</span>
+                                  <span style={{ fontWeight: "bold" }}>
+                                    Co-Authors:
+                                  </span>
                                 </Typography>
                                 {research?.coAuthors?.map((coAuthor, index) => (
                                   <Typography
                                     key={index}
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ whiteSpace: "pre-line", fontSize: "0.7rem" }}
-                                >
-                                  {coAuthor.name} - {coAuthor.institution}
-                                </Typography>
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{
+                                      whiteSpace: "pre-line",
+                                      fontSize: "0.7rem",
+                                    }}
+                                  >
+                                    {coAuthor.name} - {coAuthor.institution}
+                                  </Typography>
                                 ))}
                               </Box>
-
 
                               {research?.links?.pdf && (
                                 <Button
