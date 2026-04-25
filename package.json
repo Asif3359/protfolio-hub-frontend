@@ -1,13 +1,21 @@
 {
   "name": "protfolio-hub-frontend",
   "version": "0.1.0",
+  "description": "Portfolio Hub - manage and showcase your professional portfolio",
+  "author": {
+    "name": "Asif Ahammad",
+    "email": "asifahammad359@gmail.com"
+  },
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "electron:compile": "tsc --project tsconfig.electron.json",
+    "electron:dev": "cross-env NODE_ENV=development nodemon --exec 'electron dist-electron/main.js' --watch main.ts --watch preload.ts --watch tsconfig.electron.json --delay 1",
+    "electron:build": "npm run build && cp -r public .next/standalone/public && cp -r .next/static .next/standalone/.next/static && npm run electron:compile && electron-builder"
   },
+  "main": "dist-electron/main.js",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -27,12 +35,49 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.19.39",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^41.3.0",
+    "electron-builder": "^26.8.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.14",
+    "nodemon": "^3.1.14",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "build": {
+    "appId": "com.asifahammad.protfoliohub",
+    "productName": "Protfolio Hub",
+    "asar": false,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist-electron/**/*",
+      ".next/standalone/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ],
+      "icon": "public/icon.png"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "public/icon.png"
+    },
+    "linux": {
+      "target": [
+        { "target": "AppImage", "arch": ["x64"] },
+        { "target": "deb", "arch": ["x64"] }
+      ],
+      "icon": "public/icon.png",
+      "category": "Utility"
+    }
   }
 }
