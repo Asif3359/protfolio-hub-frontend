@@ -1,5 +1,6 @@
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, session } from 'electron';
 import { spawn, ChildProcess } from 'child_process';
+import * as net from 'net';
 import path from 'path';
 
 app.disableHardwareAcceleration();
@@ -7,9 +8,23 @@ app.commandLine.appendSwitch('no-sandbox');
 app.commandLine.appendSwitch('disable-dev-shm-usage');
 
 const isDev = process.env.NODE_ENV === 'development';
+const DEV_PORT = 3001;
 
 let mainWindow: BrowserWindow | null = null;
 let nextProcess: ChildProcess | null = null;
+let serverPort = DEV_PORT;
+
+function getFreePort(): Promise<number> {
+    return new Promise((resolve, reject) => {
+        const srv = net.createServer();
+        srv.listen(0, '127.0.0.1', () => {
+            const address = srv.address();
+            const port = typeof address === 'object' && address ? address.port : 0;
+            srv.close(() => resolve(port));
+        });
+        srv.on('error', reject);
+    });
+}
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -29,23 +44,16 @@ function createWindow() {
         return { action: 'deny' };
     });
 
-    // Open DevTools to diagnose rendering issues
-    mainWindow.webContents.openDevTools();
-
-    const url = 'http://localhost:3001';
+    if (isDev) mainWindow.webContents.openDevTools();
 
     const doLoad = () => {
-        mainWindow?.loadURL(url)
-            .then(() => {
-                console.log('[Electron] loadURL resolved');
-            })
-            .catch((err) => {
-                console.error('[Electron] loadURL failed:', err);
-            });
+        const url = `http://127.0.0.1:${serverPort}`;
 
-        // Show after page navigation completes + small React hydration delay
+        mainWindow?.loadURL(url)
+            .then(() => console.log('[Electron] loadURL resolved'))
+            .catch((err) => console.error('[Electron] loadURL failed:', err));
+
         mainWindow?.webContents.once('did-finish-load', () => {
-            console.log('[Electron] did-finish-load');
             setTimeout(() => {
                 if (mainWindow && !mainWindow.isVisible()) {
                     mainWindow.show();
@@ -54,10 +62,8 @@ function createWindow() {
             }, 1500);
         });
 
-        // Hard fallback — show window no matter what after 15 s
         setTimeout(() => {
             if (mainWindow && !mainWindow.isVisible()) {
-                console.log('[Electron] fallback show');
                 mainWindow.show();
                 mainWindow.focus();
             }
@@ -65,17 +71,24 @@ function createWindow() {
     };
 
     if (isDev) {
-        waitForNextServer().then(doLoad).catch(console.error);
+        serverPort = DEV_PORT;
+        waitForServer().then(doLoad).catch(console.error);
     } else {
-        startNextServer().then(doLoad).catch(console.error);
+        getFreePort()
+            .then((port) => {
+                serverPort = port;
+                return startNextServer(port);
+            })
+            .then(doLoad)
+            .catch(console.error);
     }
 }
 
-function waitForNextServer(timeout = 60000): Promise<void> {
+function waitForServer(timeout = 60000): Promise<void> {
     return new Promise((resolve, reject) => {
         const start = Date.now();
         const check = () => {
-            fetch('http://localhost:3001', { method: 'HEAD' })
+            fetch(`http://127.0.0.1:${serverPort}`, { method: 'HEAD' })
                 .then(() => resolve())
                 .catch(() => {
                     if (Date.now() - start > timeout) {
@@ -89,7 +102,7 @@ function waitForNextServer(timeout = 60000): Promise<void> {
     });
 }
 
-function startNextServer(): Promise<void> {
+function startNextServer(port: number): Promise<void> {
     return new Promise((resolve, reject) => {
         const standaloneDir = path.join(__dirname, '..', '.next', 'standalone');
         const serverScript = path.join(standaloneDir, 'server.js');
@@ -100,8 +113,8 @@ function startNextServer(): Promise<void> {
             env: {
                 ...process.env,
                 NODE_ENV: 'production',
-                PORT: '3001',
-                HOSTNAME: 'localhost',
+                PORT: String(port),
+                HOSTNAME: '127.0.0.1',
             },
         });
         nextProcess = server;
@@ -117,11 +130,24 @@ function startNextServer(): Promise<void> {
         });
         server.on('error', reject);
 
-        waitForNextServer().then(resolve).catch(reject);
+        waitForServer().then(resolve).catch(reject);
     });
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+    const wsBackend = process.env.NEXT_PUBLIC_WS_URL ?? 'https://protfolio-hub-backend.onrender.com';
+
+    // Only rewrite Origin for WebSocket/Socket.IO connections to the backend.
+    // HTTP API calls go through the Next.js proxy route and never reach here.
+    session.defaultSession.webRequest.onBeforeSendHeaders(
+        { urls: [`${wsBackend}/*`] },
+        (details: Electron.OnBeforeSendHeadersListenerDetails, callback: (r: Electron.BeforeSendResponse) => void) => {
+            details.requestHeaders['Origin'] = 'http://localhost:3001';
+            callback({ requestHeaders: details.requestHeaders });
+        },
+    );
+    createWindow();
+});
 
 app.on('window-all-closed', () => {
     if (nextProcess) nextProcess.kill();

@@ -13,7 +13,7 @@
     "start": "next start -p 3001",
     "electron:compile": "tsc --project tsconfig.electron.json",
     "electron:dev": "npm run electron:compile && cross-env NODE_ENV=development concurrently -k -n \"Next,Electron\" \"next dev -p 3001\" \"electron --no-sandbox dist-electron/main.js\"",
-    "electron:build": "npm run build && cp -r public .next/standalone/public && cp -r .next/static .next/standalone/.next/static && npm run electron:compile && electron-builder"
+    "electron:build": "npm run build && cp -r public .next/standalone/public && cp -r .next/static .next/standalone/.next/static && npm run electron:compile && npx electron-builder"
   },
   "main": "dist-electron/main.js",
   "dependencies": {
@@ -77,7 +77,8 @@
         { "target": "deb", "arch": ["x64"] }
       ],
       "icon": "public/icon.png",
-      "category": "Utility"
+      "category": "Utility",
+      "executableArgs": ["--no-sandbox", "--disable-dev-shm-usage"]
     }
   }
 }
