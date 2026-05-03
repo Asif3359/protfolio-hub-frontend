@@ -32,7 +32,7 @@ function createWindow() {
     // Open DevTools to diagnose rendering issues
     mainWindow.webContents.openDevTools();
 
-    const url = 'http://localhost:3000';
+    const url = 'http://localhost:3001';
 
     const doLoad = () => {
         mainWindow?.loadURL(url)
@@ -65,7 +65,7 @@ function createWindow() {
     };
 
     if (isDev) {
-        doLoad();
+        waitForNextServer().then(doLoad).catch(console.error);
     } else {
         startNextServer().then(doLoad).catch(console.error);
     }
@@ -75,7 +75,7 @@ function waitForNextServer(timeout = 60000): Promise<void> {
     return new Promise((resolve, reject) => {
         const start = Date.now();
         const check = () => {
-            fetch('http://localhost:3000', { method: 'HEAD' })
+            fetch('http://localhost:3001', { method: 'HEAD' })
                 .then(() => resolve())
                 .catch(() => {
                     if (Date.now() - start > timeout) {
@@ -100,7 +100,7 @@ function startNextServer(): Promise<void> {
             env: {
                 ...process.env,
                 NODE_ENV: 'production',
-                PORT: '3000',
+                PORT: '3001',
                 HOSTNAME: 'localhost',
             },
         });

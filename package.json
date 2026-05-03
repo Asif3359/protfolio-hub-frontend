@@ -8,11 +8,11 @@
   },
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "electron:compile": "tsc --project tsconfig.electron.json",
-    "electron:dev": "cross-env NODE_ENV=development nodemon --exec 'electron dist-electron/main.js' --watch main.ts --watch preload.ts --watch tsconfig.electron.json --delay 1",
+    "electron:dev": "npm run electron:compile && cross-env NODE_ENV=development concurrently -k -n \"Next,Electron\" \"next dev -p 3001\" \"electron --no-sandbox dist-electron/main.js\"",
     "electron:build": "npm run build && cp -r public .next/standalone/public && cp -r .next/static .next/standalone/.next/static && npm run electron:compile && electron-builder"
   },
   "main": "dist-electron/main.js",
