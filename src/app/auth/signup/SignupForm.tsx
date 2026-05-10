@@ -33,12 +33,12 @@ export const SignupForm = () => {
   const [showResendButton, setShowResendButton] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [pollIntervalRef, setPollIntervalRef] = useState<NodeJS.Timeout | null>(
-    null
+    null,
   );
   const [countdownIntervalRef, setCountdownIntervalRef] =
     useState<NodeJS.Timeout | null>(null);
 
-  const { signup, verifyEmail } = useAuth();
+  const { signup, checkVerification, resendVerification } = useAuth();
   const router = useRouter();
 
   // Cleanup intervals on component unmount
@@ -69,22 +69,11 @@ export const SignupForm = () => {
     setError("");
 
     try {
-      const response = await fetch(
-        "https://protfolio-hub-backend.onrender.com/api/auth/resend-verification",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: formData.email }),
-        }
-      );
+      const result = await resendVerification(formData.email);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (result.success) {
         setSuccess(
-          "Verification email sent successfully! Please check your inbox."
+          "Verification email sent successfully! Please check your inbox.",
         );
         setShowResendButton(false);
         setVerifying(true);
@@ -97,54 +86,37 @@ export const SignupForm = () => {
         // Restart polling
         const pollInterval = setInterval(async () => {
           try {
-            const response = await fetch(
-              "https://protfolio-hub-backend.onrender.com/api/auth/check-verification",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email: formData.email }),
+            const data = await checkVerification(formData.email);
+
+            if (data.verified) {
+              // Clear all intervals
+              if (pollIntervalRef) clearInterval(pollIntervalRef);
+              if (countdownIntervalRef) clearInterval(countdownIntervalRef);
+              setPollIntervalRef(null);
+              setCountdownIntervalRef(null);
+
+              setVerifying(false);
+              setVerificationCountdown(0);
+              setShowResendButton(false); // Hide resend button
+              setSuccess(
+                "Email verified successfully! Redirecting to dashboard...",
+              );
+
+              // Set user state in sessionStorage for resend verification
+              if (data.user) {
+                sessionStorage.setItem("user", JSON.stringify(data.user));
               }
-            );
 
-            const data = await response.json();
-
-                          if (data.verified) {
-                // Clear all intervals
-                if (pollIntervalRef) clearInterval(pollIntervalRef);
-                if (countdownIntervalRef) clearInterval(countdownIntervalRef);
-                setPollIntervalRef(null);
-                setCountdownIntervalRef(null);
-
-                setVerifying(false);
-                setVerificationCountdown(0);
-                setShowResendButton(false); // Hide resend button
-                setSuccess(
-                  "Email verified successfully! Redirecting to dashboard..."
-                );
-
-                // Set user state in sessionStorage for resend verification
-                if (data.user) {
-                  const storage = sessionStorage;
-                  storage.setItem('user', JSON.stringify(data.user));
-                  console.log('User data set in sessionStorage (resend):', data.user); // Debug log
+              setTimeout(() => {
+                if (data.user?.role === "admin") {
+                  router.push("/Admin-Dashboard");
+                } else if (data.user?.role === "customer") {
+                  router.push("/Client-Dashboard");
+                } else {
+                  router.push("/");
                 }
-
-                setTimeout(() => {
-                  console.log('Resend verification - Executing redirect...'); // Debug log
-                  if (data.user?.role === "admin") {
-                    console.log('Redirecting to Admin Dashboard'); // Debug log
-                    window.location.href = "/Admin-Dashboard";
-                  } else if (data.user?.role === "customer") {
-                    console.log('Redirecting to Client Dashboard'); // Debug log
-                    window.location.href = "/Client-Dashboard";
-                  } else {
-                    console.log('Unknown role, redirecting to home'); // Debug log
-                    window.location.href = "/";
-                  }
-                }, 2000); // 2 second delay to show success message
-              }
+              }, 2000);
+            }
           } catch (err) {
             console.error("Error checking verification status:", err);
           }
@@ -172,11 +144,11 @@ export const SignupForm = () => {
 
         setCountdownIntervalRef(countdownInterval);
       } else {
-        setError(data.message || "Failed to resend verification email");
+        setError(result.message || "Failed to resend verification email");
       }
     } catch (err) {
       setError(
-        "An unexpected error occurred while resending verification email"
+        "An unexpected error occurred while resending verification email",
       );
     } finally {
       setResendLoading(false);
@@ -208,7 +180,7 @@ export const SignupForm = () => {
         formData.name,
         formData.email,
         formData.password,
-        formData.role
+        formData.role,
       );
 
       if (result.success) {
@@ -223,7 +195,7 @@ export const SignupForm = () => {
         } else {
           // User needs email verification - DO NOT redirect, stay on signup page
           setSuccess(
-            "Account created successfully! Please check your email to verify your account."
+            "Account created successfully! Please check your email to verify your account.",
           );
           setVerifying(true);
           setVerificationCountdown(180); // 3 minutes countdown
@@ -231,25 +203,9 @@ export const SignupForm = () => {
           // Start polling for verification status
           const pollInterval = setInterval(async () => {
             try {
-              // You'll need to implement this API endpoint to check verification status
-              const response = await fetch(
-                "https://protfolio-hub-backend.onrender.com/api/auth/check-verification",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ email: formData.email }),
-                }
-              );
-
-              const data = await response.json();
-              
-              console.log('Verification check response:', data); // Debug log
+              const data = await checkVerification(formData.email);
 
               if (data.verified) {
-                console.log('User verified! Clearing intervals and preparing redirect...'); // Debug log
-                
                 // Clear all intervals
                 if (pollIntervalRef) clearInterval(pollIntervalRef);
                 if (countdownIntervalRef) clearInterval(countdownIntervalRef);
@@ -260,40 +216,31 @@ export const SignupForm = () => {
                 setVerificationCountdown(0);
                 setShowResendButton(false); // Hide resend button
                 setSuccess(
-                  "Email verified successfully! Redirecting to dashboard..."
+                  "Email verified successfully! Redirecting to dashboard...",
                 );
-                  const storage = sessionStorage;
-                  if (result.token) {
-                    storage.setItem('token', result.token);
-                    sessionStorage.setItem('token', result.token);
-                    localStorage.setItem('token', result.token);
-                  }
-                  storage.setItem('user', JSON.stringify(data.user));
-                  sessionStorage.setItem('user', JSON.stringify(data.user));
-                  localStorage.setItem('user', JSON.stringify(data.user));
-                
-                
-                // Use the role from the verification response
-                console.log('Using role from verification response:', data.user?.role); // Debug log
-                
-                // Add delay to show success message before redirecting
+
+                if (result.token) {
+                  sessionStorage.setItem("token", result.token);
+                }
+                if (data.user) {
+                  sessionStorage.setItem("user", JSON.stringify(data.user));
+                }
+
+                const redirectRole = data.user?.role || result.data?.role;
                 setTimeout(() => {
-                  console.log('Executing redirect...'); // Debug log
-                  
-                  // Use the same redirect pattern as login form
-                  if (result.data?.role  === "admin") {
-                    console.log('Redirecting to Admin Dashboard'); // Debug log
-                    window.location.href = "/Admin-Dashboard";
-                  } else if (result.data?.role === "customer") {
-                    console.log('Redirecting to Client Dashboard'); // Debug log
-                    window.location.href = "/Client-Dashboard";
-                  } 
-                }, 2000); // 2 second delay to show success message
+                  if (redirectRole === "admin") {
+                    router.push("/Admin-Dashboard");
+                  } else if (redirectRole === "customer") {
+                    router.push("/Client-Dashboard");
+                  } else {
+                    router.push("/");
+                  }
+                }, 2000);
               }
             } catch (err) {
               console.error("Error checking verification status:", err);
             }
-          }, 1000); // Check every 10 seconds
+          }, 10000);
 
           setPollIntervalRef(pollInterval);
 

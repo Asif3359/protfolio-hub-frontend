@@ -1,7 +1,11 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { initializeOnlineStatus, stopOnlineStatus, setupVisibilityListener } from '@/utils/onlineStatus';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import {
+  initializeOnlineStatus,
+  stopOnlineStatus,
+  setupVisibilityListener,
+} from "@/utils/onlineStatus";
 
 interface User {
   id: string;
@@ -31,14 +35,53 @@ interface ProfileData {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string, rememberMe?: boolean) => Promise<{ success: boolean; message?: string; data?: User; token?: string }>;
+  login: (
+    email: string,
+    password: string,
+    rememberMe?: boolean,
+  ) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: User;
+    token?: string;
+  }>;
   logout: () => Promise<void>;
-  signup: (name: string, email: string, password: string, role?: string) => Promise<{ success: boolean; message?: string; data?: User; token?: string }>;
-  verifyEmail: (token: string) => Promise<{ success: boolean; message?: string }>;
-  resendVerification: (email: string) => Promise<{ success: boolean; message?: string }>;
-  forgotPassword: (email: string) => Promise<{ success: boolean; message?: string }>;
-  resetPassword: (email: string, code: string, newPassword: string) => Promise<{ success: boolean; message?: string }>;
-  getProfileData: () => Promise<{ success: boolean; message?: string; data?: ProfileData }>;
+  signup: (
+    name: string,
+    email: string,
+    password: string,
+    role?: string,
+  ) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: User;
+    token?: string;
+  }>;
+  verifyEmail: (
+    token: string,
+  ) => Promise<{ success: boolean; message?: string }>;
+  resendVerification: (
+    email: string,
+  ) => Promise<{ success: boolean; message?: string }>;
+  checkVerification: (email: string) => Promise<{
+    success: boolean;
+    verified: boolean;
+    user?: User;
+    message?: string;
+  }>;
+  forgotPassword: (
+    email: string,
+  ) => Promise<{ success: boolean; message?: string }>;
+  resetPassword: (
+    email: string,
+    code: string,
+    newPassword: string,
+  ) => Promise<{ success: boolean; message?: string }>;
+  getProfileData: () => Promise<{
+    success: boolean;
+    message?: string;
+    data?: ProfileData;
+  }>;
   profileData: ProfileData | null;
 }
 
@@ -47,7 +90,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -60,16 +103,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://protfolio-hub-backend.onrender.com/api";
 
   // Function to verify token with backend
-  const verifyToken = async (token: string): Promise<{ success: boolean; user?: User; message?: string }> => {
+  const verifyToken = async (
+    token: string,
+  ): Promise<{ success: boolean; user?: User; message?: string }> => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/verify-token`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
@@ -81,8 +128,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error('Token verification error:', error);
-      return { success: false, message: 'Network error occurred' };
+      console.error("Token verification error:", error);
+      return { success: false, message: "Network error occurred" };
+    }
+  };
+
+  const checkVerification = async (
+    email: string,
+  ): Promise<{
+    success: boolean;
+    verified: boolean;
+    user?: User;
+    message?: string;
+  }> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/check-verification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      return {
+        success: response.ok,
+        verified: data.verified ?? false,
+        user: data.user,
+        message: data.message,
+      };
+    } catch (error) {
+      console.error("Check verification error:", error);
+      return {
+        success: false,
+        verified: false,
+        message: "Network error occurred",
+      };
     }
   };
 
@@ -90,37 +171,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
         if (token) {
           // Verify the token with your backend
           const verificationResult = await verifyToken(token);
-          
+
           if (verificationResult.success && verificationResult.user) {
             setUser(verificationResult.user);
             // Update stored user data with fresh data from backend
-            const storage = localStorage.getItem('token') ? localStorage : sessionStorage;
-            storage.setItem('user', JSON.stringify(verificationResult.user));
-            
+            const storage = localStorage.getItem("token")
+              ? localStorage
+              : sessionStorage;
+            storage.setItem("user", JSON.stringify(verificationResult.user));
+
             // Initialize online status heartbeat
             initializeOnlineStatus(token);
             setupVisibilityListener();
           } else {
             // Token is invalid, clear storage
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            sessionStorage.removeItem('token');
-            sessionStorage.removeItem('user');
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("user");
             setUser(null);
             stopOnlineStatus();
           }
         }
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error("Auth check failed:", error);
         // Clear storage on error
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('user');
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user");
         setUser(null);
         stopOnlineStatus();
       } finally {
@@ -131,12 +215,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string, rememberMe = false): Promise<{ success: boolean; message?: string; data?: User }> => {
+  const login = async (
+    email: string,
+    password: string,
+    rememberMe = false,
+  ): Promise<{ success: boolean; message?: string; data?: User }> => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password, rememberMe }),
       });
@@ -145,58 +233,72 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (data.success) {
         const storage = rememberMe ? localStorage : sessionStorage;
-        storage.setItem('token', data.token);
-        storage.setItem('user', JSON.stringify(data.data));
-        sessionStorage.setItem('token', data.token);
-        sessionStorage.setItem('user', JSON.stringify(data.data));
+        const otherStorage = rememberMe ? sessionStorage : localStorage;
+
+        storage.setItem("token", data.token);
+        storage.setItem("user", JSON.stringify(data.data));
+        otherStorage.removeItem("token");
+        otherStorage.removeItem("user");
+
         setUser(data.data);
-        
+
         // Initialize online status heartbeat after successful login
         initializeOnlineStatus(data.token);
         setupVisibilityListener();
-        
+
         return { success: true, data: data.data };
       } else {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, message: 'Network error occurred' };
+      console.error("Login error:", error);
+      return { success: false, message: "Network error occurred" };
     }
   };
 
   const logout = async (): Promise<void> => {
     try {
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       if (token) {
         await fetch(`${API_BASE_URL}/auth/logout`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       // Stop online status heartbeat
       stopOnlineStatus();
-      
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('user');
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("user");
       setUser(null);
     }
   };
 
-  const signup = async (name: string, email: string, password: string, role = 'customer'): Promise<{ success: boolean; message?: string; data?: User; token?: string }> => {
+  const signup = async (
+    name: string,
+    email: string,
+    password: string,
+    role = "customer",
+  ): Promise<{
+    success: boolean;
+    message?: string;
+    data?: User;
+    token?: string;
+  }> => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ name, email, password, role }),
       });
@@ -207,8 +309,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Only set user and token if the user is verified
         if (data.data?.verified) {
           const storage = sessionStorage;
-          storage.setItem('token', data.token);
-          storage.setItem('user', JSON.stringify(data.data));
+          storage.setItem("token", data.token);
+          storage.setItem("user", JSON.stringify(data.data));
           setUser(data.data);
         }
         // Return the data regardless of verification status
@@ -217,17 +319,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error('Signup error:', error);
-      return { success: false, message: 'Network error occurred' };
+      console.error("Signup error:", error);
+      return { success: false, message: "Network error occurred" };
     }
   };
 
-  const verifyEmail = async (token: string): Promise<{ success: boolean; message?: string }> => {
+  const verifyEmail = async (
+    token: string,
+  ): Promise<{ success: boolean; message?: string }> => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ token }),
       });
@@ -236,31 +340,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (data.success) {
         // Update user data with new token and verification status
-        const storage = localStorage.getItem('token') ? localStorage : sessionStorage;
-        storage.setItem('token', data.token);
-        storage.setItem('user', JSON.stringify(data.data));
+        const storage = localStorage.getItem("token")
+          ? localStorage
+          : sessionStorage;
+        storage.setItem("token", data.token);
+        storage.setItem("user", JSON.stringify(data.data));
         setUser(data.data);
-        
+
         // Initialize online status heartbeat after email verification
         initializeOnlineStatus(data.token);
         setupVisibilityListener();
-        
+
         return { success: true };
       } else {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error('Email verification error:', error);
-      return { success: false, message: 'Network error occurred' };
+      console.error("Email verification error:", error);
+      return { success: false, message: "Network error occurred" };
     }
   };
 
-  const resendVerification = async (email: string): Promise<{ success: boolean; message?: string }> => {
+  const resendVerification = async (
+    email: string,
+  ): Promise<{ success: boolean; message?: string }> => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
@@ -273,17 +381,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error('Resend verification error:', error);
-      return { success: false, message: 'Network error occurred' };
+      console.error("Resend verification error:", error);
+      return { success: false, message: "Network error occurred" };
     }
   };
 
-  const forgotPassword = async (email: string): Promise<{ success: boolean; message?: string }> => {
+  const forgotPassword = async (
+    email: string,
+  ): Promise<{ success: boolean; message?: string }> => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
@@ -296,17 +406,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error('Forgot password error:', error);
-      return { success: false, message: 'Network error occurred' };
+      console.error("Forgot password error:", error);
+      return { success: false, message: "Network error occurred" };
     }
   };
 
-  const resetPassword = async (email: string, code: string, newPassword: string): Promise<{ success: boolean; message?: string }> => {
+  const resetPassword = async (
+    email: string,
+    code: string,
+    newPassword: string,
+  ): Promise<{ success: boolean; message?: string }> => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, code, newPassword }),
       });
@@ -319,28 +433,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error('Reset password error:', error);
-      return { success: false, message: 'Network error occurred' };
+      console.error("Reset password error:", error);
+      return { success: false, message: "Network error occurred" };
     }
   };
 
-  const getProfileData = async (): Promise<{ success: boolean; message?: string; data?: ProfileData }> => {
+  const getProfileData = async (): Promise<{
+    success: boolean;
+    message?: string;
+    data?: ProfileData;
+  }> => {
     try {
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       if (!token) {
-        return { success: false, message: 'No authentication token found' };
+        return { success: false, message: "No authentication token found" };
       }
 
       const response = await fetch(`${API_BASE_URL}/profile/me`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
       if (!response.ok) {
         if (response.status === 404) {
-          return { success: false, message: 'Profile not found' };
+          return { success: false, message: "Profile not found" };
         }
         // throw new Error('Failed to fetch profile data');
       }
@@ -349,8 +468,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setProfileData(data);
       return { success: true, data: data };
     } catch (error) {
-      console.error('Get profile data error:', error);
-      return { success: false, message: 'Network error occurred' };
+      console.error("Get profile data error:", error);
+      return { success: false, message: "Network error occurred" };
     }
   };
 
@@ -362,15 +481,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signup,
     verifyEmail,
     resendVerification,
+    checkVerification,
     forgotPassword,
     resetPassword,
     getProfileData,
     profileData,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
