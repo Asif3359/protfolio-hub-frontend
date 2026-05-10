@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import * as React from "react";
 import { useAuth } from "../contexts/AuthContext";
@@ -35,36 +35,52 @@ import {
   AccountCircle,
   People,
   Chat,
+  ChevronLeft,
+  ChevronRight,
 } from "@mui/icons-material";
 
 const drawerWidth = 240;
+const collapsedDrawerWidth = 72;
 
 const navigationItems = [
-  { title: 'Dashboard', icon: <DashboardIcon />, path: '/Admin-Dashboard' },
+  { title: "Dashboard", icon: <DashboardIcon />, path: "/Admin-Dashboard" },
   // { title: 'Client Dashboard', icon: <DashboardIcon />, path: '/Client-Dashboard' },
-  { title: 'User Management', icon: <People />, path: '/Admin-Dashboard/users' },
-  { title: 'Chat', icon: <Chat />, path: '/Admin-Dashboard/chat' },
-  { title: 'Home', icon: <Home />, path: '/' },
+  {
+    title: "User Management",
+    icon: <People />,
+    path: "/Admin-Dashboard/users",
+  },
+  { title: "Chat", icon: <Chat />, path: "/Admin-Dashboard/chat" },
+  { title: "Home", icon: <Home />, path: "/" },
 ];
 
 interface AdminDashboardLayoutProps {
   children: React.ReactNode;
 }
 
-export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ children }) => {
+export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({
+  children,
+}) => {
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const muiTheme = useMuiTheme();
-  const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = React.useState(false);
+  const [drawerCollapsed, setDrawerCollapsed] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const handleNavigation = (path: string) => {
+    if (path === "/Admin-Dashboard/chat") {
+      setDrawerCollapsed(true);
+    } else {
+      setDrawerCollapsed(false);
+    }
+
     router.push(path);
     if (isMobile) {
       setMobileOpen(false);
@@ -78,7 +94,7 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
   const handleLogoutConfirm = async () => {
     setLogoutDialogOpen(false);
     await logout();
-    router.push('/auth/login');
+    router.push("/auth/login");
   };
 
   const handleLogoutCancel = () => {
@@ -86,71 +102,150 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
   };
 
   const drawer = (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
-        <Typography variant="h6" sx={{ color: 'primary.main', fontWeight: 600 }}>
+    <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+      <Box
+        sx={{
+          p: 2,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: drawerCollapsed ? 0 : 1.5,
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            color: "primary.main",
+            fontWeight: 600,
+            display: drawerCollapsed ? "none" : "block",
+          }}
+        >
           Admin Panel
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            mt: drawerCollapsed ? 0 : 1,
+            display: drawerCollapsed ? "none" : "block",
+          }}
+        >
           Welcome, {user?.name}
         </Typography>
       </Box>
-      
+
       <List sx={{ pt: 1, flexGrow: 1 }}>
         {navigationItems.map((item) => {
           const isActive = pathname === item.path;
           return (
             <ListItem key={item.title} disablePadding>
-              <ListItemButton 
+              <ListItemButton
                 onClick={() => handleNavigation(item.path)}
                 sx={{
-                  backgroundColor: isActive ? 'primary.main' : 'transparent',
-                  color: isActive ? 'white' : 'text.primary',
-                  '&:hover': {
-                    backgroundColor: isActive ? 'primary.dark' : 'action.hover',
+                  justifyContent: drawerCollapsed ? "center" : "flex-start",
+                  px: drawerCollapsed ? 0 : 2,
+                  backgroundColor: isActive ? "primary.main" : "transparent",
+                  color: isActive ? "white" : "text.primary",
+                  "&:hover": {
+                    backgroundColor: isActive ? "primary.dark" : "action.hover",
                   },
-                  '& .MuiListItemIcon-root': {
-                    color: isActive ? 'white' : 'primary.main',
+                  "& .MuiListItemIcon-root": {
+                    color: isActive ? "white" : "primary.main",
+                    minWidth: 0,
+                    mr: drawerCollapsed ? 0 : 2,
+                    justifyContent: "center",
                   },
                 }}
               >
-                <ListItemIcon>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.title} />
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.title}
+                  sx={{ display: drawerCollapsed ? "none" : "block" }}
+                />
               </ListItemButton>
             </ListItem>
           );
         })}
       </List>
-      
-      <Box sx={{ mt: 'auto' }}>
+
+      <Box sx={{ mt: "auto" }}>
         <Divider sx={{ my: 2 }} />
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => router.push(`/Client-Dashboard`)}>
-              <ListItemIcon sx={{ color: "primary.main" }}>
+            <ListItemButton
+              onClick={() => router.push(`/Client-Dashboard`)}
+              sx={{
+                justifyContent: drawerCollapsed ? "center" : "flex-start",
+                px: drawerCollapsed ? 0 : 2,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  color: "primary.main",
+                  minWidth: 0,
+                  mr: drawerCollapsed ? 0 : 2,
+                  justifyContent: "center",
+                }}
+              >
                 <DashboardIcon />
               </ListItemIcon>
-              <ListItemText primary="Client Dashboard" />
+              <ListItemText
+                primary="Client Dashboard"
+                sx={{ display: drawerCollapsed ? "none" : "block" }}
+              />
             </ListItemButton>
           </ListItem>
         </List>
-          <ListItem disablePadding>
-          <ListItemButton onClick={() => router.push(`/protfolio/${user?.email}`)}>
-            <ListItemIcon sx={{ color: "primary.main" }}>
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => router.push(`/protfolio/${user?.email}`)}
+            sx={{
+              justifyContent: drawerCollapsed ? "center" : "flex-start",
+              px: drawerCollapsed ? 0 : 2,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                color: "primary.main",
+                minWidth: 0,
+                mr: drawerCollapsed ? 0 : 2,
+                justifyContent: "center",
+              }}
+            >
               <Person />
             </ListItemIcon>
-            <ListItemText primary="Portfolio" />
+            <ListItemText
+              primary="Portfolio"
+              sx={{ display: drawerCollapsed ? "none" : "block" }}
+            />
           </ListItemButton>
         </ListItem>
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={handleLogoutClick}>
-              <ListItemIcon sx={{ color: 'error.main' }}>
+            <ListItemButton
+              onClick={handleLogoutClick}
+              sx={{
+                justifyContent: drawerCollapsed ? "center" : "flex-start",
+                px: drawerCollapsed ? 0 : 2,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  color: "error.main",
+                  minWidth: 0,
+                  mr: drawerCollapsed ? 0 : 2,
+                  justifyContent: "center",
+                }}
+              >
                 <Logout />
               </ListItemIcon>
-              <ListItemText primary="Logout" />
+              <ListItemText
+                primary="Logout"
+                sx={{ display: drawerCollapsed ? "none" : "block" }}
+              />
             </ListItemButton>
           </ListItem>
         </List>
@@ -159,17 +254,21 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <AppBar
         position="fixed"
         sx={{
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
-          backgroundColor: 'background.paper',
-          color: 'text.primary',
-          boxShadow: 'none',
-          borderBottom: '1px solid',
-          borderColor: 'divider',
+          width: {
+            md: `calc(100% - ${drawerCollapsed ? collapsedDrawerWidth : drawerWidth}px)`,
+          },
+          ml: {
+            md: `${drawerCollapsed ? collapsedDrawerWidth : drawerWidth}px`,
+          },
+          backgroundColor: "background.paper",
+          color: "text.primary",
+          boxShadow: "none",
+          borderBottom: "1px solid",
+          borderColor: "divider",
         }}
       >
         <Toolbar>
@@ -178,15 +277,23 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: 'none' } }}
+            sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />
+          </IconButton>
+          <IconButton
+            color="inherit"
+            aria-label={drawerCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={() => setDrawerCollapsed((prev) => !prev)}
+            sx={{ mr: 1, display: { xs: "none", md: "inline-flex" } }}
+          >
+            {drawerCollapsed ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{textAlign: "end" }}
+            sx={{ textAlign: "end" }}
           >
             Admin Dashboard
           </Typography>
@@ -195,7 +302,10 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
 
       <Box
         component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        sx={{
+          width: { md: drawerCollapsed ? collapsedDrawerWidth : drawerWidth },
+          flexShrink: { md: 0 },
+        }}
       >
         <Drawer
           variant="temporary"
@@ -203,11 +313,11 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
           onClose={handleDrawerToggle}
           ModalProps={{ keepMounted: true }}
           sx={{
-            display: { xs: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { 
-              boxSizing: 'border-box', 
-              width: drawerWidth,
-              backgroundColor: 'background.paper',
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerCollapsed ? collapsedDrawerWidth : drawerWidth,
+              backgroundColor: "background.paper",
             },
           }}
         >
@@ -216,13 +326,13 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', md: 'block' },
-            '& .MuiDrawer-paper': { 
-              boxSizing: 'border-box', 
-              width: drawerWidth,
-              backgroundColor: 'background.paper',
-              borderRight: '1px solid',
-              borderColor: 'divider',
+            display: { xs: "none", md: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerCollapsed ? collapsedDrawerWidth : drawerWidth,
+              backgroundColor: "background.paper",
+              borderRight: "1px solid",
+              borderColor: "divider",
             },
           }}
           open
@@ -237,11 +347,11 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
           flexGrow: 1,
           p: 2,
           width: { md: `calc(100% - ${drawerWidth}px)` },
-          backgroundColor: 'background.default',
+          backgroundColor: "background.default",
         }}
       >
         <Toolbar />
-        <Container maxWidth="xl" sx={{p:0}}>
+        <Container maxWidth="xl" sx={{ p: 0 }}>
           {children}
         </Container>
       </Box>
@@ -255,51 +365,60 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
         PaperProps={{
           sx: {
             borderRadius: 2,
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-            border: '1px solid',
-            borderColor: 'divider',
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)",
+            border: "1px solid",
+            borderColor: "divider",
             maxWidth: 400,
-            width: '90%',
-          }
+            width: "90%",
+          },
         }}
       >
-        <DialogTitle 
+        <DialogTitle
           id="logout-dialog-title"
           sx={{
-            backgroundColor: 'primary.main',
-            color: 'white',
-            textAlign: 'center',
+            backgroundColor: "primary.main",
+            color: "white",
+            textAlign: "center",
             py: 2,
-            '& .MuiTypography-root': {
+            "& .MuiTypography-root": {
               fontWeight: 600,
-              fontSize: '1.25rem',
-            }
+              fontSize: "1.25rem",
+            },
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+            }}
+          >
             <Logout sx={{ fontSize: 28 }} />
             Confirm Logout
           </Box>
         </DialogTitle>
         <DialogContent sx={{ py: 3, px: 3 }}>
-          <Box sx={{ textAlign: 'center', mb: 2 }}>
-            <AccountCircle sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
-            <DialogContentText 
+          <Box sx={{ textAlign: "center", mb: 2 }}>
+            <AccountCircle
+              sx={{ fontSize: 64, color: "primary.main", mb: 2 }}
+            />
+            <DialogContentText
               id="logout-dialog-description"
               sx={{
-                fontSize: '1rem',
-                color: 'text.secondary',
+                fontSize: "1rem",
+                color: "text.secondary",
                 lineHeight: 1.6,
-                mb: 1
+                mb: 1,
               }}
             >
               Are you sure you want to logout from your account?
             </DialogContentText>
-            <DialogContentText 
+            <DialogContentText
               sx={{
-                fontSize: '0.875rem',
-                color: 'text.disabled',
-                fontStyle: 'italic'
+                fontSize: "0.875rem",
+                color: "text.disabled",
+                fontStyle: "italic",
               }}
             >
               You will be redirected to the login page
@@ -307,26 +426,26 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 3, pt: 0, gap: 2 }}>
-          <Button 
-            onClick={handleLogoutCancel} 
+          <Button
+            onClick={handleLogoutCancel}
             variant="outlined"
             sx={{
               borderRadius: 2,
               px: 3,
               py: 1,
-              textTransform: 'none',
+              textTransform: "none",
               fontWeight: 500,
-              borderColor: 'divider',
-              '&:hover': {
-                borderColor: 'primary.main',
-                backgroundColor: 'primary.50',
-              }
+              borderColor: "divider",
+              "&:hover": {
+                borderColor: "primary.main",
+                backgroundColor: "primary.50",
+              },
             }}
           >
             Stay Logged In
           </Button>
-          <Button 
-            onClick={handleLogoutConfirm} 
+          <Button
+            onClick={handleLogoutConfirm}
             variant="contained"
             color="error"
             startIcon={<Logout />}
@@ -334,14 +453,14 @@ export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ chil
               borderRadius: 2,
               px: 3,
               py: 1,
-              textTransform: 'none',
+              textTransform: "none",
               fontWeight: 500,
-              boxShadow: '0 4px 12px rgba(244, 67, 54, 0.3)',
-              '&:hover': {
-                boxShadow: '0 6px 16px rgba(244, 67, 54, 0.4)',
-                transform: 'translateY(-1px)',
+              boxShadow: "0 4px 12px rgba(244, 67, 54, 0.3)",
+              "&:hover": {
+                boxShadow: "0 6px 16px rgba(244, 67, 54, 0.4)",
+                transform: "translateY(-1px)",
               },
-              transition: 'all 0.2s ease-in-out',
+              transition: "all 0.2s ease-in-out",
             }}
           >
             Logout

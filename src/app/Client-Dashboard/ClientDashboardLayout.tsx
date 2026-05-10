@@ -46,6 +46,8 @@ import {
   Star,
   WorkspacePremium,
   Chat,
+  ChevronLeft,
+  ChevronRight,
 } from "@mui/icons-material";
 
 interface ProfileData {
@@ -69,14 +71,23 @@ interface ClientDashboardLayoutProps {
 }
 
 const drawerWidth = 240;
+const collapsedDrawerWidth = 72;
 
 const navigationItems = [
   { title: "Dashboard", icon: <DashboardIcon />, path: "/Client-Dashboard" },
   { title: "Profile", icon: <Person />, path: "/Client-Dashboard/profile" },
   { title: "Education", icon: <School />, path: "/Client-Dashboard/education" },
   { title: "Projects", icon: <Work />, path: "/Client-Dashboard/projects" },
-  { title: "Experience", icon: <Assessment />, path: "/Client-Dashboard/experience" },
-  { title: "Research", icon: <Psychology />, path: "/Client-Dashboard/research" },
+  {
+    title: "Experience",
+    icon: <Assessment />,
+    path: "/Client-Dashboard/experience",
+  },
+  {
+    title: "Research",
+    icon: <Psychology />,
+    path: "/Client-Dashboard/research",
+  },
   {
     title: "Certification",
     icon: <WorkspacePremium />,
@@ -103,8 +114,9 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
   const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"));
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = React.useState(false);
+  const [drawerCollapsed, setDrawerCollapsed] = React.useState(false);
   const [profileData, setProfileData] = React.useState<ProfileData | null>(
-    null
+    null,
   );
 
   const handleDrawerToggle = () => {
@@ -112,6 +124,12 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
   };
 
   const handleNavigation = (path: string) => {
+    if (path === "/Client-Dashboard/chat") {
+      setDrawerCollapsed(true);
+    } else {
+      setDrawerCollapsed(false);
+    }
+
     router.push(path);
     if (isMobile) {
       setMobileOpen(false);
@@ -181,9 +199,22 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
         <Avatar
           src={profileData?.profileImage || "/logo.png"}
           alt="Logo"
-          sx={{ width: 100, height: 100, border: "1px solid white" }}
+          sx={{
+            width: drawerCollapsed ? 48 : 100,
+            height: drawerCollapsed ? 48 : 100,
+            border: "1px solid white",
+            transition: "width 0.2s ease, height 0.2s ease",
+          }}
         />
-        <Typography variant="body2" color="white" sx={{ mt: 1 }}>
+        <Typography
+          variant="body2"
+          color="white"
+          sx={{
+            mt: drawerCollapsed ? 0 : 1,
+            display: drawerCollapsed ? "none" : "block",
+            textAlign: "center",
+          }}
+        >
           Welcome, {user?.name}
         </Typography>
       </Box>
@@ -196,6 +227,8 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
               <ListItemButton
                 onClick={() => handleNavigation(item.path)}
                 sx={{
+                  justifyContent: drawerCollapsed ? "center" : "flex-start",
+                  px: drawerCollapsed ? 0 : 2,
                   backgroundColor: isActive ? "primary.main" : "transparent",
                   color: isActive ? "white" : "text.primary",
                   "&:hover": {
@@ -203,22 +236,26 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
                   },
                   "& .MuiListItemIcon-root": {
                     color: isActive ? "white" : "primary.main",
+                    minWidth: 0,
+                    mr: drawerCollapsed ? 0 : 2,
+                    justifyContent: "center",
                   },
                 }}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.title} />
+                <ListItemText
+                  primary={item.title}
+                  sx={{ display: drawerCollapsed ? "none" : "block" }}
+                />
               </ListItemButton>
             </ListItem>
           );
         })}
       </List>
 
-
       <Box sx={{ mt: "auto" }}>
         <Divider sx={{ my: 2 }} />
-      {
-        user?.role === 'admin' && (
+        {user?.role === "admin" && (
           <List>
             <ListItem disablePadding>
               <ListItemButton onClick={() => router.push(`/Admin-Dashboard`)}>
@@ -229,23 +266,54 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
               </ListItemButton>
             </ListItem>
           </List>
-        )
-      }
+        )}
         <ListItem disablePadding>
-          <ListItemButton onClick={() => router.push(`/protfolio/${user?.email}`)}>
-            <ListItemIcon sx={{ color: "primary.main" }}>
+          <ListItemButton
+            onClick={() => router.push(`/protfolio/${user?.email}`)}
+            sx={{
+              justifyContent: drawerCollapsed ? "center" : "flex-start",
+              px: drawerCollapsed ? 0 : 2,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                color: "primary.main",
+                minWidth: 0,
+                mr: drawerCollapsed ? 0 : 2,
+                justifyContent: "center",
+              }}
+            >
               <Person />
             </ListItemIcon>
-            <ListItemText primary="Portfolio" />
+            <ListItemText
+              primary="Portfolio"
+              sx={{ display: drawerCollapsed ? "none" : "block" }}
+            />
           </ListItemButton>
         </ListItem>
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={handleLogoutClick}>
-              <ListItemIcon sx={{ color: "error.main" }}>
+            <ListItemButton
+              onClick={handleLogoutClick}
+              sx={{
+                justifyContent: drawerCollapsed ? "center" : "flex-start",
+                px: drawerCollapsed ? 0 : 2,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  color: "error.main",
+                  minWidth: 0,
+                  mr: drawerCollapsed ? 0 : 2,
+                  justifyContent: "center",
+                }}
+              >
                 <Logout />
               </ListItemIcon>
-              <ListItemText primary="Logout" />
+              <ListItemText
+                primary="Logout"
+                sx={{ display: drawerCollapsed ? "none" : "block" }}
+              />
             </ListItemButton>
           </ListItem>
         </List>
@@ -258,8 +326,12 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
       <AppBar
         position="fixed"
         sx={{
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
+          width: {
+            md: `calc(100% - ${drawerCollapsed ? collapsedDrawerWidth : drawerWidth}px)`,
+          },
+          ml: {
+            md: `${drawerCollapsed ? collapsedDrawerWidth : drawerWidth}px`,
+          },
           backgroundColor: "primary.main",
           color: "white",
           boxShadow: "none",
@@ -285,6 +357,14 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
           >
             <MenuIcon />
           </IconButton>
+          <IconButton
+            color="inherit"
+            aria-label={drawerCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={() => setDrawerCollapsed((prev) => !prev)}
+            sx={{ mr: 1, display: { xs: "none", md: "inline-flex" } }}
+          >
+            {drawerCollapsed ? <ChevronRight /> : <ChevronLeft />}
+          </IconButton>
           <Typography
             variant="h6"
             noWrap
@@ -301,7 +381,10 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
 
       <Box
         component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        sx={{
+          width: { md: drawerCollapsed ? collapsedDrawerWidth : drawerWidth },
+          flexShrink: { md: 0 },
+        }}
       >
         <Drawer
           variant="temporary"
@@ -325,7 +408,7 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
             display: { xs: "none", md: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth,
+              width: drawerCollapsed ? collapsedDrawerWidth : drawerWidth,
               backgroundColor: "background.paper",
               borderRight: "1px solid",
               borderColor: "divider",
@@ -342,7 +425,9 @@ export const ClientDashboardLayout: React.FC<ClientDashboardLayoutProps> = ({
         sx={{
           flexGrow: 1,
           p: 2,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
+          width: {
+            md: `calc(100% - ${drawerCollapsed ? collapsedDrawerWidth : drawerWidth}px)`,
+          },
           backgroundColor: "background.default",
         }}
       >
