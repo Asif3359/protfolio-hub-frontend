@@ -118,7 +118,7 @@ export const SignupForm = () => {
               }, 2000);
             }
           } catch (err) {
-            console.error("Error checking verification status:", err);
+            console.error("Error checking verification status:");
           }
         }, 10000);
 
@@ -238,7 +238,7 @@ export const SignupForm = () => {
                 }, 2000);
               }
             } catch (err) {
-              console.error("Error checking verification status:", err);
+              console.error("Error checking verification status:");
             }
           }, 10000);
 

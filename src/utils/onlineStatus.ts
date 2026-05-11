@@ -13,16 +13,16 @@ export class OnlineStatusManager {
   private intervalId: NodeJS.Timeout | null = null;
   private isActive = false;
 
-  constructor(private token: string) {}
+  constructor(private token: string) { }
 
   startHeartbeat(): void {
     if (this.isActive) return;
-    
+
     this.isActive = true;
-    
+
     // Send initial heartbeat
     this.updateStatus();
-    
+
     // Set up periodic heartbeat every 5 minutes (300000 ms)
     this.intervalId = setInterval(() => {
       this.updateStatus();
@@ -48,12 +48,12 @@ export class OnlineStatusManager {
       });
 
       const data: UpdateStatusResponse = await response.json();
-      
+
       if (!data.success) {
-        console.warn('Failed to update online status:', data.message);
+        console.warn('Failed to update online status:');
       }
     } catch (error) {
-      console.error('Error updating online status:', error);
+      console.error('Error updating online status:');
     }
   }
 
@@ -71,7 +71,7 @@ export const initializeOnlineStatus = (token: string): void => {
   if (onlineStatusManager) {
     onlineStatusManager.stopHeartbeat();
   }
-  
+
   // Create new manager and start heartbeat
   onlineStatusManager = new OnlineStatusManager(token);
   onlineStatusManager.startHeartbeat();
@@ -100,14 +100,14 @@ export const setupVisibilityListener = (): void => {
   };
 
   document.addEventListener('visibilitychange', handleVisibilityChange);
-  
+
   // Handle beforeunload to stop heartbeat
   const handleBeforeUnload = () => {
     stopOnlineStatus();
   };
 
   window.addEventListener('beforeunload', handleBeforeUnload);
-  
+
   // Handle user activity (mouse movement, clicks, etc.)
   const handleUserActivity = () => {
     updateOnlineStatus();

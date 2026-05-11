@@ -84,7 +84,9 @@ const initialFormData: SkillFormData = {
   visibility: "Public",
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub-backend.onrender.com/api';
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://protfolio-hub-backend.onrender.com/api";
 
 const categoryIcons: Record<string, React.ReactElement> = {
   Technical: <ComputerIcon />,
@@ -122,27 +124,31 @@ function SkillsPage() {
   const router = useRouter();
   useEffect(() => {
     fetchSkills();
-    
+
     // Check for cheating warning from URL parameters or localStorage
     const urlParams = new URLSearchParams(window.location.search);
-    const cheatingDetected = urlParams.get('cheating');
-    const skillName = urlParams.get('skill');
-    
-    if (cheatingDetected === 'true' && skillName) {
-      setCheatingWarning(`Cheating was detected during the ${skillName} test. Your test was automatically submitted.`);
+    const cheatingDetected = urlParams.get("cheating");
+    const skillName = urlParams.get("skill");
+
+    if (cheatingDetected === "true" && skillName) {
+      setCheatingWarning(
+        `Cheating was detected during the ${skillName} test. Your test was automatically submitted.`,
+      );
       // Clear the URL parameters
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-    
+
     // Check localStorage for cheating flag
-    const cheatingFlag = localStorage.getItem('cheatingDetected');
-    const cheatingSkill = localStorage.getItem('cheatingSkill');
-    
-    if (cheatingFlag === 'true' && cheatingSkill) {
-      setCheatingWarning(`Cheating was detected during the ${cheatingSkill} test. Your test was automatically submitted.`);
+    const cheatingFlag = localStorage.getItem("cheatingDetected");
+    const cheatingSkill = localStorage.getItem("cheatingSkill");
+
+    if (cheatingFlag === "true" && cheatingSkill) {
+      setCheatingWarning(
+        `Cheating was detected during the ${cheatingSkill} test. Your test was automatically submitted.`,
+      );
       // Clear localStorage flags
-      localStorage.removeItem('cheatingDetected');
-      localStorage.removeItem('cheatingSkill');
+      localStorage.removeItem("cheatingDetected");
+      localStorage.removeItem("cheatingSkill");
     }
   }, []);
 
@@ -225,12 +231,14 @@ function SkillsPage() {
     try {
       setSaving(true);
       const token = localStorage.getItem("token");
-      const url = editingSkill ? `${API_URL}/skill/${editingSkill._id}`: `${API_URL}/skill`;
+      const url = editingSkill
+        ? `${API_URL}/skill/${editingSkill._id}`
+        : `${API_URL}/skill`;
 
-      const method = editingSkill ? "PUT" : "POST"; 
+      const method = editingSkill ? "PUT" : "POST";
 
-      console.log(url);
-      console.log(formData);
+      // console.log(url);
+      // console.log(formData);
 
       const response = await fetch(url, {
         method,
@@ -243,7 +251,7 @@ function SkillsPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.log(errorData);
+        // console.log(errorData);
         throw new Error(errorData.msg || "Failed to save skill");
       }
 
@@ -252,7 +260,7 @@ function SkillsPage() {
       setSuccess(
         editingSkill
           ? "Skill updated successfully!"
-          : "Skill added successfully!"
+          : "Skill added successfully!",
       );
       setError(null);
     } catch (err) {
@@ -305,7 +313,7 @@ function SkillsPage() {
     setFormData((prev) => ({
       ...prev,
       learningResources: prev.learningResources.filter(
-        (resource) => resource !== resourceToRemove
+        (resource) => resource !== resourceToRemove,
       ),
     }));
   };
@@ -373,20 +381,23 @@ function SkillsPage() {
 
       {/* Alerts */}
       {cheatingWarning && (
-        <Alert 
-          severity="warning" 
-          sx={{ 
+        <Alert
+          severity="warning"
+          sx={{
             mb: 3,
-            backgroundColor: '#fff3cd',
-            border: '1px solid #ffeaa7',
-            '& .MuiAlert-icon': {
-              color: '#856404'
-            }
-          }} 
+            backgroundColor: "#fff3cd",
+            border: "1px solid #ffeaa7",
+            "& .MuiAlert-icon": {
+              color: "#856404",
+            },
+          }}
           onClose={() => setCheatingWarning(null)}
           icon={<CancelIcon />}
         >
-          <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#856404' }}>
+          <Typography
+            variant="body1"
+            sx={{ fontWeight: "bold", color: "#856404" }}
+          >
             🚨 {cheatingWarning}
           </Typography>
         </Alert>

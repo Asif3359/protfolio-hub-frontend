@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -27,7 +27,7 @@ import {
   Alert,
   CircularProgress,
   Divider,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -41,8 +41,8 @@ import {
   Archive as ArchiveIcon,
   CheckCircle as CheckCircleIcon,
   Schedule as ScheduleIcon,
-} from '@mui/icons-material';
-import { useAuth } from '../../contexts/AuthContext';
+} from "@mui/icons-material";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface Project {
   _id: string;
@@ -55,7 +55,7 @@ interface Project {
   liveUrl?: string;
   startDate: string;
   endDate?: string;
-  status: 'active' | 'archived' | 'draft' | 'completed';
+  status: "active" | "archived" | "draft" | "completed";
   createdAt: string;
   updatedAt: string;
 }
@@ -70,27 +70,27 @@ interface ProjectFormData {
   liveUrl: string;
   startDate: string;
   endDate: string;
-  status: 'active' | 'archived' | 'draft' | 'completed';
+  status: "active" | "archived" | "draft" | "completed";
 }
 
 const initialFormData: ProjectFormData = {
-  title: '',
-  description: '',
-  images: [''],
-  keyFeatures: [''],
-  technologies: [''],
-  repositoryUrl: '',
-  liveUrl: '',
-  startDate: '',
-  endDate: '',
-  status: 'active',
+  title: "",
+  description: "",
+  images: [""],
+  keyFeatures: [""],
+  technologies: [""],
+  repositoryUrl: "",
+  liveUrl: "",
+  startDate: "",
+  endDate: "",
+  status: "active",
 };
 
 const statusColors = {
-  active: 'success',
-  completed: 'primary',
-  draft: 'warning',
-  archived: 'default',
+  active: "success",
+  completed: "primary",
+  draft: "warning",
+  archived: "default",
 } as const;
 
 const statusIcons = {
@@ -100,7 +100,9 @@ const statusIcons = {
   archived: <ArchiveIcon />,
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://protfolio-hub-backend.onrender.com/api';
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://protfolio-hub-backend.onrender.com/api";
 
 function Projects() {
   const { user } = useAuth();
@@ -119,21 +121,21 @@ function Projects() {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/projects`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch projects');
+        throw new Error("Failed to fetch projects");
       }
-      
+
       const data = await response.json();
       setProjects(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -145,13 +147,13 @@ function Projects() {
       setFormData({
         title: project.title,
         description: project.description,
-        images: project.images.map(img => img.url),
+        images: project.images.map((img) => img.url),
         keyFeatures: project.keyFeatures,
         technologies: project.technologies,
-        repositoryUrl: project.repositoryUrl || '',
-        liveUrl: project.liveUrl || '',
-        startDate: project.startDate.split('T')[0],
-        endDate: project.endDate ? project.endDate.split('T')[0] : '',
+        repositoryUrl: project.repositoryUrl || "",
+        liveUrl: project.liveUrl || "",
+        startDate: project.startDate.split("T")[0],
+        endDate: project.endDate ? project.endDate.split("T")[0] : "",
         status: project.status,
       });
     } else {
@@ -172,28 +174,35 @@ function Projects() {
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
 
-    if (!formData.title.trim()) errors.title = 'Title is required';
-    if (!formData.description.trim()) errors.description = 'Description is required';
-    if (!formData.startDate) errors.startDate = 'Start date is required';
-    
+    if (!formData.title.trim()) errors.title = "Title is required";
+    if (!formData.description.trim())
+      errors.description = "Description is required";
+    if (!formData.startDate) errors.startDate = "Start date is required";
+
     if (formData.images.length === 0 || !formData.images[0].trim()) {
-      errors.images = 'At least one image URL is required';
-    }
-    
-    if (formData.keyFeatures.length === 0 || !formData.keyFeatures[0].trim()) {
-      errors.keyFeatures = 'At least one key feature is required';
-    }
-    
-    if (formData.technologies.length === 0 || !formData.technologies[0].trim()) {
-      errors.technologies = 'At least one technology is required';
+      errors.images = "At least one image URL is required";
     }
 
-    if (formData.repositoryUrl && !formData.repositoryUrl.match(/^(https?:\/\/)?(www\.)?github\.com\/.+/i)) {
-      errors.repositoryUrl = 'Please enter a valid GitHub URL';
+    if (formData.keyFeatures.length === 0 || !formData.keyFeatures[0].trim()) {
+      errors.keyFeatures = "At least one key feature is required";
+    }
+
+    if (
+      formData.technologies.length === 0 ||
+      !formData.technologies[0].trim()
+    ) {
+      errors.technologies = "At least one technology is required";
+    }
+
+    if (
+      formData.repositoryUrl &&
+      !formData.repositoryUrl.match(/^(https?:\/\/)?(www\.)?github\.com\/.+/i)
+    ) {
+      errors.repositoryUrl = "Please enter a valid GitHub URL";
     }
 
     if (formData.liveUrl && !formData.liveUrl.match(/^(https?:\/\/)/i)) {
-      errors.liveUrl = 'Please enter a valid URL with http:// or https://';
+      errors.liveUrl = "Please enter a valid URL with http:// or https://";
     }
 
     setFormErrors(errors);
@@ -201,89 +210,102 @@ function Projects() {
   };
 
   const handleSubmit = async () => {
-    console.log('handleSubmit');
+    // console.log('handleSubmit');
     if (!validateForm()) return;
 
     try {
-      const token = localStorage.getItem('token');
-      const url = editingProject 
+      const token = localStorage.getItem("token");
+      const url = editingProject
         ? `${API_URL}/projects/${editingProject._id}`
         : `${API_URL}/projects`;
-      
-      const method = editingProject ? 'PUT' : 'POST';
-      console.log(url, method);
-      
+
+      const method = editingProject ? "PUT" : "POST";
+      // console.log(url, method);
+
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           ...formData,
-          images: formData.images.filter(url => url.trim()).map(url => ({ url: url.trim() })),
-          keyFeatures: formData.keyFeatures.filter(feature => feature.trim()),
-          technologies: formData.technologies.filter(tech => tech.trim()),
+          images: formData.images
+            .filter((url) => url.trim())
+            .map((url) => ({ url: url.trim() })),
+          keyFeatures: formData.keyFeatures.filter((feature) => feature.trim()),
+          technologies: formData.technologies.filter((tech) => tech.trim()),
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save project');
+        throw new Error("Failed to save project");
       }
 
       await fetchProjects();
       handleCloseDialog();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     }
   };
 
   const handleDelete = async (projectId: string) => {
-    if (!confirm('Are you sure you want to delete this project?')) return;
+    if (!confirm("Are you sure you want to delete this project?")) return;
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/projects/${projectId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete project');
+        throw new Error("Failed to delete project");
       }
 
       await fetchProjects();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     }
   };
 
   const addArrayField = (field: keyof ProjectFormData) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: [...(prev[field] as string[]), ''],
+      [field]: [...(prev[field] as string[]), ""],
     }));
   };
 
   const removeArrayField = (field: keyof ProjectFormData, index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [field]: (prev[field] as string[]).filter((_, i) => i !== index),
     }));
   };
 
-  const updateArrayField = (field: keyof ProjectFormData, index: number, value: string) => {
-    setFormData(prev => ({
+  const updateArrayField = (
+    field: keyof ProjectFormData,
+    index: number,
+    value: string,
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: (prev[field] as string[]).map((item, i) => i === index ? value : item),
+      [field]: (prev[field] as string[]).map((item, i) =>
+        i === index ? value : item,
+      ),
     }));
   };
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="400px"
+      >
         <CircularProgress />
       </Box>
     );
@@ -292,7 +314,14 @@ function Projects() {
   return (
     <Box sx={{ p: 0 }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Box>
           <Typography variant="h4" component="h1" gutterBottom>
             My Projects
@@ -322,14 +351,14 @@ function Projects() {
       {projects.length === 0 ? (
         <Box
           sx={{
-            textAlign: 'center',
+            textAlign: "center",
             py: 8,
-            border: '2px dashed',
-            borderColor: 'divider',
+            border: "2px dashed",
+            borderColor: "divider",
             borderRadius: 2,
           }}
         >
-          <CodeIcon sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
+          <CodeIcon sx={{ fontSize: 64, color: "text.disabled", mb: 2 }} />
           <Typography variant="h6" color="text.secondary" gutterBottom>
             No projects yet
           </Typography>
@@ -345,17 +374,27 @@ function Projects() {
           </Button>
         </Box>
       ) : (
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+            },
+            gap: 3,
+          }}
+        >
           {projects.map((project) => (
-            <Card 
+            <Card
               key={project._id}
-              sx={{ 
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
+              sx={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                  transform: "translateY(-4px)",
                   boxShadow: 4,
                 },
               }}
@@ -366,17 +405,28 @@ function Projects() {
                   sx={{
                     height: 200,
                     backgroundImage: `url(${project.images[0].url})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    position: 'relative',
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    position: "relative",
                   }}
                 />
               )}
 
               <CardContent sx={{ flexGrow: 1 }}>
                 {/* Title and Status */}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                  <Typography variant="h6" component="h2" sx={{ fontWeight: 600, flex: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    mb: 2,
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="h2"
+                    sx={{ fontWeight: 600, flex: 1 }}
+                  >
                     {project.title}
                   </Typography>
                   <Chip
@@ -389,7 +439,11 @@ function Projects() {
                 </Box>
 
                 {/* Description */}
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, lineHeight: 1.5 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 2, lineHeight: 1.5 }}
+                >
                   {project.description.length > 100
                     ? `${project.description.substring(0, 100)}...`
                     : project.description}
@@ -397,15 +451,32 @@ function Projects() {
 
                 {/* Key Features */}
                 <Box color="text.primary" sx={{ mb: 2 }}>
-                  <Typography variant="caption" color="text.primary" sx={{ mb: 1, display: 'block', fontSize: '0.8rem' }}>
+                  <Typography
+                    variant="caption"
+                    color="text.primary"
+                    sx={{ mb: 1, display: "block", fontSize: "0.8rem" }}
+                  >
                     Key Features:
                   </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
+                  >
                     {project.keyFeatures.slice(0, 3).map((tech, index) => (
-                      <Typography variant="body2" color="text.secondary" sx={{ display: 'block', fontSize: '0.7rem' }} key={index}>{tech}</Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ display: "block", fontSize: "0.7rem" }}
+                        key={index}
+                      >
+                        {tech}
+                      </Typography>
                     ))}
                     {project.keyFeatures.length > 3 && (
-                      <Typography variant="body2" color="text.secondary" sx={{ display: 'block', fontSize: '0.7rem' }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ display: "block", fontSize: "0.7rem" }}
+                      >
                         {`+${project.keyFeatures.length - 3}`}
                       </Typography>
                     )}
@@ -414,17 +485,21 @@ function Projects() {
 
                 {/* Technologies */}
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="caption" color="text.primary" sx={{ mb: 1, display: 'block', fontSize: '0.8rem' }}>
+                  <Typography
+                    variant="caption"
+                    color="text.primary"
+                    sx={{ mb: 1, display: "block", fontSize: "0.8rem" }}
+                  >
                     Technologies:
                   </Typography>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                     {project.technologies.slice(0, 3).map((tech, index) => (
                       <Chip
                         key={index}
                         label={tech}
                         size="small"
                         variant="outlined"
-                        sx={{ fontSize: '0.7rem' }}
+                        sx={{ fontSize: "0.7rem" }}
                       />
                     ))}
                     {project.technologies.length > 3 && (
@@ -432,29 +507,36 @@ function Projects() {
                         label={`+${project.technologies.length - 3}`}
                         size="small"
                         variant="outlined"
-                        sx={{ fontSize: '0.7rem' }}
+                        sx={{ fontSize: "0.7rem" }}
                       />
                     )}
                   </Box>
                 </Box>
 
                 {/* Dates */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                  <CalendarIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
+                >
+                  <CalendarIcon
+                    sx={{ fontSize: 16, color: "text.secondary" }}
+                  />
                   <Typography variant="caption" color="text.secondary">
                     {new Date(project.startDate).toLocaleDateString()}
-                    {project.endDate && ` - ${new Date(project.endDate).toLocaleDateString()}`}
+                    {project.endDate &&
+                      ` - ${new Date(project.endDate).toLocaleDateString()}`}
                   </Typography>
                 </Box>
               </CardContent>
 
-              <CardActions sx={{ justifyContent: 'space-between', p: 2 }}>
+              <CardActions sx={{ justifyContent: "space-between", p: 2 }}>
                 <Box>
                   {project.repositoryUrl && (
                     <Tooltip title="View Repository">
                       <IconButton
                         size="small"
-                        onClick={() => window.open(project.repositoryUrl, '_blank')}
+                        onClick={() =>
+                          window.open(project.repositoryUrl, "_blank")
+                        }
                       >
                         <GitHubIcon />
                       </IconButton>
@@ -464,7 +546,7 @@ function Projects() {
                     <Tooltip title="View Live">
                       <IconButton
                         size="small"
-                        onClick={() => window.open(project.liveUrl, '_blank')}
+                        onClick={() => window.open(project.liveUrl, "_blank")}
                       >
                         <LanguageIcon />
                       </IconButton>
@@ -505,32 +587,34 @@ function Projects() {
         PaperProps={{
           sx: {
             borderRadius: 2,
-            maxHeight: '90vh',
-          }
+            maxHeight: "90vh",
+          },
         }}
       >
-        <DialogTitle sx={{ backgroundColor: 'primary.main', color: 'white' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <DialogTitle sx={{ backgroundColor: "primary.main", color: "white" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {editingProject ? <EditIcon /> : <AddIcon />}
-            {editingProject ? 'Edit Project' : 'Create New Project'}
+            {editingProject ? "Edit Project" : "Create New Project"}
           </Box>
         </DialogTitle>
-        
+
         <DialogContent sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mt: 2 }}>
             {/* Basic Information */}
             <Box>
               <Typography variant="h6" gutterBottom>
                 Basic Information
               </Typography>
             </Box>
-            
+
             <Box>
               <TextField
                 fullWidth
                 label="Project Title *"
                 value={formData.title}
-                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, title: e.target.value }))
+                }
                 error={!!formErrors.title}
                 helperText={formErrors.title}
                 required
@@ -542,7 +626,12 @@ function Projects() {
                 fullWidth
                 label="Description *"
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
                 error={!!formErrors.description}
                 helperText={formErrors.description}
                 multiline
@@ -551,13 +640,24 @@ function Projects() {
               />
             </Box>
 
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: 2,
+              }}
+            >
               <TextField
                 fullWidth
                 label="Start Date *"
                 type="date"
                 value={formData.startDate}
-                onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    startDate: e.target.value,
+                  }))
+                }
                 error={!!formErrors.startDate}
                 helperText={formErrors.startDate}
                 InputLabelProps={{ shrink: true }}
@@ -569,17 +669,34 @@ function Projects() {
                 label="End Date"
                 type="date"
                 value={formData.endDate}
-                onChange={(e) => setFormData(prev => ({ ...prev, endDate: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, endDate: e.target.value }))
+                }
                 InputLabelProps={{ shrink: true }}
               />
             </Box>
 
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: 2,
+              }}
+            >
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
                 <Select
                   value={formData.status}
-                  onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'active' | 'archived' | 'draft' | 'completed' }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      status: e.target.value as
+                        | "active"
+                        | "archived"
+                        | "draft"
+                        | "completed",
+                    }))
+                  }
                   label="Status"
                 >
                   <MenuItem value="active">Active</MenuItem>
@@ -597,14 +714,28 @@ function Projects() {
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: 2,
+              }}
+            >
               <TextField
                 fullWidth
                 label="GitHub Repository URL"
                 value={formData.repositoryUrl}
-                onChange={(e) => setFormData(prev => ({ ...prev, repositoryUrl: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    repositoryUrl: e.target.value,
+                  }))
+                }
                 error={!!formErrors.repositoryUrl}
-                helperText={formErrors.repositoryUrl || 'Optional: Link to your GitHub repository'}
+                helperText={
+                  formErrors.repositoryUrl ||
+                  "Optional: Link to your GitHub repository"
+                }
                 placeholder="https://github.com/username/repo"
               />
 
@@ -612,9 +743,11 @@ function Projects() {
                 fullWidth
                 label="Live Demo URL"
                 value={formData.liveUrl}
-                onChange={(e) => setFormData(prev => ({ ...prev, liveUrl: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, liveUrl: e.target.value }))
+                }
                 error={!!formErrors.liveUrl}
-                helperText={formErrors.liveUrl || 'Optional: Link to live demo'}
+                helperText={formErrors.liveUrl || "Optional: Link to live demo"}
                 placeholder="https://your-project.com"
               />
             </Box>
@@ -628,12 +761,14 @@ function Projects() {
                 Add image URLs to showcase your project
               </Typography>
               {formData.images.map((url, index) => (
-                <Box key={index} sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                <Box key={index} sx={{ display: "flex", gap: 1, mb: 1 }}>
                   <TextField
                     fullWidth
                     label={`Image URL ${index + 1}`}
                     value={url}
-                    onChange={(e) => updateArrayField('images', index, e.target.value)}
+                    onChange={(e) =>
+                      updateArrayField("images", index, e.target.value)
+                    }
                     error={index === 0 && !!formErrors.images}
                     helperText={index === 0 && formErrors.images}
                     placeholder="https://example.com/image.jpg"
@@ -642,8 +777,8 @@ function Projects() {
                     <Button
                       variant="outlined"
                       color="error"
-                      onClick={() => removeArrayField('images', index)}
-                      sx={{ minWidth: 'auto', px: 2 }}
+                      onClick={() => removeArrayField("images", index)}
+                      sx={{ minWidth: "auto", px: 2 }}
                     >
                       Remove
                     </Button>
@@ -652,7 +787,7 @@ function Projects() {
               ))}
               <Button
                 variant="outlined"
-                onClick={() => addArrayField('images')}
+                onClick={() => addArrayField("images")}
                 sx={{ mt: 1 }}
               >
                 Add Another Image
@@ -668,12 +803,14 @@ function Projects() {
                 Describe the main features of your project
               </Typography>
               {formData.keyFeatures.map((feature, index) => (
-                <Box key={index} sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                <Box key={index} sx={{ display: "flex", gap: 1, mb: 1 }}>
                   <TextField
                     fullWidth
                     label={`Feature ${index + 1}`}
                     value={feature}
-                    onChange={(e) => updateArrayField('keyFeatures', index, e.target.value)}
+                    onChange={(e) =>
+                      updateArrayField("keyFeatures", index, e.target.value)
+                    }
                     error={index === 0 && !!formErrors.keyFeatures}
                     helperText={index === 0 && formErrors.keyFeatures}
                     placeholder="e.g., User authentication, Real-time chat"
@@ -682,8 +819,8 @@ function Projects() {
                     <Button
                       variant="outlined"
                       color="error"
-                      onClick={() => removeArrayField('keyFeatures', index)}
-                      sx={{ minWidth: 'auto', px: 2 }}
+                      onClick={() => removeArrayField("keyFeatures", index)}
+                      sx={{ minWidth: "auto", px: 2 }}
                     >
                       Remove
                     </Button>
@@ -692,7 +829,7 @@ function Projects() {
               ))}
               <Button
                 variant="outlined"
-                onClick={() => addArrayField('keyFeatures')}
+                onClick={() => addArrayField("keyFeatures")}
                 sx={{ mt: 1 }}
               >
                 Add Another Feature
@@ -708,12 +845,14 @@ function Projects() {
                 List the technologies, frameworks, and tools used
               </Typography>
               {formData.technologies.map((tech, index) => (
-                <Box key={index} sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                <Box key={index} sx={{ display: "flex", gap: 1, mb: 1 }}>
                   <TextField
                     fullWidth
                     label={`Technology ${index + 1}`}
                     value={tech}
-                    onChange={(e) => updateArrayField('technologies', index, e.target.value)}
+                    onChange={(e) =>
+                      updateArrayField("technologies", index, e.target.value)
+                    }
                     error={index === 0 && !!formErrors.technologies}
                     helperText={index === 0 && formErrors.technologies}
                     placeholder="e.g., React, Node.js, MongoDB"
@@ -722,8 +861,8 @@ function Projects() {
                     <Button
                       variant="outlined"
                       color="error"
-                      onClick={() => removeArrayField('technologies', index)}
-                      sx={{ minWidth: 'auto', px: 2 }}
+                      onClick={() => removeArrayField("technologies", index)}
+                      sx={{ minWidth: "auto", px: 2 }}
                     >
                       Remove
                     </Button>
@@ -732,7 +871,7 @@ function Projects() {
               ))}
               <Button
                 variant="outlined"
-                onClick={() => addArrayField('technologies')}
+                onClick={() => addArrayField("technologies")}
                 sx={{ mt: 1 }}
               >
                 Add Another Technology
@@ -754,7 +893,7 @@ function Projects() {
             variant="contained"
             sx={{ borderRadius: 2 }}
           >
-            {editingProject ? 'Update Project' : 'Create Project'}
+            {editingProject ? "Update Project" : "Create Project"}
           </Button>
         </DialogActions>
       </Dialog>

@@ -47,14 +47,14 @@ export const fetchSystemMetrics = async (): Promise<SystemMetrics | null> => {
     }
 
     const data: MetricsResponse = await response.json();
-    
+
     if (data.success) {
       return data.data;
     } else {
       throw new Error(data.message);
     }
   } catch (error) {
-    console.error('Error fetching system metrics:', error);
+    console.error('Error fetching system metrics:');
     return null;
   }
 };

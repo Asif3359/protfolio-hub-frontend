@@ -128,7 +128,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error("Token verification error:", error);
+      console.error("Token verification error:");
       return { success: false, message: "Network error occurred" };
     }
   };
@@ -158,7 +158,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         message: data.message,
       };
     } catch (error) {
-      console.error("Check verification error:", error);
+      console.error("Check verification error:");
       return {
         success: false,
         verified: false,
@@ -199,7 +199,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         }
       } catch (error) {
-        console.error("Auth check failed:", error);
+        console.error("Auth check failed:");
         // Clear storage on error
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -251,7 +251,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error:");
       return { success: false, message: "Network error occurred" };
     }
   };
@@ -270,7 +270,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
       }
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error("Logout error:");
     } finally {
       // Stop online status heartbeat
       stopOnlineStatus();
@@ -319,7 +319,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error("Signup error:", error);
+      console.error("Signup error:");
       return { success: false, message: "Network error occurred" };
     }
   };
@@ -356,7 +356,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error("Email verification error:", error);
+      console.error("Email verification error:");
       return { success: false, message: "Network error occurred" };
     }
   };
@@ -381,7 +381,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error("Resend verification error:", error);
+      console.error("Resend verification error:");
       return { success: false, message: "Network error occurred" };
     }
   };
@@ -406,7 +406,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error("Forgot password error:", error);
+      console.error("Forgot password error:");
       return { success: false, message: "Network error occurred" };
     }
   };
@@ -433,7 +433,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, message: data.message };
       }
     } catch (error) {
-      console.error("Reset password error:", error);
+      console.error("Reset password error:");
       return { success: false, message: "Network error occurred" };
     }
   };
@@ -468,7 +468,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setProfileData(data);
       return { success: true, data: data };
     } catch (error) {
-      console.error("Get profile data error:", error);
+      console.error("Get profile data error:");
       return { success: false, message: "Network error occurred" };
     }
   };

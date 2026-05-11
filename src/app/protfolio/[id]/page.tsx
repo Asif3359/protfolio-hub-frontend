@@ -762,7 +762,7 @@ function PortfolioPage() {
         }
       } catch (err) {
         setError("Error fetching portfolio data");
-        console.error("Error:", err);
+        console.error("Error:");
       } finally {
         setLoading(false);
       }
@@ -824,7 +824,7 @@ function PortfolioPage() {
         setFollowStatus((prev) => ({ ...prev, ...updates }));
       }
     } catch (error) {
-      console.error("Error fetching follow status:", error);
+      console.error("Error fetching follow status:");
     }
   };
 
@@ -867,7 +867,7 @@ function PortfolioPage() {
         }
       }
     } catch (error) {
-      console.error("Error toggling follow status:", error);
+      console.error("Error toggling follow status:");
     } finally {
       setFollowLoading(false);
     }
@@ -1718,10 +1718,7 @@ function PortfolioPage() {
                               try {
                                 await generateResumePDF(portfolioData);
                               } catch (error) {
-                                console.error(
-                                  "Error generating resume:",
-                                  error,
-                                );
+                                console.error("Error generating resume:");
                                 // You could add a toast notification here
                               } finally {
                                 setDownloadingResume(false);

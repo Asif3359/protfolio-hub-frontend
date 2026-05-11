@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import {
   Box,
   Typography,
@@ -27,7 +27,7 @@ import {
   Tooltip,
   Paper,
   Divider,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Quiz as QuizIcon,
   CheckCircle as CheckCircleIcon,
@@ -37,9 +37,9 @@ import {
   EmojiEvents as TrophyIcon,
   TrendingUp as TrendingUpIcon,
   Timer as TimerIcon,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
 
-import { useAuth } from '../../../../contexts/AuthContext';
+import { useAuth } from "../../../../contexts/AuthContext";
 
 interface Question {
   question: string;
@@ -87,11 +87,11 @@ function TestSkill() {
   } | null>(null);
   const [showResultDialog, setShowResultDialog] = useState(false);
   const [shuffledAnswers, setShuffledAnswers] = useState<string[][]>([]);
-  
+
   // Timer state
   const [timeLeft, setTimeLeft] = useState(QUESTION_TIME_LIMIT);
   const [timerActive, setTimerActive] = useState(false);
-  
+
   // Tab/window focus state
   const [isWindowFocused, setIsWindowFocused] = useState(true);
 
@@ -162,28 +162,28 @@ function TestSkill() {
     };
 
     // Add event listeners
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('blur', handleBlur);
-    window.addEventListener('focus', handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("focus", handleFocus);
 
     // Cleanup
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("focus", handleFocus);
     };
   }, [quizData, showResults, timerActive]);
 
   const handleTimeUp = () => {
     setTimerActive(false);
-    
+
     // If no answer is selected, mark as unanswered
     if (!selectedAnswers[currentQuestionIndex]) {
       const newAnswers = [...selectedAnswers];
-      newAnswers[currentQuestionIndex] = ''; // Empty string indicates no answer
+      newAnswers[currentQuestionIndex] = ""; // Empty string indicates no answer
       setSelectedAnswers(newAnswers);
     }
-    
+
     // Auto advance to next question or submit if last question
     if (currentQuestionIndex < (quizData?.questions.length || 0) - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -196,35 +196,35 @@ function TestSkill() {
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const getTimeColor = (timeLeft: number) => {
-    if (timeLeft <= 10) return 'error.main';
-    if (timeLeft <= 30) return 'warning.main';
-    return 'primary.main';
+    if (timeLeft <= 10) return "error.main";
+    if (timeLeft <= 30) return "warning.main";
+    return "primary.main";
   };
 
   const handleTabSwitchViolation = async () => {
     setTimerActive(false);
-    
+
     // Calculate results with current answers
     const quizResults = calculateResults();
     if (quizResults) {
       setResults(quizResults);
     }
-    
+
     // Submit the quiz automatically and redirect
     try {
       setSubmitting(true);
-      
+
       // Update skill proficiency
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/skill/${skillId}/proficiency`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           proficiency: quizResults?.newProficiency || skill?.proficiency || 0,
@@ -232,20 +232,20 @@ function TestSkill() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update proficiency');
+        throw new Error("Failed to update proficiency");
       }
 
       // Set cheating flags for the skills page
-      localStorage.setItem('cheatingDetected', 'true');
-      localStorage.setItem('cheatingSkill', skill?.name || 'Unknown Skill');
+      localStorage.setItem("cheatingDetected", "true");
+      localStorage.setItem("cheatingSkill", skill?.name || "Unknown Skill");
 
       // Redirect immediately
       router.back();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
       // Still redirect even if there's an error
-      localStorage.setItem('cheatingDetected', 'true');
-      localStorage.setItem('cheatingSkill', skill?.name || 'Unknown Skill');
+      localStorage.setItem("cheatingDetected", "true");
+      localStorage.setItem("cheatingSkill", skill?.name || "Unknown Skill");
       router.back();
     } finally {
       setSubmitting(false);
@@ -255,7 +255,7 @@ function TestSkill() {
   const fetchSkillDetails = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/skill/skill/${skillId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -263,13 +263,13 @@ function TestSkill() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch skill details');
+        throw new Error("Failed to fetch skill details");
       }
 
       const data = await response.json();
       setSkill(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -279,13 +279,13 @@ function TestSkill() {
     try {
       setGeneratingQuestions(true);
       setError(null);
-      
-      const token = localStorage.getItem('token');
+
+      const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/ai/generate-questions`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           skill: skill?.name,
@@ -295,35 +295,38 @@ function TestSkill() {
         }),
       });
 
-      console.log(response);
+      // console.log(response);
 
       if (!response.ok) {
-        throw new Error('Failed to generate questions');
+        throw new Error("Failed to generate questions");
       }
 
       const data = await response.json();
-      
+
       if (data.success) {
         setQuizData(data.data);
-        setSelectedAnswers(new Array(data.data.questions.length).fill(''));
+        setSelectedAnswers(new Array(data.data.questions.length).fill(""));
         setCurrentQuestionIndex(0);
         setShowResults(false);
-        
+
         // Generate shuffled answers for all questions
         const shuffled = data.data.questions.map((question: Question) => {
-          const answers = [...question.incorrect_answers, question.correct_answer];
+          const answers = [
+            ...question.incorrect_answers,
+            question.correct_answer,
+          ];
           return answers.sort(() => Math.random() - 0.5);
         });
         setShuffledAnswers(shuffled);
-        
+
         // Start timer for first question
         setTimeLeft(QUESTION_TIME_LIMIT);
         setTimerActive(true);
       } else {
-        throw new Error(data.message || 'Failed to generate questions');
+        throw new Error(data.message || "Failed to generate questions");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setGeneratingQuestions(false);
     }
@@ -359,15 +362,17 @@ function TestSkill() {
       }
     });
 
-    const percentage = Math.round((correctCount / quizData.questions.length) * 100);
-    
+    const percentage = Math.round(
+      (correctCount / quizData.questions.length) * 100,
+    );
+
     // Calculate new proficiency based on current proficiency and quiz performance
     const currentProficiency = skill?.proficiency || 0;
     const quizWeight = 0.3; // Quiz contributes 30% to proficiency update
     const currentWeight = 0.7; // Current proficiency contributes 70%
-    
+
     const newProficiency = Math.round(
-      (currentProficiency * currentWeight) + (percentage * quizWeight)
+      currentProficiency * currentWeight + percentage * quizWeight,
     );
 
     return {
@@ -383,21 +388,21 @@ function TestSkill() {
       setSubmitting(true);
       setTimerActive(false); // Stop timer when submitting
       const quizResults = calculateResults();
-      
+
       if (!quizResults) {
-        throw new Error('Failed to calculate results');
+        throw new Error("Failed to calculate results");
       }
 
       setResults(quizResults);
       setShowResults(true);
 
       // Update skill proficiency
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await fetch(`${API_URL}/skill/${skillId}/proficiency`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           proficiency: quizResults.newProficiency,
@@ -405,7 +410,7 @@ function TestSkill() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update proficiency');
+        throw new Error("Failed to update proficiency");
       }
 
       // Update local skill data
@@ -418,7 +423,7 @@ function TestSkill() {
 
       setShowResultDialog(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setSubmitting(false);
     }
@@ -462,7 +467,12 @@ function TestSkill() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="400px"
+      >
         <CircularProgress />
       </Box>
     );
@@ -505,7 +515,8 @@ function TestSkill() {
             Skill Test: {skill.name}
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Category: {skill.category} | Current Proficiency: {skill.proficiency}%
+            Category: {skill.category} | Current Proficiency:{" "}
+            {skill.proficiency}%
           </Typography>
         </Box>
       </Box>
@@ -515,13 +526,14 @@ function TestSkill() {
         <Card>
           <CardContent>
             <Box textAlign="center" py={4}>
-              <QuizIcon sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
+              <QuizIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
               <Typography variant="h5" gutterBottom>
                 Ready to test your {skill.name} skills?
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                This test will generate 5 questions based on your skill level and category. 
-                Your proficiency will be updated based on your performance.
+                This test will generate 5 questions based on your skill level
+                and category. Your proficiency will be updated based on your
+                performance.
               </Typography>
               <Button
                 variant="contained"
@@ -530,12 +542,17 @@ function TestSkill() {
                 onClick={generateQuestions}
                 disabled={generatingQuestions}
               >
-                {generatingQuestions ? 'Generating Questions...' : 'Start Test'}
+                {generatingQuestions ? "Generating Questions..." : "Start Test"}
               </Button>
-              
+
               {/* Loading state when generating questions */}
               {generatingQuestions && (
-                <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  mt={2}
+                >
                   <CircularProgress size={24} sx={{ mr: 1 }} />
                   <Typography variant="body2" color="text.secondary">
                     Generating questions for {skill?.name}...
@@ -553,15 +570,23 @@ function TestSkill() {
           <CardContent>
             {/* Progress bar and timer */}
             <Box mb={3}>
-              <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={1}
+              >
                 <Typography variant="body2" color="text.secondary">
-                  Question {currentQuestionIndex + 1} of {quizData.questions.length}
+                  Question {currentQuestionIndex + 1} of{" "}
+                  {quizData.questions.length}
                 </Typography>
                 <Box display="flex" alignItems="center" gap={2}>
                   <Box display="flex" alignItems="center" gap={1}>
-                    <TimerIcon sx={{ fontSize: 16, color: getTimeColor(timeLeft) }} />
-                    <Typography 
-                      variant="body2" 
+                    <TimerIcon
+                      sx={{ fontSize: 16, color: getTimeColor(timeLeft) }}
+                    />
+                    <Typography
+                      variant="body2"
                       color={getTimeColor(timeLeft)}
                       fontWeight="bold"
                     >
@@ -573,25 +598,19 @@ function TestSkill() {
                   </Typography>
                 </Box>
               </Box>
-              <LinearProgress 
-                variant="determinate" 
-                value={getProgressPercentage()} 
+              <LinearProgress
+                variant="determinate"
+                value={getProgressPercentage()}
                 sx={{ height: 8, borderRadius: 4 }}
               />
             </Box>
 
             {/* Time warning alert */}
             {timeLeft <= 10 && timeLeft > 0 && (
-              <Alert 
-                severity="warning" 
-                sx={{ mb: 2 }}
-                icon={<TimerIcon />}
-              >
+              <Alert severity="warning" sx={{ mb: 2 }} icon={<TimerIcon />}>
                 Time is running out! {timeLeft} seconds remaining.
               </Alert>
             )}
-
-
 
             {/* Question */}
             <Typography variant="h6" gutterBottom>
@@ -599,30 +618,33 @@ function TestSkill() {
             </Typography>
 
             {/* Answer options */}
-            <FormControl component="fieldset" sx={{ width: '100%', mt: 2 }}>
+            <FormControl component="fieldset" sx={{ width: "100%", mt: 2 }}>
               <RadioGroup
-                value={selectedAnswers[currentQuestionIndex] || ''}
+                value={selectedAnswers[currentQuestionIndex] || ""}
                 onChange={(e) => handleAnswerSelect(e.target.value)}
               >
-                {getCurrentQuestion() && getAllAnswers(currentQuestionIndex).map((answer, index) => (
-                  <FormControlLabel
-                    key={index}
-                    value={answer}
-                    control={<Radio />}
-                    label={answer}
-                    sx={{
-                      border: '1px solid',
-                      borderColor: isAnswerSelected(answer) ? 'primary.main' : 'divider',
-                      borderRadius: 1,
-                      p: 1,
-                      mb: 1,
-                      '&:hover': {
-                        borderColor: 'primary.main',
-                        backgroundColor: 'action.hover',
-                      },
-                    }}
-                  />
-                ))}
+                {getCurrentQuestion() &&
+                  getAllAnswers(currentQuestionIndex).map((answer, index) => (
+                    <FormControlLabel
+                      key={index}
+                      value={answer}
+                      control={<Radio />}
+                      label={answer}
+                      sx={{
+                        border: "1px solid",
+                        borderColor: isAnswerSelected(answer)
+                          ? "primary.main"
+                          : "divider",
+                        borderRadius: 1,
+                        p: 1,
+                        mb: 1,
+                        "&:hover": {
+                          borderColor: "primary.main",
+                          backgroundColor: "action.hover",
+                        },
+                      }}
+                    />
+                  ))}
               </RadioGroup>
             </FormControl>
 
@@ -635,20 +657,24 @@ function TestSkill() {
               >
                 Previous
               </Button> */}
-              
+
               {currentQuestionIndex === quizData.questions.length - 1 ? (
                 <Button
                   variant="contained"
                   onClick={submitQuiz}
                   disabled={submitting}
                   sx={{
-                    backgroundColor: timeLeft <= 10 ? 'error.main' : 'primary.main',
-                    '&:hover': {
-                      backgroundColor: timeLeft <= 10 ? 'error.dark' : 'primary.dark',
-                    }
+                    backgroundColor:
+                      timeLeft <= 10 ? "error.main" : "primary.main",
+                    "&:hover": {
+                      backgroundColor:
+                        timeLeft <= 10 ? "error.dark" : "primary.dark",
+                    },
                   }}
                 >
-                  {submitting ? 'Submitting...' : `Submit Quiz ${timeLeft <= 10 ? `(${timeLeft}s)` : ''}`}
+                  {submitting
+                    ? "Submitting..."
+                    : `Submit Quiz ${timeLeft <= 10 ? `(${timeLeft}s)` : ""}`}
                 </Button>
               ) : (
                 <Button
@@ -656,13 +682,15 @@ function TestSkill() {
                   onClick={handleNextQuestion}
                   disabled={!selectedAnswers[currentQuestionIndex]}
                   sx={{
-                    backgroundColor: timeLeft <= 10 ? 'error.main' : 'primary.main',
-                    '&:hover': {
-                      backgroundColor: timeLeft <= 10 ? 'error.dark' : 'primary.dark',
-                    }
+                    backgroundColor:
+                      timeLeft <= 10 ? "error.main" : "primary.main",
+                    "&:hover": {
+                      backgroundColor:
+                        timeLeft <= 10 ? "error.dark" : "primary.dark",
+                    },
                   }}
                 >
-                  Next {timeLeft <= 10 ? `(${timeLeft}s)` : ''}
+                  Next {timeLeft <= 10 ? `(${timeLeft}s)` : ""}
                 </Button>
               )}
             </Box>
@@ -675,11 +703,11 @@ function TestSkill() {
         <Card>
           <CardContent>
             <Box textAlign="center" py={3}>
-              <TrophyIcon sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
+              <TrophyIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
               <Typography variant="h4" gutterBottom>
                 Quiz Complete!
               </Typography>
-              
+
               <Stack spacing={2} alignItems="center" mt={3}>
                 <Box>
                   <Typography variant="h6" color="primary">
@@ -697,10 +725,18 @@ function TestSkill() {
 
                 <Box display="flex" alignItems="center" gap={1}>
                   <Typography variant="body1">New Proficiency:</Typography>
-                  <Chip 
-                    label={`${results.newProficiency}%`} 
-                    color={results.newProficiency > skill.proficiency ? 'success' : 'default'}
-                    icon={results.newProficiency > skill.proficiency ? <TrendingUpIcon /> : undefined}
+                  <Chip
+                    label={`${results.newProficiency}%`}
+                    color={
+                      results.newProficiency > skill.proficiency
+                        ? "success"
+                        : "default"
+                    }
+                    icon={
+                      results.newProficiency > skill.proficiency ? (
+                        <TrendingUpIcon />
+                      ) : undefined
+                    }
                   />
                 </Box>
               </Stack>
@@ -727,7 +763,12 @@ function TestSkill() {
       )}
 
       {/* Result Dialog */}
-      <Dialog open={showResultDialog} onClose={() => setShowResultDialog(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={showResultDialog}
+        onClose={() => setShowResultDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>
           <Box display="flex" alignItems="center" gap={1}>
             <CheckCircleIcon color="success" />
@@ -736,7 +777,8 @@ function TestSkill() {
         </DialogTitle>
         <DialogContent>
           <Typography>
-            Your {skill.name} proficiency has been updated from {skill.proficiency}% to {results?.newProficiency}%.
+            Your {skill.name} proficiency has been updated from{" "}
+            {skill.proficiency}% to {results?.newProficiency}%.
           </Typography>
         </DialogContent>
         <DialogActions>

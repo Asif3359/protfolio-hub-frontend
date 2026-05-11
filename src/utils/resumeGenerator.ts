@@ -373,7 +373,7 @@ export const generateResumePDF = async (portfolioData: PortfolioData) => {
     // Create PDF
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
-    
+
     const imgWidth = 210; // A4 width in mm
     const pageHeight = 295; // A4 height in mm
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -397,7 +397,7 @@ export const generateResumePDF = async (portfolioData: PortfolioData) => {
     pdf.save(`${user.name.replace(/\s+/g, '_')}_Resume.pdf`);
 
   } catch (error) {
-    console.error('Error generating PDF:', error);
+    console.error('Error generating PDF');
     throw error;
   } finally {
     // Clean up

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Card,
@@ -10,7 +10,7 @@ import {
   LinearProgress,
   Paper,
   CircularProgress,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Person,
   Work,
@@ -18,10 +18,10 @@ import {
   TrendingUp,
   Notifications,
   People,
-} from '@mui/icons-material';
-import { useAuth } from '../contexts/AuthContext';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+} from "@mui/icons-material";
+import { useAuth } from "../contexts/AuthContext";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 // Portfolio data interfaces
 interface PortfolioData {
@@ -204,7 +204,9 @@ interface UserData {
 export default function ClientDashboardPage() {
   const { user, profileData } = useAuth();
   const router = useRouter();
-  const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
+  const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(
+    null,
+  );
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -218,10 +220,10 @@ export default function ClientDashboardPage() {
 
       try {
         setLoading(true);
-        
+
         // Fetch portfolio data
         const portfolioResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/portfolio/email/${user.email}`
+          `${process.env.NEXT_PUBLIC_API_URL}/portfolio/email/${user.email}`,
         );
         const portfolioResult = await portfolioResponse.json();
 
@@ -232,18 +234,19 @@ export default function ClientDashboardPage() {
         }
 
         // Fetch user data with followers count
-        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
         if (token) {
           const userResponse = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/user/me`,
             {
               headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
               },
-            }
+            },
           );
-          
+
           if (userResponse.ok) {
             const userResult = await userResponse.json();
             if (userResult.success) {
@@ -253,7 +256,7 @@ export default function ClientDashboardPage() {
         }
       } catch (err) {
         setError("Error fetching data");
-        console.error("Error:", err);
+        console.error("Error fetching user data");
       } finally {
         setLoading(false);
       }
@@ -277,7 +280,7 @@ export default function ClientDashboardPage() {
   // Calculate profile completion percentage
   const calculateProfileCompletion = () => {
     if (!portfolioData) return 0;
-    
+
     const sections = [
       portfolioData.profile?.headline ? 1 : 0,
       portfolioData.profile?.bio ? 1 : 0,
@@ -290,64 +293,77 @@ export default function ClientDashboardPage() {
       portfolioData.achievements?.length > 0 ? 1 : 0,
       portfolioData.researches?.length > 0 ? 1 : 0,
     ];
-    
-    return Math.round((sections.reduce((a, b) => a + b, 0) / sections.length) * 100);
+
+    return Math.round(
+      (sections.reduce((a, b) => a + b, 0) / sections.length) * 100,
+    );
   };
 
   // Navigation functions
   const handleBasicInfoClick = () => {
-    router.push('/Client-Dashboard/profile');
+    router.push("/Client-Dashboard/profile");
   };
 
   const handleProjectsClick = () => {
-    router.push('/Client-Dashboard/projects');
+    router.push("/Client-Dashboard/projects");
   };
 
   const handleSkillsClick = () => {
-    router.push('/Client-Dashboard/skill');
+    router.push("/Client-Dashboard/skill");
   };
 
   const handleExperienceClick = () => {
-    router.push('/Client-Dashboard/experience');
+    router.push("/Client-Dashboard/experience");
   };
 
   const handleEducationClick = () => {
-    router.push('/Client-Dashboard/education');
+    router.push("/Client-Dashboard/education");
   };
 
   const handleCertificationsClick = () => {
-    router.push('/Client-Dashboard/certification');
+    router.push("/Client-Dashboard/certification");
   };
 
   const handleAchievementsClick = () => {
-    router.push('/Client-Dashboard/achievement');
+    router.push("/Client-Dashboard/achievement");
   };
 
   const handleCompletePortfolioClick = () => {
     // Find the first incomplete section and redirect there
-    if (!portfolioData?.profile?.headline || !portfolioData?.profile?.bio || !portfolioData?.profile?.location) {
-      router.push('/Client-Dashboard/profile');
+    if (
+      !portfolioData?.profile?.headline ||
+      !portfolioData?.profile?.bio ||
+      !portfolioData?.profile?.location
+    ) {
+      router.push("/Client-Dashboard/profile");
     } else if (stats.projects === 0) {
-      router.push('/Client-Dashboard/projects');
+      router.push("/Client-Dashboard/projects");
     } else if (stats.skills === 0) {
-      router.push('/Client-Dashboard/skill');
+      router.push("/Client-Dashboard/skill");
     } else if (stats.experiences === 0) {
-      router.push('/Client-Dashboard/experience');
+      router.push("/Client-Dashboard/experience");
     } else if ((portfolioData?.educations?.length || 0) === 0) {
-      router.push('/Client-Dashboard/education');
+      router.push("/Client-Dashboard/education");
     } else if (stats.certifications === 0) {
-      router.push('/Client-Dashboard/certification');
+      router.push("/Client-Dashboard/certification");
     } else if (stats.achievements === 0) {
-      router.push('/Client-Dashboard/achievement');
+      router.push("/Client-Dashboard/achievement");
     } else {
       // All sections complete, redirect to profile to add more details
-      router.push('/Client-Dashboard');
+      router.push("/Client-Dashboard");
     }
   };
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "50vh",
+        }}
+      >
         <CircularProgress />
       </Box>
     );
@@ -361,23 +377,23 @@ export default function ClientDashboardPage() {
         </Typography>
         <Typography variant="body1" color="text.secondary">
           Manage your portfolio and track your progress
-        </Typography> 
+        </Typography>
       </Box>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
         {/* Stats Cards */}
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
-          <Box sx={{ flex: '1 1 250px', minWidth: 0 }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+          <Box sx={{ flex: "1 1 250px", minWidth: 0 }}>
             <Card>
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Person sx={{ mr: 1, color: 'primary.main' }} />
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Person sx={{ mr: 1, color: "primary.main" }} />
                   <Typography variant="h6" component="div">
                     Profile Views
                   </Typography>
                 </Box>
                 <Typography variant="h4" component="div" sx={{ mb: 1 }}>
-                    {profileData?.views || 0}
+                  {profileData?.views || 0}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Total profile views
@@ -386,11 +402,11 @@ export default function ClientDashboardPage() {
             </Card>
           </Box>
 
-          <Box sx={{ flex: '1 1 250px', minWidth: 0 }}>
+          <Box sx={{ flex: "1 1 250px", minWidth: 0 }}>
             <Card>
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Work sx={{ mr: 1, color: 'secondary.main' }} />
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Work sx={{ mr: 1, color: "secondary.main" }} />
                   <Typography variant="h6" component="div">
                     Projects
                   </Typography>
@@ -399,17 +415,19 @@ export default function ClientDashboardPage() {
                   {stats.projects}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {stats.projects > 0 ? `${stats.projects} project${stats.projects > 1 ? 's' : ''} created` : 'No projects yet'}
+                  {stats.projects > 0
+                    ? `${stats.projects} project${stats.projects > 1 ? "s" : ""} created`
+                    : "No projects yet"}
                 </Typography>
               </CardContent>
             </Card>
           </Box>
 
-          <Box sx={{ flex: '1 1 250px', minWidth: 0 }}>
+          <Box sx={{ flex: "1 1 250px", minWidth: 0 }}>
             <Card>
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Assessment sx={{ mr: 1, color: 'success.main' }} />
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Assessment sx={{ mr: 1, color: "success.main" }} />
                   <Typography variant="h6" component="div">
                     Skills
                   </Typography>
@@ -418,17 +436,19 @@ export default function ClientDashboardPage() {
                   {stats.skills}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {stats.skills > 0 ? `${stats.skills} skill${stats.skills > 1 ? 's' : ''} added` : 'No skills yet'}
+                  {stats.skills > 0
+                    ? `${stats.skills} skill${stats.skills > 1 ? "s" : ""} added`
+                    : "No skills yet"}
                 </Typography>
               </CardContent>
             </Card>
           </Box>
 
-          <Box sx={{ flex: '1 1 250px', minWidth: 0 }}>
+          <Box sx={{ flex: "1 1 250px", minWidth: 0 }}>
             <Card>
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <TrendingUp sx={{ mr: 1, color: 'warning.main' }} />
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <TrendingUp sx={{ mr: 1, color: "warning.main" }} />
                   <Typography variant="h6" component="div">
                     Experience
                   </Typography>
@@ -437,17 +457,19 @@ export default function ClientDashboardPage() {
                   {stats.experiences}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {stats.experiences > 0 ? `${stats.experiences} experience${stats.experiences > 1 ? 's' : ''} listed` : 'No experience yet'}
+                  {stats.experiences > 0
+                    ? `${stats.experiences} experience${stats.experiences > 1 ? "s" : ""} listed`
+                    : "No experience yet"}
                 </Typography>
               </CardContent>
             </Card>
           </Box>
 
-          <Box sx={{ flex: '1 1 250px', minWidth: 0 }}>
+          <Box sx={{ flex: "1 1 250px", minWidth: 0 }}>
             <Card>
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <People sx={{ mr: 1, color: 'info.main' }} />
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <People sx={{ mr: 1, color: "info.main" }} />
                   <Typography variant="h6" component="div">
                     Followers
                   </Typography>
@@ -462,11 +484,11 @@ export default function ClientDashboardPage() {
             </Card>
           </Box>
 
-          <Box sx={{ flex: '1 1 250px', minWidth: 0 }}>
+          <Box sx={{ flex: "1 1 250px", minWidth: 0 }}>
             <Card>
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <People sx={{ mr: 1, color: 'success.main' }} />
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <People sx={{ mr: 1, color: "success.main" }} />
                   <Typography variant="h6" component="div">
                     Following
                   </Typography>
@@ -483,41 +505,52 @@ export default function ClientDashboardPage() {
         </Box>
 
         {/* Main Content */}
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
-          <Box sx={{ flex: '2 1 600px', minWidth: 0 }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+          <Box sx={{ flex: "2 1 600px", minWidth: 0 }}>
             <Paper sx={{ p: 3 }}>
               <Typography variant="h5" gutterBottom>
                 Portfolio Completion
               </Typography>
               <Box sx={{ mb: 3 }}>
-                <Typography variant="h3" component="div" sx={{ mb: 2, fontWeight: 'bold', color: 'primary.main' }}>
+                <Typography
+                  variant="h3"
+                  component="div"
+                  sx={{ mb: 2, fontWeight: "bold", color: "primary.main" }}
+                >
                   {calculateProfileCompletion()}%
                 </Typography>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={calculateProfileCompletion()} 
+                <LinearProgress
+                  variant="determinate"
+                  value={calculateProfileCompletion()}
                   sx={{ height: 12, borderRadius: 6, mb: 2 }}
                 />
                 <Typography variant="body2" color="text.secondary">
                   Complete your portfolio to increase your visibility
                 </Typography>
               </Box>
-              
-              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 2, mb: 3 }}>
-                <Box 
-                  sx={{ 
-                    p: 2, 
-                    border: '1px solid', 
-                    borderColor: 'grey.200', 
+
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                  gap: 2,
+                  mb: 3,
+                }}
+              >
+                <Box
+                  sx={{
+                    p: 2,
+                    border: "1px solid",
+                    borderColor: "grey.200",
                     borderRadius: 2,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      backgroundColor: 'rgba(46, 125, 50, 0.04)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                    }
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      backgroundColor: "rgba(46, 125, 50, 0.04)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    },
                   }}
                   onClick={handleBasicInfoClick}
                 >
@@ -525,120 +558,142 @@ export default function ClientDashboardPage() {
                     Basic Info
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {portfolioData?.profile?.headline ? '✓' : '✗'} Headline
+                    {portfolioData?.profile?.headline ? "✓" : "✗"} Headline
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {portfolioData?.profile?.bio ? '✓' : '✗'} Bio
+                    {portfolioData?.profile?.bio ? "✓" : "✗"} Bio
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {portfolioData?.profile?.location ? '✓' : '✗'} Location
+                    {portfolioData?.profile?.location ? "✓" : "✗"} Location
                   </Typography>
                 </Box>
-                
-                <Box 
-                  sx={{ 
-                    p: 2, 
-                    border: '1px solid', 
-                    borderColor: 'grey.200', 
+
+                <Box
+                  sx={{
+                    p: 2,
+                    border: "1px solid",
+                    borderColor: "grey.200",
                     borderRadius: 2,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      backgroundColor: 'rgba(46, 125, 50, 0.04)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                    }
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      backgroundColor: "rgba(46, 125, 50, 0.04)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    },
                   }}
                 >
                   <Typography variant="subtitle2" color="primary" gutterBottom>
                     Content
                   </Typography>
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     color="text.secondary"
-                    sx={{ cursor: 'pointer', '&:hover': { color: 'primary.main' } }}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "primary.main" },
+                    }}
                     onClick={handleProjectsClick}
                   >
-                    {stats.projects > 0 ? '✓' : '✗'} Projects ({stats.projects})
+                    {stats.projects > 0 ? "✓" : "✗"} Projects ({stats.projects})
                   </Typography>
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     color="text.secondary"
-                    sx={{ cursor: 'pointer', '&:hover': { color: 'primary.main' } }}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "primary.main" },
+                    }}
                     onClick={handleSkillsClick}
                   >
-                    {stats.skills > 0 ? '✓' : '✗'} Skills ({stats.skills})
+                    {stats.skills > 0 ? "✓" : "✗"} Skills ({stats.skills})
                   </Typography>
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     color="text.secondary"
-                    sx={{ cursor: 'pointer', '&:hover': { color: 'primary.main' } }}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "primary.main" },
+                    }}
                     onClick={handleExperienceClick}
                   >
-                    {stats.experiences > 0 ? '✓' : '✗'} Experience ({stats.experiences})
+                    {stats.experiences > 0 ? "✓" : "✗"} Experience (
+                    {stats.experiences})
                   </Typography>
                 </Box>
-                
-                <Box 
-                  sx={{ 
-                    p: 2, 
-                    border: '1px solid', 
-                    borderColor: 'grey.200', 
+
+                <Box
+                  sx={{
+                    p: 2,
+                    border: "1px solid",
+                    borderColor: "grey.200",
                     borderRadius: 2,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      backgroundColor: 'rgba(46, 125, 50, 0.04)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                    }
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      borderColor: "primary.main",
+                      backgroundColor: "rgba(46, 125, 50, 0.04)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    },
                   }}
                 >
                   <Typography variant="subtitle2" color="primary" gutterBottom>
                     Credentials
                   </Typography>
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     color="text.secondary"
-                    sx={{ cursor: 'pointer', '&:hover': { color: 'primary.main' } }}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "primary.main" },
+                    }}
                     onClick={handleEducationClick}
                   >
-                    {(portfolioData?.educations?.length || 0) > 0 ? '✓' : '✗'} Education ({portfolioData?.educations?.length || 0})
+                    {(portfolioData?.educations?.length || 0) > 0 ? "✓" : "✗"}{" "}
+                    Education ({portfolioData?.educations?.length || 0})
                   </Typography>
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     color="text.secondary"
-                    sx={{ cursor: 'pointer', '&:hover': { color: 'primary.main' } }}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "primary.main" },
+                    }}
                     onClick={handleCertificationsClick}
                   >
-                    {stats.certifications > 0 ? '✓' : '✗'} Certifications ({stats.certifications})
+                    {stats.certifications > 0 ? "✓" : "✗"} Certifications (
+                    {stats.certifications})
                   </Typography>
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     color="text.secondary"
-                    sx={{ cursor: 'pointer', '&:hover': { color: 'primary.main' } }}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "primary.main" },
+                    }}
                     onClick={handleAchievementsClick}
                   >
-                    {stats.achievements > 0 ? '✓' : '✗'} Achievements ({stats.achievements})
+                    {stats.achievements > 0 ? "✓" : "✗"} Achievements (
+                    {stats.achievements})
                   </Typography>
                 </Box>
               </Box>
 
-              <Button 
-                variant="contained" 
-                color="primary" 
+              <Button
+                variant="contained"
+                color="primary"
                 size="large"
                 onClick={handleCompletePortfolioClick}
                 sx={{
-                  background: 'linear-gradient(135deg, #2E7D32, #4CAF50)',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #1B5E20, #2E7D32)',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 8px 20px rgba(46, 125, 50, 0.4)',
+                  background: "linear-gradient(135deg, #2E7D32, #4CAF50)",
+                  "&:hover": {
+                    background: "linear-gradient(135deg, #1B5E20, #2E7D32)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 8px 20px rgba(46, 125, 50, 0.4)",
                   },
-                  transition: 'all 0.3s ease',
+                  transition: "all 0.3s ease",
                 }}
               >
                 Complete Portfolio

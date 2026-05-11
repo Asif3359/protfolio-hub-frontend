@@ -27,8 +27,18 @@ import {
   Wifi,
 } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
-import { fetchSystemMetrics, SystemMetrics, formatBytes, calculateCpuUsage, calculateMemoryUsage } from "@/utils/systemMetrics";
-import { getFrontendMetrics, PerformanceMonitor, FrontendMetrics } from "@/utils/frontendMetrics";
+import {
+  fetchSystemMetrics,
+  SystemMetrics,
+  formatBytes,
+  calculateCpuUsage,
+  calculateMemoryUsage,
+} from "@/utils/systemMetrics";
+import {
+  getFrontendMetrics,
+  PerformanceMonitor,
+  FrontendMetrics,
+} from "@/utils/frontendMetrics";
 
 interface BasicUserInfo {
   _id: string;
@@ -43,8 +53,9 @@ interface BasicProfileInfo {
   profileImage?: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://protfolio-hub-backend.onrender.com/api";
-
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://protfolio-hub-backend.onrender.com/api";
 
 export default function AdminDashboardPage() {
   const theme = useTheme();
@@ -57,13 +68,17 @@ export default function AdminDashboardPage() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [usersCount, setUsersCount] = useState<number>(0);
   const [systemHealth, setSystemHealth] = useState<number>(0);
-  const [systemMetrics, setSystemMetrics] = useState<SystemMetrics | null>(null);
-  const [frontendMetrics, setFrontendMetrics] = useState<FrontendMetrics | null>(null);
-  const [performanceMonitor, setPerformanceMonitor] = useState<PerformanceMonitor | null>(null);
+  const [systemMetrics, setSystemMetrics] = useState<SystemMetrics | null>(
+    null,
+  );
+  const [frontendMetrics, setFrontendMetrics] =
+    useState<FrontendMetrics | null>(null);
+  const [performanceMonitor, setPerformanceMonitor] =
+    useState<PerformanceMonitor | null>(null);
   const [backendCpuMetrics, setBackendCpuMetrics] = useState<{
     usage: number;
     cores: number;
-    loadAverage: { '1min': number; '5min': number; '15min': number };
+    loadAverage: { "1min": number; "5min": number; "15min": number };
     model: string;
     speed: number;
   } | null>(null);
@@ -79,22 +94,22 @@ export default function AdminDashboardPage() {
   const calculateFrontendSystemHealth = useCallback(() => {
     // Simple health calculation based on available data
     let healthScore = 100;
-    
+
     // Deduct points if no users are online (might indicate issues)
     if (onlineUsersCount === 0 && usersCount > 0) {
       healthScore -= 20;
     }
-    
+
     // Deduct points if user count is very low (might indicate issues)
     if (usersCount < 5) {
       healthScore -= 10;
     }
-    
+
     // Add points for good user engagement
     if (onlineUsersCount > 0 && onlineUsersCount / usersCount > 0.1) {
       healthScore += 10;
     }
-    
+
     // Ensure score is between 0-100
     return Math.max(0, Math.min(100, healthScore));
   }, [onlineUsersCount, usersCount]);
@@ -122,8 +137,6 @@ export default function AdminDashboardPage() {
       const usersData = await usersResponse.json();
       setUsersCount(usersData.data.length);
 
-      
-
       // Fetch online users count from the online status API
       try {
         const onlineUsersResponse = await fetch(
@@ -133,7 +146,7 @@ export default function AdminDashboardPage() {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (onlineUsersResponse.ok) {
@@ -144,31 +157,33 @@ export default function AdminDashboardPage() {
           setOnlineUsersCount(0);
         }
       } catch (err) {
-        console.warn("Error fetching online users count:", err);
+        console.warn("Error fetching online users count:");
         setOnlineUsersCount(0);
       }
 
       // Fetch system health from backend
       try {
-        const systemHealthResponse = await fetch(
-          `${API_URL}/system/health`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const systemHealthResponse = await fetch(`${API_URL}/system/health`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         if (systemHealthResponse.ok) {
           const healthData = await systemHealthResponse.json();
           setSystemHealth(healthData.health || 0);
         } else {
-          console.warn("Failed to fetch system health from backend, using frontend calculation");
+          console.warn(
+            "Failed to fetch system health from backend, using frontend calculation",
+          );
           setSystemHealth(calculateFrontendSystemHealth());
         }
       } catch (err) {
-        console.warn("Error fetching system health from backend, using frontend calculation:", err);
+        console.warn(
+          "Error fetching system health from backend, using frontend calculation:",
+          err,
+        );
         setSystemHealth(calculateFrontendSystemHealth());
       }
 
@@ -185,13 +200,13 @@ export default function AdminDashboardPage() {
           const cpuData = await cpuResponse.json();
           if (cpuData.success && cpuData.data) {
             setBackendCpuMetrics(cpuData.data);
-            console.log("CPU metrics from backend:", cpuData.data);
+            // console.log("CPU metrics from backend:", cpuData.data);
           }
         } else {
           console.warn("Failed to fetch CPU metrics from backend");
         }
       } catch (err) {
-        console.warn("Error fetching CPU metrics:", err);
+        console.warn("Error fetching CPU metrics:");
       }
 
       // Fetch Memory metrics from backend
@@ -207,13 +222,13 @@ export default function AdminDashboardPage() {
           const memoryData = await memoryResponse.json();
           if (memoryData.success && memoryData.data) {
             setBackendMemoryMetrics(memoryData.data);
-            console.log("Memory metrics from backend:", memoryData.data);
+            // console.log("Memory metrics from backend:");
           }
         } else {
           console.warn("Failed to fetch Memory metrics from backend");
         }
       } catch (err) {
-        console.warn("Error fetching Memory metrics:", err);
+        console.warn("Error fetching Memory metrics:");
       }
 
       // Fetch system metrics from backend (fallback to general metrics)
@@ -222,13 +237,15 @@ export default function AdminDashboardPage() {
         if (metrics) {
           setSystemMetrics(metrics);
         } else {
-          console.warn("Failed to fetch system metrics from backend, using frontend metrics");
+          console.warn(
+            "Failed to fetch system metrics from backend, using frontend metrics",
+          );
           // Fallback to frontend metrics
           const frontendMetricsData = getFrontendMetrics();
           setFrontendMetrics(frontendMetricsData);
         }
       } catch (err) {
-        console.warn("Error fetching system metrics, using frontend metrics:", err);
+        console.warn("Error fetching system metrics, using frontend metrics:");
         const frontendMetricsData = getFrontendMetrics();
         setFrontendMetrics(frontendMetricsData);
       }
@@ -444,7 +461,7 @@ export default function AdminDashboardPage() {
           >
             <StatCard
               title="Total Users"
-              value={usersCount||0}
+              value={usersCount || 0}
               subtitle="Registered users"
               icon={People}
               color="primary.main"
@@ -542,25 +559,28 @@ export default function AdminDashboardPage() {
                     color="primary.main"
                     fontWeight={600}
                   >
-                    {backendCpuMetrics 
+                    {backendCpuMetrics
                       ? `${backendCpuMetrics.usage}%`
-                      : systemMetrics 
-                      ? `${calculateCpuUsage(systemMetrics)}%`
-                      : frontendMetrics && !isNaN(frontendMetrics.cpu.usage)
-                      ? `${Math.min(100, Math.max(0, frontendMetrics.cpu.usage))}%`
-                      : "0%"
-                    }
+                      : systemMetrics
+                        ? `${calculateCpuUsage(systemMetrics)}%`
+                        : frontendMetrics && !isNaN(frontendMetrics.cpu.usage)
+                          ? `${Math.min(100, Math.max(0, frontendMetrics.cpu.usage))}%`
+                          : "0%"}
                   </Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
-                  value={backendCpuMetrics 
-                    ? backendCpuMetrics.usage
-                    : systemMetrics 
-                    ? calculateCpuUsage(systemMetrics)
-                    : frontendMetrics && !isNaN(frontendMetrics.cpu.usage)
-                    ? Math.min(100, Math.max(0, frontendMetrics.cpu.usage))
-                    : 0
+                  value={
+                    backendCpuMetrics
+                      ? backendCpuMetrics.usage
+                      : systemMetrics
+                        ? calculateCpuUsage(systemMetrics)
+                        : frontendMetrics && !isNaN(frontendMetrics.cpu.usage)
+                          ? Math.min(
+                              100,
+                              Math.max(0, frontendMetrics.cpu.usage),
+                            )
+                          : 0
                   }
                   sx={{
                     height: 10,
@@ -578,14 +598,13 @@ export default function AdminDashboardPage() {
                   color="text.secondary"
                   sx={{ mt: 1 }}
                 >
-                  {backendCpuMetrics 
-                    ? `CPU utilization (${backendCpuMetrics.cores} cores) - Load: ${backendCpuMetrics.loadAverage['1min']}`
-                    : systemMetrics 
-                    ? `CPU utilization (${systemMetrics.cpu.cores} cores)`
-                    : frontendMetrics 
-                    ? `CPU utilization (${frontendMetrics.cpu.cores} cores)`
-                    : "CPU utilization"
-                  }
+                  {backendCpuMetrics
+                    ? `CPU utilization (${backendCpuMetrics.cores} cores) - Load: ${backendCpuMetrics.loadAverage["1min"]}`
+                    : systemMetrics
+                      ? `CPU utilization (${systemMetrics.cpu.cores} cores)`
+                      : frontendMetrics
+                        ? `CPU utilization (${frontendMetrics.cpu.cores} cores)`
+                        : "CPU utilization"}
                 </Typography>
               </Box>
 
@@ -606,25 +625,30 @@ export default function AdminDashboardPage() {
                     color="success.main"
                     fontWeight={600}
                   >
-                    {backendMemoryMetrics 
+                    {backendMemoryMetrics
                       ? `${backendMemoryMetrics.usage}%`
-                      : systemMetrics 
-                      ? `${calculateMemoryUsage(systemMetrics)}%`
-                      : frontendMetrics && !isNaN(frontendMetrics.memory.usage)
-                      ? `${Math.min(100, Math.max(0, frontendMetrics.memory.usage))}%`
-                      : "0%"
-                    }
+                      : systemMetrics
+                        ? `${calculateMemoryUsage(systemMetrics)}%`
+                        : frontendMetrics &&
+                            !isNaN(frontendMetrics.memory.usage)
+                          ? `${Math.min(100, Math.max(0, frontendMetrics.memory.usage))}%`
+                          : "0%"}
                   </Typography>
                 </Box>
                 <LinearProgress
                   variant="determinate"
-                  value={backendMemoryMetrics 
-                    ? backendMemoryMetrics.usage
-                    : systemMetrics 
-                    ? calculateMemoryUsage(systemMetrics)
-                    : frontendMetrics && !isNaN(frontendMetrics.memory.usage)
-                    ? Math.min(100, Math.max(0, frontendMetrics.memory.usage))
-                    : 0
+                  value={
+                    backendMemoryMetrics
+                      ? backendMemoryMetrics.usage
+                      : systemMetrics
+                        ? calculateMemoryUsage(systemMetrics)
+                        : frontendMetrics &&
+                            !isNaN(frontendMetrics.memory.usage)
+                          ? Math.min(
+                              100,
+                              Math.max(0, frontendMetrics.memory.usage),
+                            )
+                          : 0
                   }
                   sx={{
                     height: 10,
@@ -642,14 +666,15 @@ export default function AdminDashboardPage() {
                   color="text.secondary"
                   sx={{ mt: 1 }}
                 >
-                  {backendMemoryMetrics 
+                  {backendMemoryMetrics
                     ? `Memory utilization (${backendMemoryMetrics.formatted.used} / ${backendMemoryMetrics.formatted.total})`
-                    : systemMetrics 
-                    ? `Memory utilization (${formatBytes(systemMetrics.memory.used)} / ${formatBytes(systemMetrics.memory.total)})`
-                    : frontendMetrics && frontendMetrics.memory.total > 0 && !isNaN(frontendMetrics.memory.used)
-                    ? `Memory utilization (${formatBytes(frontendMetrics.memory.used)} / ${formatBytes(frontendMetrics.memory.total)})`
-                    : "Memory utilization"
-                  }
+                    : systemMetrics
+                      ? `Memory utilization (${formatBytes(systemMetrics.memory.used)} / ${formatBytes(systemMetrics.memory.total)})`
+                      : frontendMetrics &&
+                          frontendMetrics.memory.total > 0 &&
+                          !isNaN(frontendMetrics.memory.used)
+                        ? `Memory utilization (${formatBytes(frontendMetrics.memory.used)} / ${formatBytes(frontendMetrics.memory.total)})`
+                        : "Memory utilization"}
                 </Typography>
               </Box>
             </Paper>

@@ -36,7 +36,9 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
 import { green } from "@mui/material/colors";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://protfolio-hub-backend.onrender.com/api";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://protfolio-hub-backend.onrender.com/api";
 
 interface BasicUserInfo {
   _id: string;
@@ -58,7 +60,7 @@ interface CombinedUserProfile {
 
 function UsersPage() {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [users, setUsers] = useState<CombinedUserProfile[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +73,8 @@ function UsersPage() {
     try {
       setLoading(true);
       setError(null);
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       if (!token) {
         throw new Error("Not authenticated");
       }
@@ -89,17 +92,18 @@ function UsersPage() {
       }
 
       const json = await response.json();
-    //   console.log('json:', json);
       const payload = Array.isArray(json) ? json : json?.data;
 
       const isRecord = (val: unknown): val is Record<string, unknown> =>
         typeof val === "object" && val !== null;
 
       const isBasicUserInfo = (val: unknown): val is BasicUserInfo =>
-        isRecord(val) && typeof val._id === "string" && typeof val.email === "string";
+        isRecord(val) &&
+        typeof val._id === "string" &&
+        typeof val.email === "string";
 
       const isCombinedUserProfile = (
-        val: unknown
+        val: unknown,
       ): val is { user: BasicUserInfo; profile?: BasicProfileInfo | null } =>
         isRecord(val) && isRecord(val.user) && isBasicUserInfo(val.user);
 
@@ -137,7 +141,8 @@ function UsersPage() {
   const handleDelete = async (userId: string) => {
     try {
       setDeleting(true);
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       if (!token) {
         throw new Error("Not authenticated");
       }
@@ -154,7 +159,7 @@ function UsersPage() {
         throw new Error(errorData.message || "Failed to delete user");
       }
 
-      setUsers(prev => prev.filter(item => item.user._id !== userId));
+      setUsers((prev) => prev.filter((item) => item.user._id !== userId));
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -189,7 +194,12 @@ function UsersPage() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={300}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight={300}
+      >
         <CircularProgress />
       </Box>
     );
@@ -197,23 +207,30 @@ function UsersPage() {
 
   return (
     <Box>
-      <Stack 
-        direction={isMobile ? "column" : "row"} 
-        justifyContent="space-between" 
-        alignItems={isMobile ? "stretch" : "center"} 
-        mb={2} 
+      <Stack
+        direction={isMobile ? "column" : "row"}
+        justifyContent="space-between"
+        alignItems={isMobile ? "stretch" : "center"}
+        mb={2}
         gap={2}
       >
         <Stack direction="row" alignItems="center" gap={2}>
-          <Typography variant="h4" color="primary">Users</Typography>
-          <Chip label={`${users.length} total`} color="primary" variant="outlined" size="small" />
+          <Typography variant="h4" color="primary">
+            Users
+          </Typography>
+          <Chip
+            label={`${users.length} total`}
+            color="primary"
+            variant="outlined"
+            size="small"
+          />
         </Stack>
-        <Stack 
-          direction={isMobile ? "column" : "row"} 
-          alignItems="center" 
-          gap={1} 
+        <Stack
+          direction={isMobile ? "column" : "row"}
+          alignItems="center"
+          gap={1}
           flexWrap="wrap"
-          sx={{ width: isMobile ? '100%' : 'auto' }}
+          sx={{ width: isMobile ? "100%" : "auto" }}
         >
           <TextField
             size="small"
@@ -227,13 +244,13 @@ function UsersPage() {
                 </InputAdornment>
               ),
             }}
-            sx={{ width: isMobile ? '100%' : 'auto' }}
+            sx={{ width: isMobile ? "100%" : "auto" }}
           />
-          <Button 
-            variant="outlined" 
-            startIcon={<RefreshIcon />} 
+          <Button
+            variant="outlined"
+            startIcon={<RefreshIcon />}
             onClick={fetchUsers}
-            sx={{ width: isMobile ? '100%' : 'auto' }}
+            sx={{ width: isMobile ? "100%" : "auto" }}
           >
             Refresh
           </Button>
@@ -253,11 +270,20 @@ function UsersPage() {
             const u = item?.user as BasicUserInfo | undefined;
             const p = item?.profile as BasicProfileInfo | null | undefined;
             return (
-              <Card key={u?._id || index} sx={{ borderRadius: 2, border: '1px solid #e0e0e0' }}>
+              <Card
+                key={u?._id || index}
+                sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}
+              >
                 <CardContent>
                   <Stack spacing={2}>
                     {/* Header with Avatar and Name */}
-                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" sx={{position:"relative"}}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      alignItems="center"
+                      justifyContent="space-between"
+                      sx={{ position: "relative" }}
+                    >
                       <Stack direction="row" spacing={2} alignItems="center">
                         <Avatar
                           src={(p?.profileImage as string) || undefined}
@@ -268,15 +294,22 @@ function UsersPage() {
                           <Typography variant="h6" fontWeight="medium">
                             {u?.name ?? "-"}
                           </Typography>
-                          <Typography variant="subtitle1" color="text.secondary" sx={{fontSize:"12px"}}>
+                          <Typography
+                            variant="subtitle1"
+                            color="text.secondary"
+                            sx={{ fontSize: "12px" }}
+                          >
                             {u?.email ?? "-"}
                           </Typography>
                         </Box>
                       </Stack>
-                      <Tooltip title="Delete user" sx={{position:"absolute", right:-10, top:-10}}>
-                        <IconButton 
-                          aria-label="delete" 
-                          color="error" 
+                      <Tooltip
+                        title="Delete user"
+                        sx={{ position: "absolute", right: -10, top: -10 }}
+                      >
+                        <IconButton
+                          aria-label="delete"
+                          color="error"
                           onClick={() => u && promptDelete(u)}
                           size="small"
                         >
@@ -288,23 +321,44 @@ function UsersPage() {
                     {/* Role and Headline */}
                     <Stack spacing={1}>
                       <Stack direction="row" alignItems="center" spacing={1}>
-                        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 60 }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ minWidth: 60 }}
+                        >
                           Role:
                         </Typography>
                         <Chip
                           label={u?.role ?? "-"}
                           size="small"
-                          color={u?.role?.toLowerCase() === 'admin' ? 'primary' : 'default'}
-                          sx={{ textTransform: 'capitalize' }}
+                          color={
+                            u?.role?.toLowerCase() === "admin"
+                              ? "primary"
+                              : "default"
+                          }
+                          sx={{ textTransform: "capitalize" }}
                         />
                       </Stack>
-                      
-                      <Stack direction="row" alignItems="flex-start" spacing={1}>
-                        <Typography variant="body2" color="text.secondary" sx={{ minWidth: 60 }}>
+
+                      <Stack
+                        direction="row"
+                        alignItems="flex-start"
+                        spacing={1}
+                      >
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ minWidth: 60 }}
+                        >
                           Headline:
                         </Typography>
-                        <Typography variant="body2" sx={{ flex: 1, fontSize:"12px" }}>
-                          {(p?.headline && p?.headline.trim()) ? p?.headline : "-"}
+                        <Typography
+                          variant="body2"
+                          sx={{ flex: 1, fontSize: "12px" }}
+                        >
+                          {p?.headline && p?.headline.trim()
+                            ? p?.headline
+                            : "-"}
                         </Typography>
                       </Stack>
                     </Stack>
@@ -313,12 +367,14 @@ function UsersPage() {
               </Card>
             );
           })}
-          
+
           {visibleUsers.length === 0 && (
-            <Card sx={{ borderRadius: 2, border: '1px solid #e0e0e0' }}>
+            <Card sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}>
               <CardContent>
                 <Typography align="center" color="text.secondary">
-                  {users.length === 0 ? 'No users found.' : 'No matches for your search.'}
+                  {users.length === 0
+                    ? "No users found."
+                    : "No matches for your search."}
                 </Typography>
               </CardContent>
             </Card>
@@ -326,22 +382,37 @@ function UsersPage() {
         </Stack>
       ) : (
         /* Desktop Table View */
-        <Box sx={{ overflowX: 'auto' }}>
-          <TableContainer component={Paper} sx={{ borderRadius: 2, border: '1px solid #e0e0e0', boxShadow: 'none', minWidth: 800 }}>
+        <Box sx={{ overflowX: "auto" }}>
+          <TableContainer
+            component={Paper}
+            sx={{
+              borderRadius: 2,
+              border: "1px solid #e0e0e0",
+              boxShadow: "none",
+              minWidth: 800,
+            }}
+          >
             <Table>
-              <TableHead sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
-                <TableRow sx={{backgroundColor: green[500], color: 'white'}}>
-                  <TableCell sx={{color: 'white'}}>Name</TableCell>
-                  <TableCell sx={{color: 'white'}}>Email</TableCell>
-                  <TableCell sx={{color: 'white'}}>Role</TableCell>
-                  <TableCell sx={{color: 'white'}}>Headline</TableCell>
-                  <TableCell align="right" sx={{color: 'white'}}>Actions</TableCell>
+              <TableHead
+                sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}
+              >
+                <TableRow sx={{ backgroundColor: green[500], color: "white" }}>
+                  <TableCell sx={{ color: "white" }}>Name</TableCell>
+                  <TableCell sx={{ color: "white" }}>Email</TableCell>
+                  <TableCell sx={{ color: "white" }}>Role</TableCell>
+                  <TableCell sx={{ color: "white" }}>Headline</TableCell>
+                  <TableCell align="right" sx={{ color: "white" }}>
+                    Actions
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {visibleUsers.map((item, index) => {
                   const u = item?.user as BasicUserInfo | undefined;
-                  const p = item?.profile as BasicProfileInfo | null | undefined;
+                  const p = item?.profile as
+                    | BasicProfileInfo
+                    | null
+                    | undefined;
                   return (
                     <TableRow key={u?._id || index} hover>
                       <TableCell>
@@ -351,7 +422,9 @@ function UsersPage() {
                             alt={u?.name || "User"}
                             sx={{ width: 32, height: 32 }}
                           />
-                          <Typography variant="body2">{u?.name ?? "-"}</Typography>
+                          <Typography variant="body2">
+                            {u?.name ?? "-"}
+                          </Typography>
                         </Stack>
                       </TableCell>
                       <TableCell>{u?.email ?? "-"}</TableCell>
@@ -359,14 +432,24 @@ function UsersPage() {
                         <Chip
                           label={u?.role ?? "-"}
                           size="small"
-                          color={u?.role?.toLowerCase() === 'admin' ? 'primary' : 'default'}
-                          sx={{ textTransform: 'capitalize' }}
+                          color={
+                            u?.role?.toLowerCase() === "admin"
+                              ? "primary"
+                              : "default"
+                          }
+                          sx={{ textTransform: "capitalize" }}
                         />
                       </TableCell>
-                      <TableCell>{(p?.headline && p?.headline.trim()) ? p?.headline : "-"}</TableCell>
+                      <TableCell>
+                        {p?.headline && p?.headline.trim() ? p?.headline : "-"}
+                      </TableCell>
                       <TableCell align="right">
                         <Tooltip title="Delete user">
-                          <IconButton aria-label="delete" color="error" onClick={() => u && promptDelete(u)}>
+                          <IconButton
+                            aria-label="delete"
+                            color="error"
+                            onClick={() => u && promptDelete(u)}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         </Tooltip>
@@ -377,7 +460,9 @@ function UsersPage() {
                 {visibleUsers.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={5} align="center">
-                      {users.length === 0 ? 'No users found.' : 'No matches for your search.'}
+                      {users.length === 0
+                        ? "No users found."
+                        : "No matches for your search."}
                     </TableCell>
                   </TableRow>
                 )}
@@ -390,18 +475,21 @@ function UsersPage() {
         <DialogTitle>Delete user?</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete {userToDelete?.name ?? 'this user'} and all related data?
+            Are you sure you want to delete {userToDelete?.name ?? "this user"}{" "}
+            and all related data?
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={closeConfirm} disabled={deleting}>Cancel</Button>
+          <Button onClick={closeConfirm} disabled={deleting}>
+            Cancel
+          </Button>
           <Button
             onClick={() => userToDelete?._id && handleDelete(userToDelete._id)}
             color="error"
             variant="contained"
             disabled={deleting}
           >
-            {deleting ? 'Deleting...' : 'Delete'}
+            {deleting ? "Deleting..." : "Delete"}
           </Button>
         </DialogActions>
       </Dialog>

@@ -52,18 +52,18 @@ export const LoginForm = () => {
         formData.password,
         formData.rememberMe,
       );
-      console.log("Login result:", result);
+      // console.log("Login result:", result);
       if (result.success) {
-        console.log("User role:", result.data?.role);
+        // console.log("User role:");
         // Redirect based on user role
         if (result.data?.role === "admin") {
-          console.log("Redirecting to Admin Dashboard");
+          // console.log("Redirecting to Admin Dashboard");
           router.push("/Admin-Dashboard");
         } else if (result.data?.role === "customer") {
-          console.log("Redirecting to Client Dashboard");
+          // console.log("Redirecting to Client Dashboard");
           router.push("/Client-Dashboard");
         } else {
-          console.log("Redirecting to Home");
+          // console.log("Redirecting to Home");
           router.push("/");
         }
       } else {

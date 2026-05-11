@@ -40,7 +40,7 @@ async function proxyRequest(req: NextRequest, path: string[]): Promise<NextRespo
             },
         });
     } catch (err) {
-        console.error('[Proxy] Error forwarding to backend:', err);
+        console.error('[Proxy] Error forwarding to backend:');
         return NextResponse.json({ error: 'Backend unreachable' }, { status: 502 });
     }
 }

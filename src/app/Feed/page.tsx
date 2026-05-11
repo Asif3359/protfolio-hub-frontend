@@ -101,19 +101,19 @@ function FeedPage() {
       setError(null);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/user/all/users`
+        `${process.env.NEXT_PUBLIC_API_URL}/user/all/users`,
       );
       const result = await response.json();
 
       if (result.success) {
-        console.log(result.data);
+        // console.log(result.data);
         setUsers(result.data);
       } else {
         setError("Failed to load users");
       }
     } catch (err) {
       setError("Error connecting to server");
-      console.error("Error fetching users:", err);
+      console.error("Error fetching users:");
     } finally {
       setLoading(false);
     }
@@ -138,7 +138,7 @@ function FeedPage() {
           profile.location.toLowerCase().includes(searchLower)) ||
         (profile?.skills &&
           profile.skills.some((skill) =>
-            skill.toLowerCase().includes(searchLower)
+            skill.toLowerCase().includes(searchLower),
           ))
       );
     });
@@ -732,7 +732,9 @@ function FeedPage() {
                         )}
                       </Box>
                     </Box>
-                    <Button onClick={() => router.push(`/protfolio/${user?.email}`)} >
+                    <Button
+                      onClick={() => router.push(`/protfolio/${user?.email}`)}
+                    >
                       <Person></Person> Protfolio
                     </Button>
                   </Box>

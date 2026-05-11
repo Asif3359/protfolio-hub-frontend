@@ -580,7 +580,7 @@ const ChatPage: React.FC = () => {
             }
           }
         } catch (error) {
-          console.error(`Failed to fetch profile for user ${userId}:`, error);
+          console.error(`Failed to fetch profile for user`);
         }
       }
 
@@ -588,7 +588,7 @@ const ChatPage: React.FC = () => {
         setParticipantProfiles((prev) => ({ ...prev, ...profiles }));
       }
     } catch (error) {
-      console.error("Failed to fetch participant profiles:", error);
+      console.error("Failed to fetch participant profiles:");
     }
   };
 

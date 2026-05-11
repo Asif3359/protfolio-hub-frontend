@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Box, Chip, Typography } from '@mui/material';
-import { useAuth } from '@/app/contexts/AuthContext';
-import { updateOnlineStatus } from '@/utils/onlineStatus';
+import React, { useState, useEffect } from "react";
+import { Box, Chip, Typography } from "@mui/material";
+import { useAuth } from "@/app/contexts/AuthContext";
+import { updateOnlineStatus } from "@/utils/onlineStatus";
 
 const OnlineStatusIndicator: React.FC = () => {
   const { user } = useAuth();
@@ -12,13 +12,13 @@ const OnlineStatusIndicator: React.FC = () => {
 
   const handleManualUpdate = async () => {
     if (!user) return;
-    
+
     setIsUpdating(true);
     try {
       await updateOnlineStatus();
       setLastUpdate(new Date());
     } catch (error) {
-      console.error('Failed to update online status:', error);
+      console.error("Failed to update online status:");
     } finally {
       setIsUpdating(false);
     }
@@ -35,17 +35,12 @@ const OnlineStatusIndicator: React.FC = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2 }}>
-      <Chip 
-        label="Online" 
-        color="success" 
-        size="small"
-        variant="outlined"
-      />
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2, p: 2 }}>
+      <Chip label="Online" color="success" size="small" variant="outlined" />
       <Typography variant="body2" color="text.secondary">
-        Last updated: {lastUpdate ? lastUpdate.toLocaleTimeString() : 'Never'}
+        Last updated: {lastUpdate ? lastUpdate.toLocaleTimeString() : "Never"}
       </Typography>
-      <Chip 
+      <Chip
         label={isUpdating ? "Updating..." : "Update Now"}
         onClick={handleManualUpdate}
         disabled={isUpdating}
@@ -56,4 +51,4 @@ const OnlineStatusIndicator: React.FC = () => {
   );
 };
 
-export default OnlineStatusIndicator; 
+export default OnlineStatusIndicator;

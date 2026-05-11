@@ -14,10 +14,10 @@ export const generateDeviceFingerprint = (): string => {
     ctx.font = '14px Arial';
     ctx.fillText('Device fingerprint', 2, 2);
   }
-  
+
   // Get device memory safely
   const deviceMemory = 'deviceMemory' in navigator ? (navigator as Navigator & { deviceMemory?: number }).deviceMemory : 'unknown';
-  
+
   const fingerprint = [
     navigator.userAgent,
     navigator.language,
@@ -27,7 +27,7 @@ export const generateDeviceFingerprint = (): string => {
     deviceMemory || 'unknown',
     canvas.toDataURL(),
   ].join('|');
-  
+
   // Create a simple hash
   let hash = 0;
   for (let i = 0; i < fingerprint.length; i++) {
@@ -35,7 +35,7 @@ export const generateDeviceFingerprint = (): string => {
     hash = ((hash << 5) - hash) + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
-  
+
   return Math.abs(hash).toString(36);
 };
 
@@ -46,30 +46,30 @@ export const generateDeviceFingerprint = (): string => {
  * @returns Promise<void>
  */
 export const trackView = async (
-  userId: string, 
+  userId: string,
   apiEndpoint?: string
 ): Promise<void> => {
   try {
     // Generate a unique device fingerprint based on browser characteristics
     const deviceId = generateDeviceFingerprint();
     const viewKey = `portfolio_view_${userId}_${deviceId}`;
-    
+
     // Check if this device has already viewed this portfolio today
     let lastView: string | null = null;
     try {
       lastView = localStorage.getItem(viewKey);
     } catch (e) {
       // localStorage might not be available in private browsing mode
-      console.log('localStorage not available, proceeding with view tracking');
+      // console.log('localStorage not available, proceeding with view tracking');
     }
-    
+
     const today = new Date().toDateString();
-    
+
     if (lastView === today) {
-      console.log('View already tracked for this device today');
+      // console.log('View already tracked for this device today');
       return;
     }
-    
+
     // Call the API to increment views
     const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/profile/views/${userId}`;
     const response = await fetch(endpoint, {
@@ -78,21 +78,21 @@ export const trackView = async (
         'Content-Type': 'application/json',
       },
     });
-    
+
     if (response.ok) {
       // Store the view timestamp for this device to prevent duplicate views
       try {
         localStorage.setItem(viewKey, today);
       } catch (e) {
         // localStorage might not be available, but view was still tracked
-        console.log('Could not save to localStorage, but view was tracked');
+        // console.log('Could not save to localStorage, but view was tracked');
       }
-      console.log('View tracked successfully for user:', userId);
+      // console.log('View tracked successfully for user:', userId);
     } else {
       // console.error('Failed to track view:', response?.statusText);
     }
   } catch (error) {
-    console.error('Error tracking view:', error);
+    console.error('Error tracking view:');
   }
 };
 
@@ -107,10 +107,10 @@ export const hasViewedToday = (userId: string): boolean => {
     const viewKey = `portfolio_view_${userId}_${deviceId}`;
     const lastView = localStorage.getItem(viewKey);
     const today = new Date().toDateString();
-    
+
     return lastView === today;
   } catch (error) {
-    console.error('Error checking view status:', error);
+    console.error('Error checking view status:');
     return false;
   }
 };
@@ -124,8 +124,8 @@ export const clearViewTracking = (userId: string): void => {
     const deviceId = generateDeviceFingerprint();
     const viewKey = `portfolio_view_${userId}_${deviceId}`;
     localStorage.removeItem(viewKey);
-    console.log('View tracking cleared for user:', userId);
+    // console.log('View tracking cleared for user:', userId);
   } catch (error) {
-    console.error('Error clearing view tracking:', error);
+    console.error('Error clearing view tracking:');
   }
 };
